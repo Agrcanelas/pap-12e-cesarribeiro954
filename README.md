@@ -24,8 +24,6 @@ Site acessivel e simples par facil utilização
 
 ### **Frontend**
 - [ ] HTML5, CSS3, JavaScript
-- [ ] Bootstrap/Tailwind CSS [ou outro framework]
-- [ ] React/Vue.js [opcional]
 
 ### **Backend**
 - [ ] Node.js/PHP/Python [escolher um]
