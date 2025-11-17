@@ -18,4 +18,5 @@ foreach($products as $p){
 }
 
 require_once __DIR__ . '/includes/footer.php';
+
 ?>
