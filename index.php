@@ -1,9 +1,18 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<title>Ecopeças</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
 <?php
 require_once __DIR__ . '/includes/header.php';
 $products = [
-  ["img" => "/ecopecas/assets/images/wheel.jpg", "name" => "Roda 16\"", "desc" => "Roda usada em bom estado", "year" => 2020, "state" => "Usada", "price" => 50.00],
-  ["img" => "/ecopecas/assets/images/suspension.jpg", "name" => "Suspensão Dianteira", "desc" => "Peça semi-nova de suspensão", "year" => 2019, "state" => "Semi-nova", "price" => 120.00],
-  ["img" => "/ecopecas/assets/images/disc.jpg", "name" => "Disco de Travão", "desc" => "Disco usado mas funcional", "year" => 2018, "state" => "Usada", "price" => 30.00]
+  ["img" => "assets/images/wheel.jpg", "name" => "Roda 16\"", "desc" => "Roda usada em bom estado", "year" => 2020, "state" => "Usada", "price" => 50.00],
+  ["img" => "assets/images/suspension.jpg", "name" => "Suspensão Dianteira", "desc" => "Peça semi-nova de suspensão", "year" => 2019, "state" => "Semi-nova", "price" => 120.00],
+  ["img" => "assets/images/disc.jpg", "name" => "Disco de Travão", "desc" => "Disco usado mas funcional", "year" => 2018, "state" => "Usada", "price" => 30.00]
 ];
 
 foreach($products as $p){
@@ -18,5 +27,6 @@ foreach($products as $p){
 }
 
 require_once __DIR__ . '/includes/footer.php';
-
 ?>
+</body>
+</html>
