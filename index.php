@@ -12,7 +12,10 @@ require_once __DIR__ . '/includes/header.php';
 $products = [
   ["img" => "https://netun.com/cdn/shop/articles/01-Airbag_civicsi.jpg?v=1716802572", "name" => "Airbags\"", "desc" => "", "year" => 2020, "state" => "Usada", "price" => 50.00],
   ["img" => "https://blog.mixauto.com.br/wp-content/uploads/2018/05/caixa-de-cambio.jpg", "name" => "Motor e Transmição", "desc" => "Peça semi-nova de suspensão", "year" => 2019, "state" => "Semi-nova", "price" => 120.00],
-  ["img" => "https://s7d9.scene7.com/is/image/dow/AdobeStock_385390317?qlt=82&ts=1692809401103&dpr=off", "name" => "Iluminação", "desc" => "Disco usado mas funcional", "year" => 2018, "state" => "Usada", "price" => 30.00]
+  ["img" => "https://s7d9.scene7.com/is/image/dow/AdobeStock_385390317?qlt=82&ts=1692809401103&dpr=off", "name" => "Iluminação", "desc" => "Disco usado mas funcional", "year" => 2018, "state" => "Usada", "price" => 30.00],
+  ["img" => "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ5NwDgRfalMhSg_JrDaskCoPjKOi3HHhxMA&s", "name" => "Suspenção", "desc" => "Peça semi-nova de suspensão", "year" => 2019, "state" => "Semi-nova", "price" => 120.00],
+  ["img" => "https://reparadorsa.com.br/wp-content/uploads/2022/12/RSA_MATERIAS-2_05-12_HEADER.png", "name" => "Eletrica", "desc" => "Peça semi-nova de suspensão", "year" => 2019, "state" => "Semi-nova", "price" => 120.00],
+  ["img" => "https://global-img.bitauto.com/usercenter/yhzx/20250815/793/w1200_yichecar_522658379372509.jpg.webp", "name" => "Interior", "desc" => "Peça semi-nova de suspensão", "year" => 2019, "state" => "Semi-nova", "price" => 120.00],
 ];
 
 foreach($products as $p){
