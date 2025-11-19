@@ -10,9 +10,9 @@
 <?php
 require_once __DIR__ . '/includes/header.php';
 $products = [
-  ["img" => "assets/images/wheel.jpg", "name" => "Roda 16\"", "desc" => "Roda usada em bom estado", "year" => 2020, "state" => "Usada", "price" => 50.00],
-  ["img" => "assets/images/suspension.jpg", "name" => "Suspensão Dianteira", "desc" => "Peça semi-nova de suspensão", "year" => 2019, "state" => "Semi-nova", "price" => 120.00],
-  ["img" => "assets/images/disc.jpg", "name" => "Disco de Travão", "desc" => "Disco usado mas funcional", "year" => 2018, "state" => "Usada", "price" => 30.00]
+  ["img" => "https://netun.com/cdn/shop/articles/01-Airbag_civicsi.jpg?v=1716802572", "name" => "Airbags\"", "desc" => "", "year" => 2020, "state" => "Usada", "price" => 50.00],
+  ["img" => "https://blog.mixauto.com.br/wp-content/uploads/2018/05/caixa-de-cambio.jpg", "name" => "Motor e Transmição", "desc" => "Peça semi-nova de suspensão", "year" => 2019, "state" => "Semi-nova", "price" => 120.00],
+  ["img" => "https://s7d9.scene7.com/is/image/dow/AdobeStock_385390317?qlt=82&ts=1692809401103&dpr=off", "name" => "Iluminação", "desc" => "Disco usado mas funcional", "year" => 2018, "state" => "Usada", "price" => 30.00]
 ];
 
 foreach($products as $p){
