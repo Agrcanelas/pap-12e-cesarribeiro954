@@ -34,7 +34,26 @@
         box-shadow: 0 20px 50px rgba(0,0,0,0.3);
     }
 
-    h1 { text-align:center; margin-bottom:40px; color:#2e7d32; font-size:34px; letter-spacing:1px; }
+    /* Título central com logo */
+    .cart-title {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 40px;
+    }
+    .cart-title img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        /* Substitua 'logo.png' pelo seu logotipo */
+    }
+    .cart-title span {
+        font-size: 34px;
+        font-weight: bold;
+        color: #2e7d32;
+    }
 
     .cart-item {
         display:flex;
@@ -207,18 +226,25 @@
         .cart-total{ text-align:left; }
         .finalizar-container form { gap: 12px; }
         .payment-methods { gap: 8px; }
+        .cart-title { flex-direction: column; gap: 10px; }
     }
 </style>
 </head>
 <body>
 
 <div class="cart-container">
-    <h1>Carrinho</h1>
+
+    <!-- TÍTULO CENTRAL COM LOGO -->
+    <div class="cart-title">
+        <img src="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg" alt="Logo Ecopeças">
+        <!-- Substitua 'logo.png' pelo seu logotipo -->
+        <span>Ecopeças</span>
+    </div>
 
     <div class="cart-item">
         <div class="item-info">
             <h3>Filtro de Óleo</h3>
-            <p>Preço: R$ 50,00</p>
+            <p>Preço: €50,00</p>
         </div>
         <div class="item-quantity">
             <input type="number" value="1" min="1">
@@ -229,7 +255,7 @@
     <div class="cart-item">
         <div class="item-info">
             <h3>Pastilhas de Freio</h3>
-            <p>Preço: R$ 120,00</p>
+            <p>Preço: €120,00</p>
         </div>
         <div class="item-quantity">
             <input type="number" value="2" min="1">
@@ -237,7 +263,7 @@
         <button class="remove-btn">Remover</button>
     </div>
 
-    <div class="cart-total">Total: R$ 290,00</div>
+    <div class="cart-total">Total: €290,00</div>
 
     <button class="checkout-btn" id="toggleCheckout">Finalizar Compra</button>
 
@@ -292,12 +318,12 @@
         let total = 0;
         document.querySelectorAll('.cart-item').forEach(item => {
             const priceText = item.querySelector('.item-info p').innerText;
-            const price = parseFloat(priceText.replace('R$ ', '').replace(',', '.'));
+            const price = parseFloat(priceText.replace('€', '').replace(',', '.'));
             const quantity = item.querySelector('.item-quantity input').value;
             total += price * quantity;
         });
         totalEl.style.transform = 'scale(1.2)';
-        totalEl.innerText = 'Total: R$ ' + total.toFixed(2).replace('.', ',');
+        totalEl.innerText = 'Total: €' + total.toFixed(2).replace('.', ',');
         setTimeout(()=>{ totalEl.style.transform='scale(1)'; },200);
     }
 
