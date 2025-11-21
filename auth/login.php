@@ -138,7 +138,7 @@
 
     <!-- HEADER: LOGO AO LADO DO TÍTULO -->
     <div class="login-header">
-        <img src="https://img.freepik.com/vetores-premium/ilustracao-vetorial-de-icones-da-interface-de-usuario_1253044-4512.jpg?semt=ais_hybrid&w=740&q=80" alt="Logo Ecopeças" class="logo">
+        <img src="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg" alt="Logo Ecopeças" class="logo">
         <h1>Ecopeças</h1>
     </div>
 
