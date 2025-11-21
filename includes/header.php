@@ -40,4 +40,16 @@
     </div>
 
 </header>
+
 <main>
+
+<!-- =========================== -->
+<!-- ADICIONAR IMAGEM DE FUNDO -->
+<style>
+body {
+    /* Substituir pelo endereço da tua imagem */
+    background: url('https://png.pngtree.com/thumb_back/fh260/background/20210824/pngtree-yellow-green-background-stock-images-wallpaper-image_769660.jpg') no-repeat center center/cover;
+}
+</style>
+<!-- =========================== -->
+
