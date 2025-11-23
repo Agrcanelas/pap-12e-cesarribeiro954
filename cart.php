@@ -13,14 +13,13 @@
         display: flex;
         justify-content: center;
         padding: 50px 20px;
-        background: linear-gradient(rgba(0,128,0,0.3), rgba(0,128,0,0.3)),
-                    url('https://images.unsplash.com/photo-1605902711622-cfb43c4430d8?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+        background: url('https://st2.depositphotos.com/1001335/10397/i/950/depositphotos_103971628-stock-photo-concept-of-auto-parts-shopping.jpg') no-repeat center center/cover;
         background-size: cover;
         backdrop-filter: blur(2px);
     }
 
     .cart-container {
-        background: rgba(255,255,255,0.95);
+        background: rgba(255,255,255,0.4); /* container mais transparente */
         width: 100%;
         max-width: 700px;
         border-radius: 25px;
@@ -47,7 +46,6 @@
         height: 60px;
         border-radius: 50%;
         object-fit: cover;
-        /* Substitua 'logo.png' pelo seu logotipo */
     }
     .cart-title span {
         font-size: 34px;
@@ -62,7 +60,7 @@
         padding:20px 20px;
         border-radius:15px;
         margin-bottom:20px;
-        background:#f9fff9;
+        background: rgba(255,255,255,0.5); /* itens mais transparentes */
         box-shadow:0 6px 20px rgba(0,0,0,0.08);
         transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
     }
@@ -70,7 +68,7 @@
     .cart-item:hover {
         transform: translateY(-5px);
         box-shadow:0 12px 30px rgba(0,0,0,0.15);
-        background:#e0ffe5;
+        background: rgba(224,255,229,0.6);
     }
 
     .item-info h3 { margin-bottom:8px; color:#333; font-size:18px; }
@@ -139,7 +137,7 @@
 
     /* Formulário Finalizar Compra */
     .finalizar-container {
-        background: #f9fff9;
+        background: rgba(255,255,255,0.4); /* transparente */
         border-radius: 20px;
         padding: 30px;
         margin-top: 30px;
@@ -147,6 +145,8 @@
         display: none; /* oculto por padrão */
         opacity: 0;
         transition: all 0.5s ease;
+        position: relative;
+        z-index: 10; /* garante que fique acima do container */
     }
 
     .finalizar-container.active {
@@ -237,7 +237,6 @@
     <!-- TÍTULO CENTRAL COM LOGO -->
     <div class="cart-title">
         <img src="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg" alt="Logo Ecopeças">
-        <!-- Substitua 'logo.png' pelo seu logotipo -->
         <span>Ecopeças</span>
     </div>
 
@@ -340,7 +339,6 @@
 
     updateTotal();
 
-    // Mostrar/ocultar formulário de finalizar compra
     toggleBtn.addEventListener('click', () => {
         finalizarForm.classList.toggle('active');
         finalizarForm.scrollIntoView({ behavior: 'smooth' });

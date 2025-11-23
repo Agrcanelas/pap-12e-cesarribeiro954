@@ -48,7 +48,7 @@
 <style>
 body {
     /* Substituir pelo endereço da tua imagem */
-    background: url('https://png.pngtree.com/thumb_back/fh260/background/20210824/pngtree-yellow-green-background-stock-images-wallpaper-image_769660.jpg') no-repeat center center/cover;
+    background: url('https://static.vecteezy.com/ti/vetor-gratis/p1/15286515-abstrato-desfocar-fundo-verde-para-banner-de-site-e-design-decorativo-de-cartao-de-papel-vetor.jpg') no-repeat center center/cover;
 }
 </style>
 <!-- =========================== -->
