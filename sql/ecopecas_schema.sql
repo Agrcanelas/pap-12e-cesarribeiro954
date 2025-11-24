@@ -37,8 +37,3 @@ CREATE TABLE order_items (
   FOREIGN KEY (order_id) REFERENCES orders(id),
   FOREIGN KEY (product_id) REFERENCES products(id)
 );
-
-INSERT INTO products (name, description, year, condition_state, price) VALUES
-('Roda 16"', 'Roda usada em bom estado', 2020, 'Usada', 50.00),
-('Suspensão Dianteira', 'Peça semi-nova de suspensão', 2019, 'Semi-nova', 120.00),
-('Disco de Travão', 'Disco usado mas funcional', 2018, 'Usada', 30.00);
