@@ -63,5 +63,5 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <i class="fa fa-user"></i> <?= $translations[$lang]['login'] ?>
         </a>
     </div>
-
+    
 </header>
