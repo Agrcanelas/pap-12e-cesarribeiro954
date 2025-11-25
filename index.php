@@ -4,16 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ecopeças</title>
-
-<!-- Icon de navegador-->
-<link rel="icon" type="image/png" sizes="16x16" href="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg?w=360">
-<link rel="icon" type="image/png" sizes="32x32" href="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg?w=360">
-<link rel="icon" type="image/png" sizes="64x64" href="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg?w=360">
-
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+<!-- Favicon -->
+<link rel="icon" href="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg?w=360" type="image/png">
+
 <style>
+/* ============================ */
+/* IMAGEM DE FUNDO DO SITE */
+/* Substitua pelo caminho da sua imagem */
+body {
+    background: url('https://wallpapers.com/images/hd/cool-green-background-yldkpcmn6kp9767o.jpg') no-repeat center center/cover;
+}
+
 /* --- SLIDER --- */
 .slider-container {
     position: relative;
@@ -28,13 +32,13 @@
 
 .slides-wrapper {
     display: flex;
-    width: 500%;
+    width: 500%; /* 5 slides */
     transition: transform 1s ease-in-out;
     height: 100%;
 }
 
 .slider-slide {
-    width: 20%;
+    width: 20%; /* cada slide ocupa 1/5 */
     height: 100%;
     position: relative;
     flex-shrink: 0;
@@ -48,7 +52,6 @@
     border-radius: 15px;
 }
 
-/* Texto destacado no slide */
 .slide-text {
     position: absolute;
     bottom: 20px;
@@ -63,14 +66,14 @@
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
-/* Cards de produtos */
+/* Cards de categorias */
 .card {
     width: 250px;
     padding: 15px;
     margin: 15px;
     display: inline-block;
     vertical-align: top;
-    background: #f9fff9;
+    background: rgba(249, 255, 249, 0.8); /* fundo transparente */
     border-radius: 15px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.1);
     text-align: center;
@@ -84,8 +87,6 @@
 }
 
 .card h3 { font-size: 18px; margin: 10px 0; }
-.card p { font-size: 14px; margin: 5px 0; }
-.card .price { font-weight: bold; color: #2e7d32; }
 .card .btn {
     margin-top: 10px;
     padding: 10px 15px;
@@ -143,26 +144,22 @@
     </div>
 </div>
 
-<!-- PRODUTOS -->
+<!-- CATEGORIAS -->
 <div class="cards-container">
 <?php
-$products = [
-  ["img" => "https://netun.com/cdn/shop/articles/01-Airbag_civicsi.jpg?v=1716802572", "name" => "Airbags", "desc" => "", "year" => 2020, "state" => "Usada", "price" => 50.00],
-  ["img" => "https://blog.mixauto.com.br/wp-content/uploads/2018/05/caixa-de-cambio.jpg", "name" => "Motor e Transmição", "desc" => "Peça semi-nova de suspensão", "year" => 2019, "state" => "Semi-nova", "price" => 120.00],
-  ["img" => "https://s7d9.scene7.com/is/image/dow/AdobeStock_385390317?qlt=82&ts=1692809401103&dpr=off", "name" => "Iluminação", "desc" => "Disco usado mas funcional", "year" => 2018, "state" => "Usada", "price" => 30.00],
-  ["img" => "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ5NwDgRfalMhSg_JrDaskCoPjKOi3HHhxMA&s", "name" => "Suspenção", "desc" => "Peça semi-nova de suspensão", "year" => 2019, "state" => "Semi-nova", "price" => 120.00],
-  ["img" => "https://reparadorsa.com.br/wp-content/uploads/2022/12/RSA_MATERIAS-2_05-12_HEADER.png", "name" => "Eletrica", "desc" => "Peça semi-nova de suspensão", "year" => 2019, "state" => "Semi-nova", "price" => 120.00],
-  ["img" => "https://global-img.bitauto.com/usercenter/yhzx/20250815/793/w1200_yichecar_522658379372509.jpg.webp", "name" => "Interior", "desc" => "Peça semi-nova de suspensão", "year" => 2019, "state" => "Semi-nova", "price" => 120.00],
+$categories = [
+  ["img" => "https://netun.com/cdn/shop/articles/01-Airbag_civicsi.jpg?v=1716802572", "name" => "Airbags"],
+  ["img" => "https://blog.mixauto.com.br/wp-content/uploads/2018/05/caixa-de-cambio.jpg", "name" => "Motor e Transmição"],
+  ["img" => "https://s7d9.scene7.com/is/image/dow/AdobeStock_385390317?qlt=82&ts=1692809401103&dpr=off", "name" => "Iluminação"],
+  ["img" => "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ5NwDgRfalMhSg_JrDaskCoPjKOi3HHhxMA&s", "name" => "Suspensão"],
+  ["img" => "https://reparadorsa.com.br/wp-content/uploads/2022/12/RSA_MATERIAS-2_05-12_HEADER.png", "name" => "Elétrica"],
+  ["img" => "https://global-img.bitauto.com/usercenter/yhzx/20250815/793/w1200_yichecar_522658379372509.jpg.webp", "name" => "Interior"]
 ];
 
-foreach($products as $p){
+foreach($categories as $c){
     echo "<div class='card'>";
-    echo "<img src='{$p['img']}' alt='{$p['name']}'>";
-    echo "<h3>{$p['name']}</h3>";
-    echo "<p>{$p['desc']}</p>";
-    echo "<p><strong>Ano:</strong> {$p['year']} | <strong>Estado:</strong> {$p['state']}</p>";
-    echo "<p class='price'>€".number_format($p['price'],2,',','.')."</p>";
-    echo "<button class='btn'>Adicionar ao carrinho</button>";
+    echo "<img src='{$c['img']}' alt='{$c['name']}'>";
+    echo "<h3>{$c['name']}</h3>";
     echo "</div>";
 }
 ?>
@@ -178,10 +175,10 @@ const totalSlides = document.querySelectorAll('.slider-slide').length;
 
 function slide() {
     currentIndex = (currentIndex + 1) % totalSlides;
-    slidesWrapper.style.transform = `translateX(-${currentIndex * 20}%)`;
+    slidesWrapper.style.transform = `translateX(-${currentIndex * 20}%)`; // 5 slides → 20% cada
 }
 
-setInterval(slide, 5000);
+setInterval(slide, 5000); // muda a cada 5 segundos
 </script>
 
 </body>
