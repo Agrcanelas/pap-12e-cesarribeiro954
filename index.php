@@ -4,15 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ecopeças</title>
+
+<!-- Icon de navegador-->
+<link rel="icon" type="image/png" sizes="16x16" href="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg?w=360">
+<link rel="icon" type="image/png" sizes="32x32" href="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg?w=360">
+<link rel="icon" type="image/png" sizes="64x64" href="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg?w=360">
+
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <style>
 /* --- SLIDER --- */
 .slider-container {
     position: relative;
     width: 100%;
     max-width: 1200px;
-    height: 250px; /* altura do slider */
+    height: 250px;
     margin: 20px auto;
     overflow: hidden;
     border-radius: 15px;
@@ -21,13 +28,13 @@
 
 .slides-wrapper {
     display: flex;
-    width: 500%; /* 5 slides */
+    width: 500%;
     transition: transform 1s ease-in-out;
     height: 100%;
 }
 
 .slider-slide {
-    width: 20%; /* cada slide ocupa 1/5 */
+    width: 20%;
     height: 100%;
     position: relative;
     flex-shrink: 0;
@@ -47,10 +54,10 @@
     bottom: 20px;
     left: 20px;
     color: #fff;
-    background: rgba(0,0,0,0.6); /* fundo mais escuro e destacado */
+    background: rgba(0,0,0,0.6);
     padding: 15px 20px;
     border-radius: 12px;
-    font-size: 18px; /* maior que antes */
+    font-size: 18px;
     font-weight: bold;
     max-width: 70%;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
@@ -171,10 +178,10 @@ const totalSlides = document.querySelectorAll('.slider-slide').length;
 
 function slide() {
     currentIndex = (currentIndex + 1) % totalSlides;
-    slidesWrapper.style.transform = `translateX(-${currentIndex * 20}%)`; // 5 slides → 20% cada
+    slidesWrapper.style.transform = `translateX(-${currentIndex * 20}%)`;
 }
 
-setInterval(slide, 5000); // muda a cada 5 segundos
+setInterval(slide, 5000);
 </script>
 
 </body>

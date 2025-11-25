@@ -10,7 +10,7 @@ $lang = $_SESSION['lang'] ?? 'pt';
 // Traduções simples
 $translations = [
     'pt' => [
-        'home' => 'Home',
+        'home' => 'Inicio',
         'cart' => 'Carrinho',
         'login' => 'Login',
     ],
