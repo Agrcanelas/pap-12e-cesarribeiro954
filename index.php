@@ -149,7 +149,7 @@ body {
 <div class="cards-container">
 <?php
 $categories = [
-  ["img" => "https://netun.com/cdn/shop/articles/01-Airbag_civicsi.jpg?v=1716802572", "name" => "Airbags", "link" => "categoria_airbags.php"],
+  ["img" => "https://netun.com/cdn/shop/articles/01-Airbag_civicsi.jpg?v=1716802572", "name" => "Airbags", "link" => "categorias/airbags.php"],
   ["img" => "https://blog.mixauto.com.br/wp-content/uploads/2018/05/caixa-de-cambio.jpg", "name" => "Motor e Transmição"],
   ["img" => "https://s7d9.scene7.com/is/image/dow/AdobeStock_385390317?qlt=82&ts=1692809401103&dpr=off", "name" => "Iluminação"],
   ["img" => "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ5NwDgRfalMhSg_JrDaskCoPjKOi3HHhxMA&s", "name" => "Suspensão"],

@@ -56,28 +56,37 @@
 <body>
 
 <?php require_once __DIR__ . '/../includes/header.php'; ?>
+<?php require_once '../includes/ligadb.php';?>
 
 <h2 style="text-align:center; margin-top:30px; color:#2e7d32;">Categoria: Airbags</h2>
 
 <div class="cards-container">
 <?php
-$airbags = [
-  ["img" => "https://netun.com/cdn/shop/articles/01-Airbag_civicsi.jpg?v=1716802572", "name" => "Airbag Frontal"],
-  ["img" => "https://example.com/airbag-lateral.jpg", "name" => "Airbag Lateral"],
-  ["img" => "https://example.com/airbag-passageiro.jpg", "name" => "Airbag Passageiro"]
-];
+// Selecionar produtos da categoria Airbags
+$sql = "SELECT * FROM produtos WHERE categoria='Airbags'";
+$result = $conn->query($sql);
+?>
 
-foreach($airbags as $a){
-    echo "<div class='card'>";
-    echo "<img src='{$a['img']}' alt='{$a['name']}'>";
-    echo "<h3>{$a['name']}</h3>";
-    echo "<button class='btn'>Ver Produto</button>";
-    echo "</div>";
+<h2>Categoria: Airbags</h2>
+<div class="cards-container">
+<?php
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()){
+        echo "<div class='card'>";
+        echo "<img src='{$row['imagem']}' alt='{$row['nome']}'>";
+        echo "<h3>{$row['nome']}</h3>";
+        echo "<p>{$row['descricao']}</p>";
+        echo "<p class='price'>€".number_format($row['preco'],2,',','.')."</p>";
+        echo "<button class='btn'>Adicionar ao carrinho</button>";
+        echo "</div>";
+    }
+} else {
+    echo "<p>Nenhum produto encontrado nesta categoria.</p>";
 }
 ?>
 </div>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
-
-</body>
-</html>
+<?php
+require_once '../includes/footer.php';
+$conn->close();
+?>
