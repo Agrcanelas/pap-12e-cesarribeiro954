@@ -13,13 +13,11 @@ $translations = [
         'home' => 'Inicio',
         'cart' => 'Carrinho',
         'login' => 'Login',
-        'search_placeholder' => 'Pesquisar produtos...',
     ],
     'en' => [
         'home' => 'Home',
         'cart' => 'Cart',
         'login' => 'Login',
-        'search_placeholder' => 'Search products...',
     ]
 ];
 
@@ -38,8 +36,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </div>
     </div>
 
-    <!-- MENU + PESQUISA -->
-    <div style="display:flex; align-items:center; gap:25px; flex-wrap:wrap;">
+    <!-- MENU + PESQUISA + BANDEIRAS -->
+    <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
 
         <nav class="menu" style="display:flex; gap:25px; font-weight:bold; align-items:center;">
             <a href="./index.php"
@@ -53,20 +51,22 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </nav>
 
         <!-- BARRA DE PESQUISA -->
-        <form action="search.php" method="get" style="position:relative;">
-            <input type="text" name="q" placeholder="<?= $translations[$lang]['search_placeholder'] ?>" 
-                   style="padding:8px 40px 8px 15px; border-radius:20px; border:none; outline:none; width:220px; font-size:14px;">
-            <button type="submit" style="position:absolute; right:2px; top:2px; bottom:2px; border:none; background:#66d78b; border-radius:50%; width:34px; cursor:pointer; color:#fff; font-size:16px;">
+        <div style="position:relative; display:flex; align-items:center;">
+            <input type="text" id="searchBox" placeholder="Pesquisar produtos..."
+                   style="padding:10px 20px 10px 20px; border-radius:30px; border:none; outline:none; width:260px; font-size:15px; box-shadow:0 3px 10px rgba(0,0,0,0.2); transition:0.3s;">
+            <button type="submit" style="position:absolute; right:0; border:none; background:#66d78b; border-radius:50%; width:36px; height:36px; cursor:pointer; color:#fff; display:flex; justify-content:center; align-items:center; transition:0.3s;">
                 <i class="fa fa-search"></i>
             </button>
-        </form>
+        </div>
 
-        <!-- SELEÇÃO DE IDIOMA -->
-        <form method="get" style="margin:0;">
-            <select name="lang" onchange="this.form.submit()" style="padding:4px; border-radius:5px;">
-                <option value="pt" <?= $lang=='pt'?'selected':'' ?>>PT</option>
-                <option value="en" <?= $lang=='en'?'selected':'' ?>>EN</option>
-            </select>
+        <!-- BANDEIRAS RETANGULARES COM EFEITO DE LUZ -->
+        <form method="get" style="margin:0; display:flex; align-items:center; gap:8px;">
+            <button type="submit" name="lang" value="pt" style="background:none; border:none; cursor:pointer; padding:0;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Portugal.svg" alt="PT" style="width:28px; height:18px; transition:0.3s;">
+            </button>
+            <button type="submit" name="lang" value="en" style="background:none; border:none; cursor:pointer; padding:0;">
+                <img src="https://upload.wikimedia.org/wikipedia/en/a/ae/Flag_of_the_United_Kingdom.svg" alt="EN" style="width:28px; height:18px; transition:0.3s;">
+            </button>
         </form>
 
         <!-- LOGIN -->
@@ -78,5 +78,32 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </div>
 
     </div>
-    
+
 </header>
+
+<style>
+    /* BORDAS DAS BANDEIRAS RETANGULARES COM EFEITO DE LUZ */
+    form button img {
+        border-radius:2px; /* leve arredondamento */
+    }
+
+    form button img:hover {
+        box-shadow: 0 0 12px 4px rgba(255,255,255,0.6);
+        transition: box-shadow 0.3s ease;
+    }
+
+    /* INPUT PESQUISA */
+    #searchBox:focus {
+        width: 300px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+    }
+
+    /* Lupa */
+    #searchBox + button:hover {
+        background:#4caf70;
+    }
+
+    #searchBox + button i {
+        font-size:16px;
+    }
+</style>
