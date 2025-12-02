@@ -99,11 +99,10 @@ $current_page = basename($_SERVER['PHP_SELF']);
 </header>
 
 <style>
-    /* BORDAS DAS BANDEIRAS RETANGULARES COM EFEITO DE LUZ */
+    /* BORDAS DAS BANDEIRAS */
     form button img {
         border-radius:2px;
     }
-
     form button img:hover {
         box-shadow: 0 0 12px 4px rgba(255,255,255,0.6);
         transition: box-shadow 0.3s ease;
@@ -114,45 +113,75 @@ $current_page = basename($_SERVER['PHP_SELF']);
         width: 300px;
         box-shadow: 0 6px 18px rgba(0,0,0,0.25);
     }
-
-    /* Lupa */
     #searchBox + button:hover {
         background:#4caf70;
     }
-
     #searchBox + button i {
         font-size:16px;
     }
 
-    /* MODO CLARO/ESCURO - animação ao passar o mouse */
+    /* BOTÃO MODO */
     form button[name="theme"]:hover {
         box-shadow:0 0 12px 3px rgba(255,255,255,0.6);
         transform: scale(1.1);
         transition: all 0.3s ease;
+    }
+
+    /* MODO ESCURO/CLARO GLOBAL */
+    body.light {
+        background-color: #f0f0f0;
+        color: #000;
+    }
+    body.light .cart-container,
+    body.light .finalizar-container {
+        background: rgba(255,255,255,0.4);
+        color: #000;
+    }
+    body.light .card {
+        background: rgba(249,255,249,0.8);
+        color: #000;
+    }
+
+    body.dark {
+        background-color: #121212;
+        color: #fff;
+    }
+    body.dark .cart-container,
+    body.dark .finalizar-container {
+        background: rgba(50,50,50,0.6);
+        color: #fff;
+    }
+    body.dark .card {
+        background: rgba(30,30,30,0.7);
+        color: #fff;
+    }
+    body.dark .slider-container {
+        box-shadow: 0 0 20px 5px rgba(50,255,100,0.4);
+    }
+    body.dark input, body.dark select {
+        background: #333;
+        color: #fff;
+        border: 1px solid #555;
     }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', ()=>{
     const theme = '<?= $theme ?>';
-    document.body.classList.add(theme); // adiciona "light" ou "dark"
+    document.body.classList.add(theme); // adiciona 'light' ou 'dark'
 
-    // Ajustes de cores específicos do header
+    // Ajustes do header (cores de links e pesquisa)
+    const header = document.querySelector('#mainHeader');
+    const searchBox = document.getElementById('searchBox');
     if(theme==='dark'){
-        document.querySelector('#mainHeader').style.background = '#1b5e20';
-        document.querySelectorAll('.menu a, .user-menu a').forEach(el=>{
-            el.style.color = '#fff';
-        });
-        const searchBox = document.getElementById('searchBox');
+        header.style.background = '#1b5e20';
+        document.querySelectorAll('.menu a, .user-menu a').forEach(el=>{ el.style.color = '#fff'; });
         searchBox.style.background = 'rgba(50,50,50,0.7)';
         searchBox.style.color = '#fff';
         searchBox.style.boxShadow = '0 3px 10px rgba(0,0,0,0.5)';
     } else {
-        document.querySelector('#mainHeader').style.background = '#2e7d32';
-        document.querySelectorAll('.menu a, .user-menu a').forEach(el=>{
-            el.style.color = '#fff';
-        });
-        const searchBox = document.getElementById('searchBox');
+        header.style.background = '#2e7d32';
+        document.querySelectorAll('.menu a, .user-menu a').forEach(el=>{ el.style.color = '#fff'; });
         searchBox.style.background = '#fff';
         searchBox.style.color = '#000';
         searchBox.style.boxShadow = '0 3px 10px rgba(0,0,0,0.2)';
