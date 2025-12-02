@@ -11,14 +11,12 @@
 <link rel="icon" href="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg?w=360" type="image/png">
 
 <style>
-/* ============================ */
 /* IMAGEM DE FUNDO DO SITE */
-/* Substitua pelo caminho da sua imagem */
 body {
     background: url('https://wallpapers.com/images/hd/cool-green-background-yldkpcmn6kp9767o.jpg') no-repeat center center/cover;
 }
 
-/* --- SLIDER --- */
+/* SLIDER COM MOLDURA DE LUZ */
 .slider-container {
     position: relative;
     width: 100%;
@@ -27,7 +25,13 @@ body {
     margin: 20px auto;
     overflow: hidden;
     border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+
+    /* moldura de luz */
+    box-shadow: 0 0 20px 5px rgba(102, 215, 139, 0.6), 0 4px 15px rgba(0,0,0,0.2);
+    transition: box-shadow 0.5s ease-in-out;
+}
+.slider-container:hover {
+    box-shadow: 0 0 30px 10px rgba(102, 215, 139, 0.8), 0 6px 20px rgba(0,0,0,0.25);
 }
 
 .slides-wrapper {
@@ -73,7 +77,7 @@ body {
     margin: 15px;
     display: inline-block;
     vertical-align: top;
-    background: rgba(249, 255, 249, 0.8); /* fundo transparente */
+    background: rgba(249, 255, 249, 0.8);
     border-radius: 15px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.1);
     text-align: center;
@@ -87,7 +91,6 @@ body {
 }
 
 .card h3 { font-size: 18px; margin: 10px 0; }
-
 .card .btn {
     margin-top: 10px;
     padding: 10px 15px;
@@ -149,7 +152,7 @@ body {
 <div class="cards-container">
 <?php
 $categories = [
-  ["img" => "https://netun.com/cdn/shop/articles/01-Airbag_civicsi.jpg?v=1716802572", "name" => "Airbags", "link" => "categorias/airbags.php"],
+  ["img" => "https://netun.com/cdn/shop/articles/01-Airbag_civicsi.jpg?v=1716802572", "name" => "Airbags"],
   ["img" => "https://blog.mixauto.com.br/wp-content/uploads/2018/05/caixa-de-cambio.jpg", "name" => "Motor e Transmição"],
   ["img" => "https://s7d9.scene7.com/is/image/dow/AdobeStock_385390317?qlt=82&ts=1692809401103&dpr=off", "name" => "Iluminação"],
   ["img" => "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ5NwDgRfalMhSg_JrDaskCoPjKOi3HHhxMA&s", "name" => "Suspensão"],
@@ -158,20 +161,10 @@ $categories = [
 ];
 
 foreach($categories as $c){
-
-    // SE TIVER LINK → ENVOLVE O CARD NUM <a>
-    if(isset($c['link'])) {
-        echo "<a href='{$c['link']}' style='text-decoration:none; color:inherit;'>";
-    }
-
     echo "<div class='card'>";
     echo "<img src='{$c['img']}' alt='{$c['name']}'>";
     echo "<h3>{$c['name']}</h3>";
     echo "</div>";
-
-    if(isset($c['link'])) {
-        echo "</a>";
-    }
 }
 ?>
 </div>
@@ -186,10 +179,10 @@ const totalSlides = document.querySelectorAll('.slider-slide').length;
 
 function slide() {
     currentIndex = (currentIndex + 1) % totalSlides;
-    slidesWrapper.style.transform = `translateX(-${currentIndex * 20}%)`; // 5 slides → 20% cada
+    slidesWrapper.style.transform = `translateX(-${currentIndex * 20}%)`;
 }
 
-setInterval(slide, 5000); // muda a cada 5 segundos
+setInterval(slide, 5000);
 </script>
 
 </body>
