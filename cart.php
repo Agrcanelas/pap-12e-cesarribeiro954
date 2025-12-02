@@ -23,7 +23,7 @@
     }
 
     .cart-container {
-        background: rgba(255,255,255,0.4); /* container mais transparente */
+        background: rgba(255,255,255,0.4);
         width: 100%;
         max-width: 700px;
         border-radius: 25px;
@@ -37,7 +37,6 @@
         box-shadow: 0 20px 50px rgba(0,0,0,0.3);
     }
 
-    /* Título central com logo */
     .cart-title {
         display: flex;
         justify-content: center;
@@ -64,7 +63,7 @@
         padding:20px 20px;
         border-radius:15px;
         margin-bottom:20px;
-        background: rgba(255,255,255,0.5); /* itens mais transparentes */
+        background: rgba(255,255,255,0.5);
         box-shadow:0 6px 20px rgba(0,0,0,0.08);
         transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
     }
@@ -139,18 +138,17 @@
         box-shadow:0 10px 30px rgba(76,175,112,0.4);
     }
 
-    /* Formulário Finalizar Compra */
     .finalizar-container {
-        background: rgba(255,255,255,0.4); /* transparente */
+        background: rgba(255,255,255,0.4);
         border-radius: 20px;
         padding: 30px;
         margin-top: 30px;
         box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        display: none; /* oculto por padrão */
+        display: none;
         opacity: 0;
         transition: all 0.5s ease;
         position: relative;
-        z-index: 10; /* garante que fique acima do container */
+        z-index: 10;
     }
 
     .finalizar-container.active {
@@ -223,7 +221,6 @@
         box-shadow:0 10px 30px rgba(76,175,112,0.4);
     }
 
-    /* Responsivo */
     @media (max-width:600px){
         .cart-item{ flex-direction: column; align-items:flex-start; gap:15px; }
         .item-quantity{ justify-content:flex-start; }
@@ -238,7 +235,6 @@
 
 <div class="cart-container">
 
-    <!-- TÍTULO CENTRAL COM LOGO -->
     <div class="cart-title">
         <img src="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg" alt="Logo Ecopeças">
         <span>Ecopeças</span>
@@ -270,7 +266,6 @@
 
     <button class="checkout-btn" id="toggleCheckout">Finalizar Compra</button>
 
-    <!-- Formulário Finalizar Compra -->
     <div class="finalizar-container" id="finalizarForm">
         <h2>Finalizar Compra</h2>
         <form>
@@ -321,12 +316,12 @@
         let total = 0;
         document.querySelectorAll('.cart-item').forEach(item => {
             const priceText = item.querySelector('.item-info p').innerText;
-            const price = parseFloat(priceText.replace('€', '').replace(',', '.'));
-            const quantity = item.querySelector('.item-quantity input').value;
+            const price = parseFloat(priceText.replace('Preço: €','').replace(',', '.'));
+            const quantity = parseInt(item.querySelector('.item-quantity input').value);
             total += price * quantity;
         });
         totalEl.style.transform = 'scale(1.2)';
-        totalEl.innerText = 'Total: €' + total.toFixed(2).replace('.', ',');
+        totalEl.innerText = 'Total: €' + total.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         setTimeout(()=>{ totalEl.style.transform='scale(1)'; },200);
     }
 
