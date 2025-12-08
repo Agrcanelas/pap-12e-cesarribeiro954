@@ -10,225 +10,234 @@
 <link rel="icon" href="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg?w=360" type="image/png">
 
 <style>
-    * { box-sizing: border-box; margin:0; padding:0; font-family:'Roboto', sans-serif; }
+* { box-sizing: border-box; margin:0; padding:0; font-family:'Roboto', sans-serif; }
 
-    body {
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        padding: 50px 20px;
-        background: url('https://st2.depositphotos.com/1001335/10397/i/950/depositphotos_103971628-stock-photo-concept-of-auto-parts-shopping.jpg') no-repeat center center/cover;
-        background-size: cover;
-        backdrop-filter: blur(2px);
-    }
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 50px 20px;
+    background: url('https://st2.depositphotos.com/1001335/10397/i/950/depositphotos_103971628-stock-photo-concept-of-auto-parts-shopping.jpg') no-repeat center center/cover;
+    background-size: cover;
+    backdrop-filter: blur(2px);
+}
 
-    .cart-container {
-        background: rgba(255,255,255,0.4);
-        width: 100%;
-        max-width: 700px;
-        border-radius: 25px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-        padding: 40px;
-        transition: transform 0.3s, box-shadow 0.3s;
-    }
+.cart-container {
+    background: rgba(255,255,255,0.4);
+    width: 100%;
+    max-width: 700px;
+    border-radius: 25px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    padding: 40px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
 
-    .cart-container:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-    }
+.cart-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
 
-    .cart-title {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 15px;
-        margin-bottom: 40px;
-    }
-    .cart-title img {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-    .cart-title span {
-        font-size: 34px;
-        font-weight: bold;
-        color: #2e7d32;
-    }
+.cart-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+.cart-title img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.cart-title span {
+    font-size: 34px;
+    font-weight: bold;
+    color: #2e7d32;
+}
 
-    .cart-item {
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        padding:20px 20px;
-        border-radius:15px;
-        margin-bottom:20px;
-        background: rgba(255,255,255,0.5);
-        box-shadow:0 6px 20px rgba(0,0,0,0.08);
-        transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
-    }
+.cart-item {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 20px;
+    border-radius:15px;
+    margin-bottom:20px;
+    background: rgba(255,255,255,0.5);
+    box-shadow:0 6px 20px rgba(0,0,0,0.08);
+    transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+}
 
-    .cart-item:hover {
-        transform: translateY(-5px);
-        box-shadow:0 12px 30px rgba(0,0,0,0.15);
-        background: rgba(224,255,229,0.6);
-    }
+.cart-item:hover {
+    transform: translateY(-5px);
+    box-shadow:0 12px 30px rgba(0,0,0,0.15);
+    background: rgba(224,255,229,0.6);
+}
 
-    .item-info h3 { margin-bottom:8px; color:#333; font-size:18px; }
-    .item-info p { color:#555; font-size:14px; }
+.item-info h3 { margin-bottom:8px; color:#333; font-size:18px; }
+.item-info p { color:#555; font-size:14px; }
 
-    .item-quantity { display:flex; align-items:center; gap:10px; }
+.item-quantity { display:flex; align-items:center; gap:10px; }
 
-    .item-quantity input {
-        width:60px;
-        padding:8px;
-        text-align:center;
-        border-radius:10px;
-        border:1px solid #ccc;
-        transition:border 0.3s, box-shadow 0.3s;
-    }
+.item-quantity input {
+    width:60px;
+    padding:8px;
+    text-align:center;
+    border-radius:10px;
+    border:1px solid #ccc;
+    transition:border 0.3s, box-shadow 0.3s;
+}
 
-    .item-quantity input:focus {
-        border-color:#66d78b;
-        box-shadow:0 0 10px rgba(102,215,139,0.5);
-    }
+.item-quantity input:focus {
+    border-color:#66d78b;
+    box-shadow:0 0 10px rgba(102,215,139,0.5);
+}
 
-    .remove-btn {
-        background: linear-gradient(135deg, #ff6b6b, #ff3d3d);
-        border:none;
-        color:#fff;
-        padding:10px 18px;
-        border-radius:50px;
-        cursor:pointer;
-        font-weight:bold;
-        transition: all 0.3s;
-    }
+.remove-btn {
+    background: linear-gradient(135deg, #ff6b6b, #ff3d3d);
+    border:none;
+    color:#fff;
+    padding:10px 18px;
+    border-radius:50px;
+    cursor:pointer;
+    font-weight:bold;
+    transition: all 0.3s;
+}
 
-    .remove-btn:hover {
-        transform: scale(1.1);
-        box-shadow:0 6px 20px rgba(255,61,61,0.4);
-    }
+.remove-btn:hover {
+    transform: scale(1.1);
+    box-shadow:0 6px 20px rgba(255,61,61,0.4);
+}
 
-    .cart-total {
-        text-align:right;
-        margin-top:25px;
-        font-size:24px;
-        font-weight:bold;
-        color:#2e7d32;
-        transition: transform 0.3s ease;
-    }
+.cart-total {
+    text-align:right;
+    margin-top:25px;
+    font-size:24px;
+    font-weight:bold;
+    color:#2e7d32;
+    transition: transform 0.3s ease;
+}
 
-    .checkout-btn {
-        margin-top:20px;
-        width:100%;
-        padding:16px;
-        background: linear-gradient(135deg, #66d78b, #4caf70);
-        color:#fff;
-        border:none;
-        border-radius:50px;
-        font-size:18px;
-        font-weight:bold;
-        cursor:pointer;
-        transition: all 0.3s ease;
-        box-shadow:0 6px 20px rgba(76,175,112,0.3);
-    }
+/* Mensagem de envio grátis */
+.shipping-msg {
+    text-align:right;
+    font-size:16px;
+    margin-top:5px;
+    color:#4caf70;
+    font-weight:bold;
+}
 
-    .checkout-btn:hover {
-        transform: scale(1.03);
-        box-shadow:0 10px 30px rgba(76,175,112,0.4);
-    }
+.checkout-btn {
+    margin-top:20px;
+    width:100%;
+    padding:16px;
+    background: linear-gradient(135deg, #66d78b, #4caf70);
+    color:#fff;
+    border:none;
+    border-radius:50px;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+    transition: all 0.3s ease;
+    box-shadow:0 6px 20px rgba(76,175,112,0.3);
+}
 
-    .finalizar-container {
-        background: rgba(255,255,255,0.4);
-        border-radius: 20px;
-        padding: 30px;
-        margin-top: 30px;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        display: none;
-        opacity: 0;
-        transition: all 0.5s ease;
-        position: relative;
-        z-index: 10;
-    }
+.checkout-btn:hover {
+    transform: scale(1.03);
+    box-shadow:0 10px 30px rgba(76,175,112,0.4);
+}
 
-    .finalizar-container.active {
-        display: block;
-        opacity: 1;
-    }
+.finalizar-container {
+    background: rgba(255,255,255,0.4);
+    border-radius: 20px;
+    padding: 30px;
+    margin-top: 30px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    display: none;
+    opacity: 0;
+    transition: all 0.5s ease;
+    position: relative;
+    z-index: 10;
+}
 
-    .finalizar-container h2 {
-        text-align: center;
-        color: #2e7d32;
-        margin-bottom: 25px;
-        font-size:28px;
-    }
+.finalizar-container.active {
+    display: block;
+    opacity: 1;
+}
 
-    .finalizar-container form {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
+.finalizar-container h2 {
+    text-align: center;
+    color: #2e7d32;
+    margin-bottom: 25px;
+    font-size:28px;
+}
 
-    .finalizar-container label {
-        font-weight: bold;
-        color: #2e7d32;
-    }
+.finalizar-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
 
-    .finalizar-container input, .finalizar-container select {
-        padding: 12px;
-        border-radius: 10px;
-        border: 1px solid #ccc;
-        font-size: 16px;
-        transition: border 0.3s, box-shadow 0.3s;
-    }
+.finalizar-container label {
+    font-weight: bold;
+    color: #2e7d32;
+}
 
-    .finalizar-container input:focus, .finalizar-container select:focus {
-        border-color:#66d78b;
-        box-shadow:0 0 8px rgba(102,215,139,0.5);
-        outline:none;
-    }
+.finalizar-container input, .finalizar-container select {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    transition: border 0.3s, box-shadow 0.3s;
+}
 
-    .payment-methods {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
+.finalizar-container input:focus, .finalizar-container select:focus {
+    border-color:#66d78b;
+    box-shadow:0 0 8px rgba(102,215,139,0.5);
+    outline:none;
+}
 
-    .payment-methods label {
-        font-weight: normal;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        cursor: pointer;
-    }
+.payment-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
-    .confirm-btn {
-        margin-top: 20px;
-        padding: 16px;
-        background: linear-gradient(135deg, #66d78b, #4caf70);
-        color:#fff;
-        font-size: 18px;
-        font-weight: bold;
-        border:none;
-        border-radius: 50px;
-        cursor:pointer;
-        transition: all 0.3s ease;
-        box-shadow:0 6px 20px rgba(76,175,112,0.3);
-    }
+.payment-methods label {
+    font-weight: normal;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
 
-    .confirm-btn:hover {
-        transform: scale(1.03);
-        box-shadow:0 10px 30px rgba(76,175,112,0.4);
-    }
+.confirm-btn {
+    margin-top: 20px;
+    padding: 16px;
+    background: linear-gradient(135deg, #66d78b, #4caf70);
+    color:#fff;
+    font-size: 18px;
+    font-weight: bold;
+    border:none;
+    border-radius: 50px;
+    cursor:pointer;
+    transition: all 0.3s ease;
+    box-shadow:0 6px 20px rgba(76,175,112,0.3);
+}
 
-    @media (max-width:600px){
-        .cart-item{ flex-direction: column; align-items:flex-start; gap:15px; }
-        .item-quantity{ justify-content:flex-start; }
-        .cart-total{ text-align:left; }
-        .finalizar-container form { gap: 12px; }
-        .payment-methods { gap: 8px; }
-        .cart-title { flex-direction: column; gap: 10px; }
-    }
+.confirm-btn:hover {
+    transform: scale(1.03);
+    box-shadow:0 10px 30px rgba(76,175,112,0.4);
+}
+
+@media (max-width:600px){
+    .cart-item{ flex-direction: column; align-items:flex-start; gap:15px; }
+    .item-quantity{ justify-content:flex-start; }
+    .cart-total{ text-align:left; }
+    .finalizar-container form { gap: 12px; }
+    .payment-methods { gap: 8px; }
+    .cart-title { flex-direction: column; gap: 10px; }
+}
 </style>
 </head>
 <body>
@@ -263,6 +272,7 @@
     </div>
 
     <div class="cart-total">Total: €290,00</div>
+    <div class="shipping-msg" id="shippingMsg"></div>
 
     <button class="checkout-btn" id="toggleCheckout">Finalizar Compra</button>
 
@@ -307,41 +317,52 @@
 </div>
 
 <script>
-    const cartItems = document.querySelectorAll('.cart-item');
-    const totalEl = document.querySelector('.cart-total');
-    const toggleBtn = document.getElementById('toggleCheckout');
-    const finalizarForm = document.getElementById('finalizarForm');
+const cartItems = document.querySelectorAll('.cart-item');
+const totalEl = document.querySelector('.cart-total');
+const shippingMsg = document.getElementById('shippingMsg');
+const toggleBtn = document.getElementById('toggleCheckout');
+const finalizarForm = document.getElementById('finalizarForm');
 
-    function updateTotal() {
-        let total = 0;
-        document.querySelectorAll('.cart-item').forEach(item => {
-            const priceText = item.querySelector('.item-info p').innerText;
-            const price = parseFloat(priceText.replace('Preço: €','').replace(',', '.'));
-            const quantity = parseInt(item.querySelector('.item-quantity input').value);
-            total += price * quantity;
-        });
-        totalEl.style.transform = 'scale(1.2)';
-        totalEl.innerText = 'Total: €' + total.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        setTimeout(()=>{ totalEl.style.transform='scale(1)'; },200);
+function updateTotal() {
+    let total = 0;
+    document.querySelectorAll('.cart-item').forEach(item => {
+        const priceText = item.querySelector('.item-info p').innerText;
+        const price = parseFloat(priceText.replace('Preço: €','').replace(',', '.'));
+        const quantity = parseInt(item.querySelector('.item-quantity input').value);
+        total += price * quantity;
+    });
+    totalEl.style.transform = 'scale(1.2)';
+    totalEl.innerText = 'Total: €' + total.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    
+    // Atualiza mensagem de envio
+    if(total <= 120) {
+        shippingMsg.innerText = 'Envio grátis para compras acima de €120!';
+        shippingMsg.style.color = '#000000ff';
+    } else {
+        shippingMsg.innerText = 'Envio normal';
+        shippingMsg.style.color = '#ff6b6b';
     }
 
-    cartItems.forEach(item => {
-        const qtyInput = item.querySelector('.item-quantity input');
-        const removeBtn = item.querySelector('.remove-btn');
+    setTimeout(()=>{ totalEl.style.transform='scale(1)'; },200);
+}
 
-        qtyInput.addEventListener('input', updateTotal);
-        removeBtn.addEventListener('click', () => {
-            item.remove();
-            updateTotal();
-        });
+cartItems.forEach(item => {
+    const qtyInput = item.querySelector('.item-quantity input');
+    const removeBtn = item.querySelector('.remove-btn');
+
+    qtyInput.addEventListener('input', updateTotal);
+    removeBtn.addEventListener('click', () => {
+        item.remove();
+        updateTotal();
     });
+});
 
-    updateTotal();
+updateTotal();
 
-    toggleBtn.addEventListener('click', () => {
-        finalizarForm.classList.toggle('active');
-        finalizarForm.scrollIntoView({ behavior: 'smooth' });
-    });
+toggleBtn.addEventListener('click', () => {
+    finalizarForm.classList.toggle('active');
+    finalizarForm.scrollIntoView({ behavior: 'smooth' });
+});
 </script>
 
 </body>
