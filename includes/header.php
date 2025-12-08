@@ -19,15 +19,15 @@ $translations = [
         'home' => 'Inicio',
         'cart' => 'Carrinho',
         'login' => 'Login',
-        'offers' => 'Ofertas',
-        'theme' => 'Modo'
+        'theme' => 'Modo',
+        'offers' => 'Ofertas'
     ],
     'en' => [
         'home' => 'Home',
         'cart' => 'Cart',
         'login' => 'Login',
-        'offers' => 'Offers',
-        'theme' => 'Mode'
+        'theme' => 'Mode',
+        'offers' => 'Offers'
     ]
 ];
 
@@ -49,15 +49,17 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <!-- MENU + PESQUISA + MODO + BANDEIRAS -->
     <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
 
-        <nav class="menu" style="display:flex; gap:25px; font-weight:bold; align-items:center;">
-            <a href="./index.php" class="nav-link <?= ($current_page=='index.php'?'active':'') ?>">
+        <nav class="menu" style="display:flex; gap:25px; font-weight:bold; align-items:center; position:relative;">
+            <a href="./index.php" style="color:#fff; text-decoration:none; <?= ($current_page=='index.php'?'text-decoration:underline;':'') ?>">
                 <i class="fa fa-home"></i> <?= $translations[$lang]['home'] ?>
             </a>
-            <a href="./cart.php" class="nav-link <?= ($current_page=='cart.php'?'active':'') ?>">
+
+            <a href="./cart.php" style="color:#fff; text-decoration:none; <?= ($current_page=='cart.php'?'text-decoration:underline;':'') ?>">
                 <i class="fa fa-shopping-cart"></i> <?= $translations[$lang]['cart'] ?>
             </a>
-            <a href="./offers.php" class="nav-link <?= ($current_page=='offers.php'?'active':'') ?>">
-                <i class="fa fa-tag"></i> <?= $translations[$lang]['offers'] ?>
+
+            <a href="./ofertas.php" style="color:#fff; text-decoration:none; <?= ($current_page=='ofertas.php'?'text-decoration:underline;':'') ?>">
+                <i class="fa fa-tags"></i> <?= $translations[$lang]['offers'] ?>
             </a>
         </nav>
 
@@ -91,7 +93,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
         <!-- LOGIN -->
         <div class="user-menu">
-            <a href="auth/login.php" class="nav-link <?= ($current_page=='login.php'?'active':'') ?>">
+            <a href="auth/login.php" style="color:#fff; font-weight:bold; text-decoration:none; <?= ($current_page=='login.php'?'text-decoration:underline;':'') ?>">
                 <i class="fa fa-user"></i> <?= $translations[$lang]['login'] ?>
             </a>
         </div>
@@ -101,37 +103,34 @@ $current_page = basename($_SERVER['PHP_SELF']);
 </header>
 
 <style>
-    /* REMOVE QUALQUER SUBLINHADO ESTÁTICO E SÓ USA ANIMAÇÃO */
-    .nav-link {
-        color:#fff;
-        text-decoration:none !important; /* força remover underline */
-        position:relative;
-        transition: color 0.3s;
-    }
+    /* BORDAS DAS BANDEIRAS */
+    form button img { border-radius:2px; }
+    form button img:hover { box-shadow: 0 0 12px 4px rgba(255,255,255,0.6); transition:0.3s; }
 
-    .nav-link::after {
+    /* INPUT PESQUISA */
+    #searchBox:focus { width: 300px; box-shadow: 0 6px 18px rgba(0,0,0,0.25); }
+    #searchBox + button:hover { background:#4caf70; }
+    #searchBox + button i { font-size:16px; }
+
+    /* MODO CLARO/ESCURO */
+    form button[name="theme"]:hover { box-shadow:0 0 12px 3px rgba(255,255,255,0.6); transform: scale(1.1); transition: all 0.3s ease; }
+
+    /* MENU - animação hover só */
+    .menu a {
+        position: relative;
+        display: inline-block;
+    }
+    .menu a::after {
         content:'';
         position:absolute;
-        width:0%;
-        height:2px;
-        bottom:-4px;
         left:0;
-        background-color:#fff;
-        transition: width 0.3s;
+        bottom:-3px;
+        width:0%;
+        height:3px;
+        background:#fff;
+        transition:0.3s;
     }
-
-    .nav-link:hover::after,
-    .nav-link.active::after {
-        width:100%;
-    }
-
-    .nav-link:hover { color:#a5d6a7; }
-
-    form button img { border-radius:2px; }
-    form button img:hover { box-shadow:0 0 12px 4px rgba(255,255,255,0.6); transition:0.3s; }
-    #searchBox:focus { width: 300px; box-shadow:0 6px 18px rgba(0,0,0,0.25); }
-    #searchBox + button:hover { background:#4caf70; }
-    form button[name="theme"]:hover { box-shadow:0 0 12px 3px rgba(255,255,255,0.6); transform: scale(1.1); transition:0.3s; }
+    .menu a:hover::after { width:100%; }
 </style>
 
 <script>
@@ -142,18 +141,33 @@ document.addEventListener('DOMContentLoaded', ()=>{
         document.body.style.backgroundColor = '#121212';
         document.body.style.color = '#f0f0f0';
         document.querySelector('#mainHeader').style.background = '#1b5e20';
-        document.querySelectorAll('.menu a, .user-menu a').forEach(el=> el.style.color = '#fff');
-        document.getElementById('searchBox').style.background = 'rgba(50,50,50,0.7)';
-        document.getElementById('searchBox').style.color = '#fff';
-        document.getElementById('searchBox').style.boxShadow = '0 3px 10px rgba(0,0,0,0.5)';
+        document.querySelectorAll('.menu a, .user-menu a').forEach(el=>{ el.style.color = '#fff'; });
+
+        const searchBox = document.getElementById('searchBox');
+        searchBox.style.background = 'rgba(50,50,50,0.7)';
+        searchBox.style.color = '#fff';
+        searchBox.style.boxShadow = '0 3px 10px rgba(0,0,0,0.5)';
+
+        document.querySelectorAll('.cart-container, .finalizar-container').forEach(el=>{
+            el.style.background = 'rgba(50,50,50,0.6)';
+            el.style.color = '#fff';
+        });
+
     } else {
         document.body.style.backgroundColor = '';
         document.body.style.color = '';
         document.querySelector('#mainHeader').style.background = '#2e7d32';
-        document.querySelectorAll('.menu a, .user-menu a').forEach(el=> el.style.color = '#fff');
-        document.getElementById('searchBox').style.background = '#fff';
-        document.getElementById('searchBox').style.color = '#000';
-        document.getElementById('searchBox').style.boxShadow = '0 3px 10px rgba(0,0,0,0.2)';
+        document.querySelectorAll('.menu a, .user-menu a').forEach(el=>{ el.style.color = '#fff'; });
+
+        const searchBox = document.getElementById('searchBox');
+        searchBox.style.background = '#fff';
+        searchBox.style.color = '#000';
+        searchBox.style.boxShadow = '0 3px 10px rgba(0,0,0,0.2)';
+
+        document.querySelectorAll('.cart-container, .finalizar-container').forEach(el=>{
+            el.style.background = 'rgba(255,255,255,0.4)';
+            el.style.color = '#000';
+        });
     }
 });
 </script>
