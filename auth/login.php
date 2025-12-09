@@ -16,7 +16,8 @@ body {
     justify-content: center;
     align-items: center;
     background: linear-gradient(rgba(0,128,0,0.3), rgba(0,128,0,0.3)),
-                url("https://img.freepik.com/fotos-premium/simbolo-de-carro-de-brilho-ecologico-feito-de-folhas-conceito-ecologico-isolado-em-fundo-preto_955712-32071.jpg?semt=ais_hybrid&w=740&q=80") no-repeat center center/cover;
+                url("https://img.freepik.com/fotos-premium/simbolo-de-carro-de-brilho-ecologico-feito-de-folhas-conceito-ecologico-isolado-em-fundo-preto_955712-32071.jpg?semt=ais_hybrid&w=740&q=80")
+                no-repeat center center/cover;
 }
 
 .login-container {
@@ -60,6 +61,7 @@ body {
 
 h2 { margin-bottom: 25px; font-size: 22px; color: #2e7d32; }
 
+/* Inputs */
 .input-container {
     text-align:left;
     margin-bottom: 20px;
@@ -74,7 +76,7 @@ h2 { margin-bottom: 25px; font-size: 22px; color: #2e7d32; }
 
 .input-container input {
     width: 100%;
-    padding: 12px 40px 12px 12px; /* espaço para o ícone */
+    padding: 12px 40px 12px 12px;
     margin-top: 6px;
     border-radius: 12px;
     border: 1px solid #cccccc;
@@ -102,6 +104,7 @@ h2 { margin-bottom: 25px; font-size: 22px; color: #2e7d32; }
     color: #2e7d32;
 }
 
+/* Botão */
 .login-btn {
     width: 100%;
     padding: 14px;
@@ -120,6 +123,21 @@ h2 { margin-bottom: 25px; font-size: 22px; color: #2e7d32; }
 .login-btn:hover {
     transform: scale(1.03);
     box-shadow: 0 12px 26px rgba(76,175,112,0.45);
+}
+
+/* Mensagem de erro */
+.error-message {
+    background: #ffdddd;
+    color: #b30000;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border-left: 5px solid red;
+    animation: fadeIn 0.4s ease;
+    text-align:center;
+    font-size: 14px;
+    font-weight: bold;
+    display:none;
 }
 
 .register-link {
@@ -150,6 +168,8 @@ h2 { margin-bottom: 25px; font-size: 22px; color: #2e7d32; }
 
     <h2>Login</h2>
 
+    <div id="errorBox" class="error-message"></div>
+
     <div class="input-container">
         <label for="email">Email</label>
         <input type="email" id="email" placeholder="Digite o seu email">
@@ -161,7 +181,7 @@ h2 { margin-bottom: 25px; font-size: 22px; color: #2e7d32; }
         <i class="fa fa-eye toggle-password" id="togglePassword"></i>
     </div>
 
-    <button class="login-btn">Entrar</button>
+    <button class="login-btn" onclick="validarLogin()">Entrar</button>
 
     <p class="register-link">Ainda não tem conta? <a href="#">Criar conta</a></p>
 
@@ -170,12 +190,29 @@ h2 { margin-bottom: 25px; font-size: 22px; color: #2e7d32; }
 <script>
 const togglePassword = document.getElementById('togglePassword');
 const passwordInput = document.getElementById('password');
+const errorBox = document.getElementById('errorBox');
 
 togglePassword.addEventListener('click', () => {
     const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
     passwordInput.setAttribute('type', type);
     togglePassword.classList.toggle('fa-eye-slash');
 });
+
+function validarLogin() {
+    let email = document.getElementById("email").value.trim();
+    let pass = document.getElementById("password").value.trim();
+
+    if (email === "" || pass === "") {
+        errorBox.innerHTML = "⚠️ Preencha todos os campos antes de continuar.";
+        errorBox.style.display = "block";
+        return;
+    }
+
+    // Aqui podes adicionar o PHP para verificar login
+    errorBox.style.display = "none";
+
+    alert("Login enviado! (Aqui depois colocas o PHP)");
+}
 </script>
 
 </body>
