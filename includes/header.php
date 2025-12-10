@@ -37,7 +37,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
 ?>
 
 <header id="mainHeader" style="background:#2e7d32; padding:15px 30px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 4px 10px rgba(0,0,0,0.1); border-radius:10px; flex-wrap:wrap; gap:10px;">
-
     <!-- LOGO + NOME -->
     <div class="logo-container" style="display:flex; align-items:center; gap:10px;">
         <img src="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg"
@@ -95,15 +94,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
         <!-- LOGIN / USUÁRIO LOGADO -->
         <div class="user-menu">
-            <?php if(isset($_SESSION['user'])): ?>
-                <span style="color:#fff; font-weight:bold;">
-                    Olá, <?= htmlspecialchars($_SESSION['user']['name']) ?>!
-                </span>
-                <a href="auth/logout.php" style="color:#fff; margin-left:10px; font-weight:bold;">
-                    <?= $translations[$lang]['logout'] ?>
+            <?php if(isset($_SESSION['user_id'])): ?>
+                <span style="color:#fff; font-weight:bold;">Olá, <?= htmlspecialchars($_SESSION['user_name']) ?>!</span>
+                <a href="auth/logout.php" style="color:#fff; font-weight:bold; margin-left:10px; text-decoration:none;">
+                    (<?= $translations[$lang]['logout'] ?>)
                 </a>
             <?php else: ?>
-                <a href="auth/login.php" style="color:#fff; font-weight:bold; <?= ($current_page=='login.php'?'text-decoration:underline;':'') ?>">
+                <a href="auth/login.php" style="color:#fff; font-weight:bold; text-decoration:none; <?= ($current_page=='login.php'?'text-decoration:underline;':'') ?>">
                     <i class="fa fa-user"></i> <?= $translations[$lang]['login'] ?>
                 </a>
             <?php endif; ?>
@@ -112,66 +109,3 @@ $current_page = basename($_SERVER['PHP_SELF']);
     </div>
 
 </header>
-
-<style>
-    /* BORDAS DAS BANDEIRAS */
-    form button img { border-radius:2px; }
-    form button img:hover { box-shadow: 0 0 12px 4px rgba(255,255,255,0.6); transition:0.3s; }
-
-    /* INPUT PESQUISA */
-    #searchBox:focus { width: 300px; box-shadow: 0 6px 18px rgba(0,0,0,0.25); }
-    #searchBox + button:hover { background:#4caf70; }
-    #searchBox + button i { font-size:16px; }
-
-    /* MODO CLARO/ESCURO */
-    form button[name="theme"]:hover { box-shadow:0 0 12px 3px rgba(255,255,255,0.6); transform: scale(1.1); transition: all 0.3s ease; }
-
-    /* MENU - animação hover só */
-    .menu a {
-        position: relative;
-        display: inline-block;
-    }
-    .menu a::after {
-        content:''; position:absolute; left:0; bottom:-3px; width:0%; height:3px; background:#fff; transition:0.3s;
-    }
-    .menu a:hover::after { width:100%; }
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', ()=>{
-    const theme = '<?= $theme ?>';
-
-    if(theme==='dark'){
-        document.body.style.backgroundColor = '#121212';
-        document.body.style.color = '#f0f0f0';
-        document.querySelector('#mainHeader').style.background = '#1b5e20';
-        document.querySelectorAll('.menu a, .user-menu a').forEach(el=>{ el.style.color = '#fff'; });
-
-        const searchBox = document.getElementById('searchBox');
-        searchBox.style.background = 'rgba(50,50,50,0.7)';
-        searchBox.style.color = '#fff';
-        searchBox.style.boxShadow = '0 3px 10px rgba(0,0,0,0.5)';
-
-        document.querySelectorAll('.cart-container, .finalizar-container').forEach(el=>{
-            el.style.background = 'rgba(50,50,50,0.6)';
-            el.style.color = '#fff';
-        });
-
-    } else {
-        document.body.style.backgroundColor = '';
-        document.body.style.color = '';
-        document.querySelector('#mainHeader').style.background = '#2e7d32';
-        document.querySelectorAll('.menu a, .user-menu a').forEach(el=>{ el.style.color = '#fff'; });
-
-        const searchBox = document.getElementById('searchBox');
-        searchBox.style.background = '#fff';
-        searchBox.style.color = '#000';
-        searchBox.style.boxShadow = '0 3px 10px rgba(0,0,0,0.2)';
-
-        document.querySelectorAll('.cart-container, .finalizar-container').forEach(el=>{
-            el.style.background = 'rgba(255,255,255,0.4)';
-            el.style.color = '#000';
-        });
-    }
-});
-</script>
