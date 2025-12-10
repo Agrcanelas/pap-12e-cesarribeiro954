@@ -8,10 +8,11 @@ $messageColor = '';
 
 // Processar login
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name = trim($_POST['name']);
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
 
-    if (!$email || !$password) {
+    if (!$name || !$email || !$password) {
         $message = "Preencha todos os campos!";
         $messageColor = "red";
     } else {
@@ -22,13 +23,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->store_result();
 
         if($stmt->num_rows === 1){
-            $stmt->bind_result($id, $nome, $hashedPassword);
+            $stmt->bind_result($id, $nomeRegistrado, $hashedPassword);
             $stmt->fetch();
 
-            if(password_verify($password, $hashedPassword)){
+            // Verifica se o nome bate com o registrado
+            if($name !== $nomeRegistrado){
+                $message = "Nome não confere com o registrado!";
+                $messageColor = "red";
+            }
+            elseif(password_verify($password, $hashedPassword)){
                 // Login bem-sucedido
                 $_SESSION['user_id'] = $id;
-                $_SESSION['user_name'] = $nome;
+                $_SESSION['user_name'] = $nomeRegistrado;
                 header("Location: ../index.php");
                 exit();
             } else {
@@ -109,6 +115,11 @@ h2 { margin-bottom: 25px; font-size: 22px; color: #2e7d32; }
     <?php endif; ?>
 
     <form method="POST">
+        <div class="input-container">
+            <label for="name">Nome</label>
+            <input type="text" id="name" name="name" placeholder="Digite seu nome" required>
+        </div>
+
         <div class="input-container">
             <label for="email">Email</label>
             <input type="email" id="email" name="email" placeholder="Digite seu email" required>

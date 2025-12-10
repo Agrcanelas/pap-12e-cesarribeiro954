@@ -20,18 +20,22 @@ $translations = [
         'cart' => 'Carrinho',
         'login' => 'Login',
         'theme' => 'Modo',
-        'offers' => 'Ofertas'
+        'offers' => 'Ofertas',
+        'logout' => 'Sair'
     ],
     'en' => [
         'home' => 'Home',
         'cart' => 'Cart',
         'login' => 'Login',
         'theme' => 'Mode',
-        'offers' => 'Offers'
+        'offers' => 'Offers',
+        'logout' => 'Logout'
     ]
 ];
 
 $current_page = basename($_SERVER['PHP_SELF']);
+$user_logged_in = isset($_SESSION['user_id']);
+$user_name = $_SESSION['user_name'] ?? '';
 ?>
 
 <header id="mainHeader" style="background:#2e7d32; padding:15px 30px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 4px 10px rgba(0,0,0,0.1); border-radius:10px; flex-wrap:wrap; gap:10px;">
@@ -93,18 +97,18 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
         <!-- LOGIN / USUÁRIO -->
         <div class="user-menu">
-        <?php if(isset($_SESSION['user_id'])): ?>
-            <span style="color:#fff; font-weight:bold;">
-                Olá, <?= htmlspecialchars($_SESSION['user_name']) ?>
-            </span>
-            <a href="auth/logout.php" style="color:#fff; font-weight:bold; text-decoration:none; margin-left:10px;">
-                <i class="fa fa-sign-out-alt"></i> Sair
-            </a>
-        <?php else: ?>
-            <a href="auth/login.php" style="color:#fff; font-weight:bold; text-decoration:none; <?= ($current_page=='login.php'?'text-decoration:underline;':'') ?>">
-                <i class="fa fa-user"></i> <?= $translations[$lang]['login'] ?>
-            </a>
-        <?php endif; ?>
+            <?php if($user_logged_in): ?>
+                <span style="color:#fff; font-weight:bold; margin-right:10px;">
+                    Olá, <?= htmlspecialchars($user_name) ?> 😄
+                </span>
+                <a href="auth/logout.php" style="color:#fff; font-weight:bold; text-decoration:none;">
+                    <i class="fa fa-sign-out-alt"></i> <?= $translations[$lang]['logout'] ?>
+                </a>
+            <?php else: ?>
+                <a href="auth/login.php" style="color:#fff; font-weight:bold; text-decoration:none; <?= ($current_page=='login.php'?'text-decoration:underline;':'') ?>">
+                    <i class="fa fa-user"></i> <?= $translations[$lang]['login'] ?>
+                </a>
+            <?php endif; ?>
         </div>
 
     </div>
@@ -125,13 +129,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
     form button[name="theme"]:hover { box-shadow:0 0 12px 3px rgba(255,255,255,0.6); transform: scale(1.1); transition: all 0.3s ease; }
 
     /* MENU - animação hover só */
-    .menu a {
-        position: relative;
-        display: inline-block;
-    }
-    .menu a::after {
-        content:''; position:absolute; left:0; bottom:-3px; width:0%; height:3px; background:#fff; transition:0.3s;
-    }
+    .menu a { position: relative; display: inline-block; }
+    .menu a::after { content:''; position:absolute; left:0; bottom:-3px; width:0%; height:3px; background:#fff; transition:0.3s; }
     .menu a:hover::after { width:100%; }
 </style>
 
@@ -143,33 +142,22 @@ document.addEventListener('DOMContentLoaded', ()=>{
         document.body.style.backgroundColor = '#121212';
         document.body.style.color = '#f0f0f0';
         document.querySelector('#mainHeader').style.background = '#1b5e20';
-        document.querySelectorAll('.menu a, .user-menu a').forEach(el=>{ el.style.color = '#fff'; });
+        document.querySelectorAll('.menu a, .user-menu a, .user-menu span').forEach(el=>{ el.style.color = '#fff'; });
 
         const searchBox = document.getElementById('searchBox');
         searchBox.style.background = 'rgba(50,50,50,0.7)';
         searchBox.style.color = '#fff';
         searchBox.style.boxShadow = '0 3px 10px rgba(0,0,0,0.5)';
-
-        document.querySelectorAll('.cart-container, .finalizar-container').forEach(el=>{
-            el.style.background = 'rgba(50,50,50,0.6)';
-            el.style.color = '#fff';
-        });
-
     } else {
         document.body.style.backgroundColor = '';
         document.body.style.color = '';
         document.querySelector('#mainHeader').style.background = '#2e7d32';
-        document.querySelectorAll('.menu a, .user-menu a').forEach(el=>{ el.style.color = '#fff'; });
+        document.querySelectorAll('.menu a, .user-menu a, .user-menu span').forEach(el=>{ el.style.color = '#fff'; });
 
         const searchBox = document.getElementById('searchBox');
         searchBox.style.background = '#fff';
         searchBox.style.color = '#000';
         searchBox.style.boxShadow = '0 3px 10px rgba(0,0,0,0.2)';
-
-        document.querySelectorAll('.cart-container, .finalizar-container').forEach(el=>{
-            el.style.background = 'rgba(255,255,255,0.4)';
-            el.style.color = '#000';
-        });
     }
 });
 </script>
