@@ -20,14 +20,16 @@ $translations = [
         'cart' => 'Carrinho',
         'login' => 'Login',
         'theme' => 'Modo',
-        'offers' => 'Ofertas'
+        'offers' => 'Ofertas',
+        'logout' => 'Sair'
     ],
     'en' => [
         'home' => 'Home',
         'cart' => 'Cart',
         'login' => 'Login',
         'theme' => 'Mode',
-        'offers' => 'Offers'
+        'offers' => 'Offers',
+        'logout' => 'Logout'
     ]
 ];
 
@@ -91,11 +93,20 @@ $current_page = basename($_SERVER['PHP_SELF']);
             </button>
         </form>
 
-        <!-- LOGIN -->
+        <!-- LOGIN / USUÁRIO LOGADO -->
         <div class="user-menu">
-            <a href="auth/login.php" style="color:#fff; font-weight:bold; text-decoration:none; <?= ($current_page=='login.php'?'text-decoration:underline;':'') ?>">
-                <i class="fa fa-user"></i> <?= $translations[$lang]['login'] ?>
-            </a>
+            <?php if(isset($_SESSION['user'])): ?>
+                <span style="color:#fff; font-weight:bold;">
+                    Olá, <?= htmlspecialchars($_SESSION['user']['name']) ?>!
+                </span>
+                <a href="auth/logout.php" style="color:#fff; margin-left:10px; font-weight:bold;">
+                    <?= $translations[$lang]['logout'] ?>
+                </a>
+            <?php else: ?>
+                <a href="auth/login.php" style="color:#fff; font-weight:bold; <?= ($current_page=='login.php'?'text-decoration:underline;':'') ?>">
+                    <i class="fa fa-user"></i> <?= $translations[$lang]['login'] ?>
+                </a>
+            <?php endif; ?>
         </div>
 
     </div>
@@ -121,14 +132,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         display: inline-block;
     }
     .menu a::after {
-        content:'';
-        position:absolute;
-        left:0;
-        bottom:-3px;
-        width:0%;
-        height:3px;
-        background:#fff;
-        transition:0.3s;
+        content:''; position:absolute; left:0; bottom:-3px; width:0%; height:3px; background:#fff; transition:0.3s;
     }
     .menu a:hover::after { width:100%; }
 </style>
