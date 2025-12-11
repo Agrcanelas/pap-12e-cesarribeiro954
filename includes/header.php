@@ -99,7 +99,7 @@ $user_name = $_SESSION['user_name'] ?? '';
         <div class="user-menu">
             <?php if($user_logged_in): ?>
                 <span style="color:#fff; font-weight:bold; margin-right:10px;">
-                    Olá, <?= htmlspecialchars($user_name) ?> 😄
+                    Olá, <?= htmlspecialchars($user_name) ?> !😄
                 </span>
                 <a href="auth/logout.php" style="color:#fff; font-weight:bold; text-decoration:none;">
                     <i class="fa fa-sign-out-alt"></i> <?= $translations[$lang]['logout'] ?>
