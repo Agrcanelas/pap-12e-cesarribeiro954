@@ -25,8 +25,6 @@ body {
     margin: 20px auto;
     overflow: hidden;
     border-radius: 15px;
-
-    /* moldura de luz */
     box-shadow: 0 0 20px 5px rgba(102, 215, 139, 0.6), 0 4px 15px rgba(0,0,0,0.2);
     transition: box-shadow 0.5s ease-in-out;
 }
@@ -36,13 +34,13 @@ body {
 
 .slides-wrapper {
     display: flex;
-    width: 500%; /* 5 slides */
+    width: 500%;
     transition: transform 1s ease-in-out;
     height: 100%;
 }
 
 .slider-slide {
-    width: 20%; /* cada slide ocupa 1/5 */
+    width: 20%;
     height: 100%;
     position: relative;
     flex-shrink: 0;
@@ -81,7 +79,10 @@ body {
     border-radius: 15px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.1);
     text-align: center;
+    transition: transform 0.3s;
 }
+
+.card:hover { transform: translateY(-5px); }
 
 .card img {
     width: 100%;
@@ -152,18 +153,19 @@ body {
 <div class="cards-container">
 <?php
 $categories = [
-  ["img" => "https://netun.com/cdn/shop/articles/01-Airbag_civicsi.jpg?v=1716802572", "name" => "Airbags"],
-  ["img" => "https://blog.mixauto.com.br/wp-content/uploads/2018/05/caixa-de-cambio.jpg", "name" => "Motor e Transmição"],
-  ["img" => "https://s7d9.scene7.com/is/image/dow/AdobeStock_385390317?qlt=82&ts=1692809401103&dpr=off", "name" => "Iluminação"],
-  ["img" => "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ5NwDgRfalMhSg_JrDaskCoPjKOi3HHhxMA&s", "name" => "Suspensão"],
-  ["img" => "https://reparadorsa.com.br/wp-content/uploads/2022/12/RSA_MATERIAS-2_05-12_HEADER.png", "name" => "Elétrica"],
-  ["img" => "https://global-img.bitauto.com/usercenter/yhzx/20250815/793/w1200_yichecar_522658379372509.jpg.webp", "name" => "Interior"]
+  ["id" => 1, "img" => "https://netun.com/cdn/shop/articles/01-Airbag_civicsi.jpg?v=1716802572", "name" => "Airbags"],
+  ["id" => 2, "img" => "https://blog.mixauto.com.br/wp-content/uploads/2018/05/caixa-de-cambio.jpg", "name" => "Motor e Transmição"],
+  ["id" => 3, "img" => "https://s7d9.scene7.com/is/image/dow/AdobeStock_385390317?qlt=82&ts=1692809401103&dpr=off", "name" => "Iluminação"],
+  ["id" => 4, "img" => "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ5NwDgRfalMhSg_JrDaskCoPjKOi3HHhxMA&s", "name" => "Suspensão"],
+  ["id" => 5, "img" => "https://reparadorsa.com.br/wp-content/uploads/2022/12/RSA_MATERIAS-2_05-12_HEADER.png", "name" => "Elétrica"],
+  ["id" => 6, "img" => "https://global-img.bitauto.com/usercenter/yhzx/20250815/793/w1200_yichecar_522658379372509.jpg.webp", "name" => "Interior"]
 ];
 
 foreach($categories as $c){
     echo "<div class='card'>";
     echo "<img src='{$c['img']}' alt='{$c['name']}'>";
     echo "<h3>{$c['name']}</h3>";
+    echo "<a href='categoria.php?id={$c['id']}' class='btn'>Ver Produtos</a>";
     echo "</div>";
 }
 ?>
