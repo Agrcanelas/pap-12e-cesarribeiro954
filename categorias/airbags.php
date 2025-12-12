@@ -1,3 +1,26 @@
+<?php
+// Ativa exibição de erros para debugging
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+session_start();
+
+// Ajusta caminhos conforme tua estrutura
+require_once '../auth/config.php';
+require_once '../includes/header.php';
+?>
+
+<?php
+// Produtos de exemplo da categoria Airbags
+$airbags = [
+    ["img" => "https://via.placeholder.com/300x200.png?text=Airbag+Frontal", "name" => "Airbag Frontal", "price" => "€120,00"],
+    ["img" => "https://via.placeholder.com/300x200.png?text=Airbag+Lateral", "name" => "Airbag Lateral", "price" => "€150,00"],
+    ["img" => "https://via.placeholder.com/300x200.png?text=Airbag+do+Condutor", "name" => "Airbag do Condutor", "price" => "€130,00"],
+    ["img" => "https://via.placeholder.com/300x200.png?text=Airbag+do+Passageiro", "name" => "Airbag do Passageiro", "price" => "€140,00"]
+];
+?>
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -7,86 +30,85 @@
 <link rel="stylesheet" href="../assets/css/style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<!-- Favicon -->
-<link rel="icon" href="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg?w=360" type="image/png">
-
 <style>
-/* Mesmos estilos das cards do index */
-.cards-container {
+.products-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin-top: 20px;
+    margin: 50px 20px;
 }
 
-.card {
+.product-card {
     width: 250px;
-    padding: 15px;
     margin: 15px;
-    display: inline-block;
-    vertical-align: top;
-    background: rgba(249, 255, 249, 0.8);
+    background: rgba(255, 255, 255, 0.95);
     border-radius: 15px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.1);
     text-align: center;
+    padding: 15px;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.card img {
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.product-card img {
     width: 100%;
     height: 150px;
     object-fit: cover;
     border-radius: 10px;
 }
 
-.card h3 { font-size: 18px; margin: 10px 0; }
-.card .btn {
-    margin-top: 10px;
+.product-card h3 {
+    font-size: 18px;
+    margin: 10px 0;
+    color: #2e7d32;
+}
+
+.product-card .price {
+    font-weight: bold;
+    color: #ff3d3d;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.back-btn {
+    display: inline-block;
+    margin: 20px;
     padding: 10px 15px;
-    border: none;
     background: #4caf70;
     color: #fff;
     border-radius: 50px;
-    cursor: pointer;
     font-weight: bold;
+    text-decoration: none;
     transition: all 0.3s;
 }
-.card .btn:hover { background: #66d78b; }
+
+.back-btn:hover { background: #66d78b; }
 </style>
 </head>
 <body>
 
-<?php require_once __DIR__ . '/../includes/header.php'; ?>
-<?php require_once '../includes/ligadb.php';?>
+<h1 style="text-align:center; margin-top:30px;">Produtos - Airbags</h1>
 
-<h2 style="text-align:center; margin-top:30px; color:#2e7d32;">Categoria: Airbags</h2>
-
-<div class="cards-container">
-<?php
-// Selecionar produtos da categoria Airbags
-$sql = "SELECT * FROM produtos WHERE categoria='Airbags'";
-$result = $conn->query($sql);
-?>
-
-<h2>Categoria: Airbags</h2>
-<div class="cards-container">
-<?php
-if ($result->num_rows > 0) {
-    while($row = $result->fetch_assoc()){
-        echo "<div class='card'>";
-        echo "<img src='{$row['imagem']}' alt='{$row['nome']}'>";
-        echo "<h3>{$row['nome']}</h3>";
-        echo "<p>{$row['descricao']}</p>";
-        echo "<p class='price'>€".number_format($row['preco'],2,',','.')."</p>";
-        echo "<button class='btn'>Adicionar ao carrinho</button>";
-        echo "</div>";
-    }
-} else {
-    echo "<p>Nenhum produto encontrado nesta categoria.</p>";
-}
-?>
+<div class="products-container">
+<?php foreach($airbags as $product): ?>
+    <div class="product-card">
+        <img src="<?= $product['img'] ?>" alt="<?= $product['name'] ?>">
+        <h3><?= $product['name'] ?></h3>
+        <div class="price"><?= $product['price'] ?></div>
+        <button class="btn">Comprar</button>
+    </div>
+<?php endforeach; ?>
 </div>
 
-<?php
-require_once '../includes/footer.php';
-$conn->close();
-?>
+<div style="text-align:center;">
+    <a href="../index.php" class="back-btn"><i class="fa fa-arrow-left"></i> Voltar</a>
+</div>
+
+<?php require_once '../includes/footer.php'; ?>
+
+</body>
+</html>
