@@ -92,18 +92,28 @@ body {
 }
 
 .card h3 { font-size: 18px; margin: 10px 0; }
+
+/* BOTÕES “VER PRODUTOS” - AJUSTADOS */
 .card .btn {
     margin-top: 10px;
-    padding: 10px 15px;
+    padding: 8px 12px;         /* tamanho menor */
     border: none;
     background: #4caf70;
     color: #fff;
-    border-radius: 50px;
+    border-radius: 25px;
     cursor: pointer;
     font-weight: bold;
-    transition: all 0.3s;
+    font-size: 14px;           /* tamanho menor */
+    text-decoration: none;      /* remove sublinhado */
+    transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+    display: inline-block;
 }
-.card .btn:hover { background: #66d78b; }
+
+.card .btn:hover {
+    transform: scale(1.1);      /* aumenta ao passar o rato */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    background: #66d78b;       /* muda levemente a cor */
+}
 
 /* Layout geral */
 .cards-container {
