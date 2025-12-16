@@ -71,9 +71,12 @@ $user_name = $_SESSION['user_name'] ?? '';
         <div style="position:relative; display:flex; align-items:center;">
             <input type="text" id="searchBox" placeholder="Pesquisar produtos..."
                    style="padding:10px 20px 10px 20px; border-radius:30px; border:none; outline:none; width:260px; font-size:15px; box-shadow:0 3px 10px rgba(0,0,0,0.2); transition:0.3s;">
-            <button type="submit" style="position:absolute; right:0; border:none; background:#66d78b; border-radius:50%; width:36px; height:36px; cursor:pointer; color:#fff; display:flex; justify-content:center; align-items:center; transition:0.3s;">
+            <button type="button" id="searchButton" style="position:absolute; right:0; border:none; background:#66d78b; border-radius:50%; width:36px; height:36px; cursor:pointer; color:#fff; display:flex; justify-content:center; align-items:center; transition:0.3s;">
                 <i class="fa fa-search"></i>
             </button>
+            <!-- Dropdown histórico -->
+            <div id="searchHistoryDropdown" style="position:absolute; top:45px; left:0; width:100%; background:#fff; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.2); display:none; z-index:1000; max-height:180px; overflow-y:auto;">
+            </div>
         </div>
 
         <!-- TOGGLE MODO CLARO/ESCURO -->
@@ -116,34 +119,34 @@ $user_name = $_SESSION['user_name'] ?? '';
 </header>
 
 <style>
-    /* BORDAS DAS BANDEIRAS */
     form button img { border-radius:2px; }
     form button img:hover { box-shadow: 0 0 12px 4px rgba(255,255,255,0.6); transition:0.3s; }
 
-    /* INPUT PESQUISA */
     #searchBox:focus { width: 300px; box-shadow: 0 6px 18px rgba(0,0,0,0.25); }
     #searchBox + button:hover { background:#4caf70; }
     #searchBox + button i { font-size:16px; }
 
-    /* MODO CLARO/ESCURO */
     form button[name="theme"]:hover { box-shadow:0 0 12px 3px rgba(255,255,255,0.6); transform: scale(1.1); transition: all 0.3s ease; }
 
-    /* MENU - animação hover só */
     .menu a { position: relative; display: inline-block; }
     .menu a::after { content:''; position:absolute; left:0; bottom:-3px; width:0%; height:3px; background:#fff; transition:0.3s; }
     .menu a:hover::after { width:100%; }
+
+    #searchHistoryDropdown div { padding:6px 12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; }
+    #searchHistoryDropdown div:hover { background:#f1f1f1; }
+    #searchHistoryDropdown .removeItem { color:#000; font-weight:bold; margin-left:10px; cursor:pointer; }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', ()=>{
     const theme = '<?= $theme ?>';
 
+    // Tema
     if(theme==='dark'){
         document.body.style.backgroundColor = '#121212';
         document.body.style.color = '#f0f0f0';
         document.querySelector('#mainHeader').style.background = '#1b5e20';
         document.querySelectorAll('.menu a, .user-menu a, .user-menu span').forEach(el=>{ el.style.color = '#fff'; });
-
         const searchBox = document.getElementById('searchBox');
         searchBox.style.background = 'rgba(50,50,50,0.7)';
         searchBox.style.color = '#fff';
@@ -153,11 +156,75 @@ document.addEventListener('DOMContentLoaded', ()=>{
         document.body.style.color = '';
         document.querySelector('#mainHeader').style.background = '#2e7d32';
         document.querySelectorAll('.menu a, .user-menu a, .user-menu span').forEach(el=>{ el.style.color = '#fff'; });
-
         const searchBox = document.getElementById('searchBox');
         searchBox.style.background = '#fff';
         searchBox.style.color = '#000';
         searchBox.style.boxShadow = '0 3px 10px rgba(0,0,0,0.2)';
     }
+
+    const searchBox = document.getElementById('searchBox');
+    const searchButton = document.getElementById('searchButton');
+    const dropdown = document.getElementById('searchHistoryDropdown');
+
+    // Histórico armazenado no localStorage
+    let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+
+    function renderDropdown() {
+        dropdown.innerHTML = '';
+        if(searchBox.value.trim() === '') { 
+            dropdown.style.display = 'none'; 
+            return; 
+        }
+
+        const filtered = history.filter(item=>item.toLowerCase().includes(searchBox.value.trim().toLowerCase()));
+        if(filtered.length === 0){ dropdown.style.display = 'none'; return; }
+
+        filtered.forEach(term => {
+            const div = document.createElement('div');
+            div.textContent = term;
+            const x = document.createElement('span');
+            x.textContent = 'X';
+            x.classList.add('removeItem');
+            x.addEventListener('click', (e)=>{
+                e.stopPropagation();
+                history = history.filter(h => h !== term);
+                localStorage.setItem('searchHistory', JSON.stringify(history));
+                renderDropdown();
+            });
+            div.appendChild(x);
+            div.addEventListener('click', ()=>{
+                searchBox.value = term;
+                dropdown.style.display = 'none';
+                // Aqui podes colocar a pesquisa real
+                alert(`Pesquisa executada: ${term}`);
+            });
+            dropdown.appendChild(div);
+        });
+
+        dropdown.style.display = 'block';
+    }
+
+    searchButton.addEventListener('click', (e)=>{
+        e.preventDefault();
+        const value = searchBox.value.trim();
+        if(value === '') return;
+
+        // Atualiza histórico: mais recente primeiro, máximo 5
+        history = history.filter(item => item !== value);
+        history.unshift(value);
+        if(history.length > 5) history.pop();
+        localStorage.setItem('searchHistory', JSON.stringify(history));
+        dropdown.style.display = 'none';
+
+        // Aqui podes colocar a pesquisa real
+        alert(`Pesquisa executada: ${value}`);
+    });
+
+    searchBox.addEventListener('input', renderDropdown);
+
+    document.addEventListener('click', e => {
+        if(!e.target.closest('#searchBox') && !e.target.closest('#searchButton') && !e.target.closest('#searchHistoryDropdown')) 
+            dropdown.style.display = 'none'; 
+    });
 });
 </script>
