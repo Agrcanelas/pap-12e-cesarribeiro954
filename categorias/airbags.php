@@ -14,10 +14,10 @@ require_once '../includes/header.php';
 <?php
 // Produtos de exemplo da categoria Airbags
 $airbags = [
-    ["img" => "https://via.placeholder.com/300x200.png?text=Airbag+Frontal", "name" => "Airbag Frontal", "price" => "€120,00"],
-    ["img" => "https://via.placeholder.com/300x200.png?text=Airbag+Lateral", "name" => "Airbag Lateral", "price" => "€150,00"],
-    ["img" => "https://via.placeholder.com/300x200.png?text=Airbag+do+Condutor", "name" => "Airbag do Condutor", "price" => "€130,00"],
-    ["img" => "https://via.placeholder.com/300x200.png?text=Airbag+do+Passageiro", "name" => "Airbag do Passageiro", "price" => "€140,00"]
+    ["img" => "https://via.placeholder.com/300x200.png?text=Airbag+Frontal", "name" => "Airbag Frontal", "price" => "€120,00", "desc" => "Proteção frontal para condutor e passageiro."],
+    ["img" => "https://via.placeholder.com/300x200.png?text=Airbag+Lateral", "name" => "Airbag Lateral", "price" => "€150,00", "desc" => "Segurança extra nas laterais do veículo."],
+    ["img" => "https://via.placeholder.com/300x200.png?text=Airbag+do+Condutor", "name" => "Airbag do Condutor", "price" => "€130,00", "desc" => "Proteção específica para o condutor."],
+    ["img" => "https://via.placeholder.com/300x200.png?text=Airbag+do+Passageiro", "name" => "Airbag do Passageiro", "price" => "€140,00", "desc" => "Proteção específica para o passageiro."],
 ];
 ?>
 
@@ -74,6 +74,35 @@ $airbags = [
     margin-bottom: 10px;
 }
 
+.product-card .desc {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+/* Botão "Adicionar ao carrinho" estilizado */
+.product-card .btn {
+    margin-top: 10px;
+    padding: 10px 18px;
+    border: none;
+    background: linear-gradient(45deg, #4caf70, #66d78b);
+    color: #fff;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 15px;
+    text-decoration: none;
+    transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+    display: inline-block;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.product-card .btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    background: linear-gradient(45deg, #66d78b, #4caf70);
+}
+
 .back-btn {
     display: inline-block;
     margin: 20px;
@@ -98,14 +127,11 @@ $airbags = [
     <div class="product-card">
         <img src="<?= $product['img'] ?>" alt="<?= $product['name'] ?>">
         <h3><?= $product['name'] ?></h3>
+        <div class="desc"><?= $product['desc'] ?></div>
         <div class="price"><?= $product['price'] ?></div>
         <button class="btn">Adicionar ao carrinho</button>
     </div>
 <?php endforeach; ?>
-</div>
-
-<div style="text-align:center;">
-    <a href="../index.php" class="back-btn"><i class="fa fa-arrow-left"></i> Voltar</a>
 </div>
 
 <?php require_once '../includes/footer.php'; ?>
