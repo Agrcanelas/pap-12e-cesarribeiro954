@@ -3,19 +3,24 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Detecta idioma selecionado ou usa PT por padrão
+/* ========= RAIZ DO SITE ========= */
+$base = dirname($_SERVER['SCRIPT_NAME']);
+$base = explode('/categorias', $base)[0]; // garante que funciona dentro das categorias
+/* ================================= */
+
+// Idioma
 if (isset($_GET['lang'])) {
     $_SESSION['lang'] = $_GET['lang'];
 }
 $lang = $_SESSION['lang'] ?? 'pt';
 
-// Detecta modo claro/escuro selecionado ou usa claro por padrão
+// Tema
 if (isset($_GET['theme'])) {
     $_SESSION['theme'] = $_GET['theme'];
 }
 $theme = $_SESSION['theme'] ?? 'light';
 
-// Traduções simples
+// Traduções
 $translations = [
     'pt' => [
         'home' => 'Inicio',
@@ -56,20 +61,20 @@ $user_name = $_SESSION['user_name'] ?? '';
     <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
 
         <nav class="menu" style="display:flex; gap:25px; font-weight:bold; align-items:center; position:relative;">
-            <a href="./index.php" style="color:#fff; text-decoration:none; <?= ($current_page=='index.php'?'text-decoration:underline;':'') ?>">
+            <a href="<?= $base ?>/index.php" style="color:#fff; text-decoration:none;">
                 <i class="fa fa-home"></i> <?= $translations[$lang]['home'] ?>
             </a>
 
-            <a href="./cart.php" style="color:#fff; text-decoration:none; <?= ($current_page=='cart.php'?'text-decoration:underline;':'') ?>">
+            <a href="<?= $base ?>/cart.php" style="color:#fff; text-decoration:none;">
                 <i class="fa fa-shopping-cart"></i> <?= $translations[$lang]['cart'] ?>
             </a>
 
-            <a href="./ofertas.php" style="color:#fff; text-decoration:none; <?= ($current_page=='ofertas.php'?'text-decoration:underline;':'') ?>">
+            <a href="<?= $base ?>/ofertas.php" style="color:#fff; text-decoration:none;">
                 <i class="fa fa-tags"></i> <?= $translations[$lang]['offers'] ?>
             </a>
         </nav>
 
-        <!-- BARRA DE PESQUISA (SEM ALTERAÇÕES) -->
+        <!-- PESQUISA -->
         <div style="position:relative; display:flex; align-items:center;">
             <input type="text" id="searchBox" placeholder="Pesquisar produtos..."
                    style="padding:10px 20px; border-radius:30px; border:none; outline:none; width:260px; font-size:15px; box-shadow:0 3px 10px rgba(0,0,0,0.2); transition:0.3s;">
@@ -91,10 +96,10 @@ $user_name = $_SESSION['user_name'] ?? '';
         <!-- BANDEIRAS -->
         <form method="get" style="margin:0; display:flex; align-items:center; gap:8px;">
             <button type="submit" name="lang" value="pt" style="background:none; border:none; cursor:pointer;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Portugal.svg" alt="PT" style="width:28px; height:18px;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Portugal.svg" alt="PT" style="width:28px; height:18px;" class="flag">
             </button>
             <button type="submit" name="lang" value="en" style="background:none; border:none; cursor:pointer;">
-                <img src="https://upload.wikimedia.org/wikipedia/en/a/ae/Flag_of_the_United_Kingdom.svg" alt="EN" style="width:28px; height:18px;">
+                <img src="https://upload.wikimedia.org/wikipedia/en/a/ae/Flag_of_the_United_Kingdom.svg" alt="EN" style="width:28px; height:18px;" class="flag">
             </button>
         </form>
 
@@ -104,11 +109,11 @@ $user_name = $_SESSION['user_name'] ?? '';
                 <span style="color:#fff; font-weight:bold; margin-right:10px;">
                     Olá, <?= htmlspecialchars($user_name) ?> 😄
                 </span>
-                <a href="auth/logout.php" style="color:#fff; font-weight:bold; text-decoration:none;">
+                <a href="<?= $base ?>/auth/logout.php" style="color:#fff; font-weight:bold; text-decoration:none;">
                     <i class="fa fa-sign-out-alt"></i> <?= $translations[$lang]['logout'] ?>
                 </a>
             <?php else: ?>
-                <a href="auth/login.php" style="color:#fff; font-weight:bold; text-decoration:none;">
+                <a href="<?= $base ?>/auth/login.php" style="color:#fff; font-weight:bold; text-decoration:none;">
                     <i class="fa fa-user"></i> <?= $translations[$lang]['login'] ?>
                 </a>
             <?php endif; ?>
@@ -117,3 +122,16 @@ $user_name = $_SESSION['user_name'] ?? '';
     </div>
 
 </header>
+
+<style>
+/* === HOVER NAS BANDEIRAS COM SOMBRA DE LUZ BRANCA === */
+.flag {
+    border-radius: 2px;
+    transition: 0.3s ease;
+}
+
+.flag:hover {
+    box-shadow: 0 0 12px 4px rgba(255,255,255,0.6);
+    transform: scale(1.1);
+}
+</style>

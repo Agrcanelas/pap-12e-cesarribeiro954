@@ -99,7 +99,7 @@ $airbags = [
         <img src="<?= $product['img'] ?>" alt="<?= $product['name'] ?>">
         <h3><?= $product['name'] ?></h3>
         <div class="price"><?= $product['price'] ?></div>
-        <button class="btn">Comprar</button>
+        <button class="btn">Adicionar ao carrinho</button>
     </div>
 <?php endforeach; ?>
 </div>
