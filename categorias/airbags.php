@@ -14,25 +14,29 @@ $airbags = [
         "img" => "https://via.placeholder.com/300x200.png?text=Airbag+Frontal",
         "name" => "Airbag Frontal",
         "price" => "€120,00",
-        "desc" => "Proteção frontal para condutor e passageiro."
+        "desc" => "Proteção frontal para condutor e passageiro.",
+        "condition" => "Novo"
     ],
     [
-        "img" => "https://via.placeholder.com/300x200.png?text=Airbag+Lateral",
+        "img" => "https://prod-images.custojusto.pt/play/1618649487-airbag-lateral-frente-esquerdo-bmw-7-730-d.jpg",
         "name" => "Airbag Lateral",
-        "price" => "€150,00",
-        "desc" => "Segurança extra nas laterais do veículo."
+        "price" => "€115,00",
+        "desc" => "Airbag lateral frente esquerdo BMW 7 730 D",
+        "condition" => "Bom"
     ],
     [
-        "img" => "https://via.placeholder.com/300x200.png?text=Airbag+do+Condutor",
+        "img" => "https://ireland.apollo.olxcdn.com/v1/files/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmbiI6InIyNmFoeG8yc2pxcy1TVERWVExQVCIsInciOlt7ImZuIjoiNm1nandscDdrZ2RiMi1TVERWVExQVCIsInMiOiIxNiIsImEiOiIwIiwicCI6IjEwLC0xMCJ9XX0.Hj3zWQOYCPQWlXTbYIBuUr_Y6iw_Drbp-afpCrGNnZE/image;s=1024x0;q=80",
         "name" => "Airbag do Condutor",
         "price" => "€130,00",
-        "desc" => "Proteção específica para o condutor."
+        "desc" => "Airbag De Volante Volkswagen Polo (6R1, 6C1)",
+        "condition" => "Excelente"
     ],
     [
-        "img" => "https://via.placeholder.com/300x200.png?text=Airbag+do+Passageiro",
+        "img" => "https://ireland.apollo.olxcdn.com/v1/files/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmbiI6Ims5Nmd3MXc0YnJ5bDMtU1REVlRMUFQiLCJ3IjpbeyJmbiI6IjZtZ2p3bHA3a2dkYjItU1REVlRMUFQiLCJzIjoiMTYiLCJhIjoiMCIsInAiOiIxMCwtMTAifV19.l-OBLkNgzznXAO98HxiHW2iemuINkzBdrYdRRohQtvc/image;s=1024x0;q=80",
         "name" => "Airbag do Passageiro",
-        "price" => "€140,00",
-        "desc" => "Proteção específica para o passageiro."
+        "price" => "€73,00",
+        "desc" => "CHEVROLET MATIZ 800 2008 0.8I 52CV 5P BRANCO",
+        "condition" => "Razoavel"
     ],
 ];
 ?>
@@ -94,6 +98,13 @@ $airbags = [
     margin-bottom: 10px;
 }
 
+.product-card .condition {
+    font-size: 13px;
+    color: #2e7d32;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
 .product-card .price {
     font-weight: bold;
     color: #ff3d3d;
@@ -135,6 +146,7 @@ $airbags = [
         <img src="<?= $product['img'] ?>" alt="<?= $product['name'] ?>">
         <h3><?= $product['name'] ?></h3>
         <div class="desc"><?= $product['desc'] ?></div>
+        <div class="condition">Estado: <?= $product['condition'] ?></div>
         <div class="price"><?= $product['price'] ?></div>
         <button class="btn">Adicionar ao carrinho</button>
     </div>
