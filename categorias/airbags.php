@@ -46,9 +46,7 @@ $airbags = [
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Airbags - Ecopeças</title>
-
 <link rel="stylesheet" href="../assets/css/style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -133,6 +131,24 @@ $airbags = [
     box-shadow: 0 8px 25px rgba(0,0,0,0.3);
     background: linear-gradient(45deg, #66d78b, #4caf70);
 }
+
+/* Botão "Ver detalhes" discreto */
+.btn-details {
+    display: block;
+    margin: 5px auto 0 auto;
+    padding: 5px 12px;
+    background: #ccc;
+    color: #333;
+    border-radius: 20px;
+    font-size: 13px;
+    text-decoration: none;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.btn-details:hover {
+    background: #bbb;
+}
 </style>
 </head>
 
@@ -149,6 +165,7 @@ $airbags = [
         <div class="condition">Estado: <?= $product['condition'] ?></div>
         <div class="price"><?= $product['price'] ?></div>
         <button class="btn">Adicionar ao carrinho</button>
+        <a href="../produto/produto.php?id=<?= urlencode($product['name']) ?>" class="btn-details">Ver detalhes</a>
     </div>
 <?php endforeach; ?>
 </div>
