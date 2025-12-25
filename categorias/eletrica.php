@@ -5,19 +5,39 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 session_start();
-
-// Ajusta caminhos conforme tua estrutura
 require_once '../auth/config.php';
 require_once '../includes/header.php';
-?>
 
-<?php
-// Produtos de exemplo da categoria Suspensão
-$suspension = [
-    ["img" => "https://via.placeholder.com/300x200.png?text=Amortecedor+Frontal", "name" => "Amortecedor Frontal", "price" => "€80,00", "desc" => "Amortecedor de alta performance para estabilidade frontal."],
-    ["img" => "https://via.placeholder.com/300x200.png?text=Amortecedor+Traseiro", "name" => "Amortecedor Traseiro", "price" => "€85,00", "desc" => "Melhora a absorção de impactos e o conforto de condução."],
-    ["img" => "https://via.placeholder.com/300x200.png?text=Mola+Suspensao", "name" => "Mola de Suspensão", "price" => "€50,00", "desc" => "Mola resistente para maior durabilidade e segurança."],
-    ["img" => "https://via.placeholder.com/300x200.png?text=Kit+Suspensao+Completo", "name" => "Kit Suspensão Completo", "price" => "€200,00", "desc" => "Conjunto completo para renovação da suspensão do veículo."]
+// Produtos de exemplo da categoria Elétrica
+$eletrica = [
+    [
+        "img" => "https://via.placeholder.com/300x200.png?text=Bateria+12V",
+        "name" => "Bateria 12V",
+        "price" => "€60,00",
+        "desc" => "Bateria automotiva de alta capacidade e durabilidade.",
+        "condition" => "Nova"
+    ],
+    [
+        "img" => "https://via.placeholder.com/300x200.png?text=Alternador",
+        "name" => "Alternador",
+        "price" => "€150,00",
+        "desc" => "Alternador eficiente para fornecimento estável de energia.",
+        "condition" => "Bom"
+    ],
+    [
+        "img" => "https://via.placeholder.com/300x200.png?text=Motor+do+Ventilador",
+        "name" => "Motor do Ventilador",
+        "price" => "€45,00",
+        "desc" => "Motor elétrico para ventilação do radiador, silencioso e durável.",
+        "condition" => "Excelente"
+    ],
+    [
+        "img" => "https://via.placeholder.com/300x200.png?text=Fusíveis+e+Relés",
+        "name" => "Fusíveis e Relés",
+        "price" => "€15,00",
+        "desc" => "Conjunto de fusíveis e relés para proteção elétrica do veículo.",
+        "condition" => "Novo"
+    ]
 ];
 ?>
 
@@ -26,7 +46,7 @@ $suspension = [
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Suspensão - Ecopeças</title>
+<title>Elétrica - Ecopeças</title>
 <link rel="stylesheet" href="../assets/css/style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -67,6 +87,19 @@ $suspension = [
     color: #2e7d32;
 }
 
+.product-card .desc {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.product-card .condition {
+    font-size: 13px;
+    color: #2e7d32;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
 .product-card .price {
     font-weight: bold;
     color: #ff3d3d;
@@ -74,13 +107,7 @@ $suspension = [
     margin-bottom: 10px;
 }
 
-.product-card .desc {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 10px;
-}
-
-/* Botão "Adicionar ao carrinho" estilizado */
+/* Botão "Adicionar ao carrinho" */
 .product-card .btn {
     margin-top: 10px;
     padding: 10px 18px;
@@ -91,7 +118,6 @@ $suspension = [
     cursor: pointer;
     font-weight: bold;
     font-size: 15px;
-    text-decoration: none;
     transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
     display: inline-block;
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
@@ -103,33 +129,40 @@ $suspension = [
     background: linear-gradient(45deg, #66d78b, #4caf70);
 }
 
-.back-btn {
-    display: inline-block;
-    margin: 20px;
-    padding: 10px 15px;
-    background: #4caf70;
-    color: #fff;
-    border-radius: 50px;
-    font-weight: bold;
+/* Botão "Ver detalhes" discreto igual ao Airbags */
+.btn-details {
+    display: block;
+    margin: 5px auto 0 auto;
+    padding: 5px 12px;
+    background: #ccc;
+    color: #333;
+    border-radius: 20px;
+    font-size: 13px;
     text-decoration: none;
-    transition: all 0.3s;
+    text-align: center;
+    transition: 0.3s;
 }
 
-.back-btn:hover { background: #66d78b; }
+.btn-details:hover {
+    background: #bbb;
+}
 </style>
 </head>
+
 <body>
 
-<h1 style="text-align:center; margin-top:30px;">Produtos - Suspensão</h1>
+<h1 style="text-align:center; margin-top:30px;">Produtos - Elétrica</h1>
 
 <div class="products-container">
-<?php foreach($suspension as $product): ?>
+<?php foreach($eletrica as $product): ?>
     <div class="product-card">
         <img src="<?= $product['img'] ?>" alt="<?= $product['name'] ?>">
         <h3><?= $product['name'] ?></h3>
         <div class="desc"><?= $product['desc'] ?></div>
+        <div class="condition">Estado: <?= $product['condition'] ?></div>
         <div class="price"><?= $product['price'] ?></div>
         <button class="btn">Adicionar ao carrinho</button>
+        <a href="../produto/produto.php?id=<?= urlencode($product['name']) ?>" class="btn-details">Ver detalhes</a>
     </div>
 <?php endforeach; ?>
 </div>

@@ -5,19 +5,39 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 session_start();
-
-// Ajusta caminhos conforme tua estrutura
 require_once '../auth/config.php';
 require_once '../includes/header.php';
-?>
 
-<?php
 // Produtos de exemplo da categoria Iluminação
 $lights = [
-    ["img" => "https://via.placeholder.com/300x200.png?text=Farol+LED", "name" => "Farol LED", "price" => "€90,00", "desc" => "Farol LED moderno e eficiente, ideal para segurança noturna."],
-    ["img" => "https://via.placeholder.com/300x200.png?text=Farol+Xenon", "name" => "Farol Xenon", "price" => "€120,00", "desc" => "Iluminação intensa e de longa duração para condução avançada."],
-    ["img" => "https://via.placeholder.com/300x200.png?text=Luz+de+Nevoeiro", "name" => "Luz de Nevoeiro", "price" => "€45,00", "desc" => "Perfeita para aumentar a visibilidade em condições adversas."],
-    ["img" => "https://via.placeholder.com/300x200.png?text=Lanterna+Traseira", "name" => "Lanterna Traseira", "price" => "€55,00", "desc" => "Lanterna traseira de alta visibilidade, resistente e durável."]
+    [
+        "img" => "https://via.placeholder.com/300x200.png?text=Farol+LED",
+        "name" => "Farol LED",
+        "price" => "€90,00",
+        "desc" => "Farol LED moderno e eficiente, ideal para segurança noturna.",
+        "condition" => "Novo"
+    ],
+    [
+        "img" => "https://via.placeholder.com/300x200.png?text=Farol+Xenon",
+        "name" => "Farol Xenon",
+        "price" => "€120,00",
+        "desc" => "Iluminação intensa e de longa duração para condução avançada.",
+        "condition" => "Bom"
+    ],
+    [
+        "img" => "https://via.placeholder.com/300x200.png?text=Luz+de+Nevoeiro",
+        "name" => "Luz de Nevoeiro",
+        "price" => "€45,00",
+        "desc" => "Perfeita para aumentar a visibilidade em condições adversas.",
+        "condition" => "Excelente"
+    ],
+    [
+        "img" => "https://via.placeholder.com/300x200.png?text=Lanterna+Traseira",
+        "name" => "Lanterna Traseira",
+        "price" => "€55,00",
+        "desc" => "Lanterna traseira de alta visibilidade, resistente e durável.",
+        "condition" => "Razoável"
+    ]
 ];
 ?>
 
@@ -67,6 +87,19 @@ $lights = [
     color: #2e7d32;
 }
 
+.product-card .desc {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.product-card .condition {
+    font-size: 13px;
+    color: #2e7d32;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
 .product-card .price {
     font-weight: bold;
     color: #ff3d3d;
@@ -74,13 +107,7 @@ $lights = [
     margin-bottom: 10px;
 }
 
-.product-card .desc {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 10px;
-}
-
-/* Botão "Adicionar ao carrinho" estilizado */
+/* Botão "Adicionar ao carrinho" */
 .product-card .btn {
     margin-top: 10px;
     padding: 10px 18px;
@@ -91,7 +118,6 @@ $lights = [
     cursor: pointer;
     font-weight: bold;
     font-size: 15px;
-    text-decoration: none;
     transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
     display: inline-block;
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
@@ -103,21 +129,26 @@ $lights = [
     background: linear-gradient(45deg, #66d78b, #4caf70);
 }
 
-.back-btn {
-    display: inline-block;
-    margin: 20px;
-    padding: 10px 15px;
-    background: #4caf70;
-    color: #fff;
-    border-radius: 50px;
-    font-weight: bold;
+/* Botão "Ver detalhes" discreto igual ao Airbags */
+.btn-details {
+    display: block;
+    margin: 5px auto 0 auto;
+    padding: 5px 12px;
+    background: #ccc;
+    color: #333;
+    border-radius: 20px;
+    font-size: 13px;
     text-decoration: none;
-    transition: all 0.3s;
+    text-align: center;
+    transition: 0.3s;
 }
 
-.back-btn:hover { background: #66d78b; }
+.btn-details:hover {
+    background: #bbb;
+}
 </style>
 </head>
+
 <body>
 
 <h1 style="text-align:center; margin-top:30px;">Produtos - Iluminação</h1>
@@ -128,8 +159,10 @@ $lights = [
         <img src="<?= $product['img'] ?>" alt="<?= $product['name'] ?>">
         <h3><?= $product['name'] ?></h3>
         <div class="desc"><?= $product['desc'] ?></div>
+        <div class="condition">Estado: <?= $product['condition'] ?></div>
         <div class="price"><?= $product['price'] ?></div>
         <button class="btn">Adicionar ao carrinho</button>
+        <a href="../produto/produto.php?id=<?= urlencode($product['name']) ?>" class="btn-details">Ver detalhes</a>
     </div>
 <?php endforeach; ?>
 </div>
