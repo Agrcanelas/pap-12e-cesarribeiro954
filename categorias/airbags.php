@@ -11,7 +11,7 @@ require_once '../includes/header.php';
 // Produtos de exemplo da categoria Airbags
 $airbags = [
     [
-        "img" => "https://via.placeholder.com/300x200.png?text=Airbag+Frontal",
+        "img" => "https://s3.eu-central-1.wasabisys.com/atena-cloud/149/parts/213963/197b9f1584a330.webp",
         "name" => "Airbag cortina",
         "price" => "€120,00",
         "desc" => "Proteção frontal para condutor e passageiro.",

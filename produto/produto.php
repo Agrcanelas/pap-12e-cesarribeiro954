@@ -7,15 +7,15 @@ require_once '../auth/config.php';
 require_once '../includes/header.php';
 
 $airbags = [
-    "Airbag Frontal" => [
-        "name" => "Airbag Frontal",
+    "Airbag cortina" => [
+        "name" => "Airbag cortina",
         "price" => "€120,00",
         "desc" => "Proteção frontal para condutor e passageiro.",
         "condition" => "Novo",
         "year" => "2023",
         "images" => [
-            "https://via.placeholder.com/600x400.png?text=Airbag+Frontal+1",
-            "https://via.placeholder.com/600x400.png?text=Airbag+Frontal+2"
+            "https://s3.eu-central-1.wasabisys.com/atena-cloud/149/parts/213963/197b9f1584a330.webp",
+            "https://s3.eu-central-1.wasabisys.com/atena-cloud/149/parts/213963/197b9f15c1b336.webp"
         ]
     ],
     "Airbag Lateral" => [
@@ -52,12 +52,10 @@ $product = $airbags[$id];
 <link rel="stylesheet" href="../assets/css/style.css">
 
 <style>
-/* Espaço para o header */
 .page-wrapper {
     padding: 130px 20px 80px;
 }
 
-/* Layout principal */
 .product-page {
     max-width: 1100px;
     margin: auto;
@@ -66,7 +64,6 @@ $product = $airbags[$id];
     gap: 60px;
 }
 
-/* SLIDER */
 .slider-box {
     background: #fff;
     border-radius: 20px;
@@ -107,6 +104,27 @@ $product = $airbags[$id];
     background: #4caf70;
 }
 
+/* BOLINHAS INDICADORAS */
+.slider-indicators {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.slider-indicators span {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin: 0 6px;
+    background: #ccc;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.slider-indicators span.active {
+    background: #4caf70;
+}
+
 /* INFO */
 .product-info {
     background: #fff;
@@ -140,7 +158,6 @@ $product = $airbags[$id];
     margin: 25px 0;
 }
 
-/* Botão */
 .product-info .btn {
     margin-top: auto;
     padding: 14px;
@@ -160,7 +177,6 @@ $product = $airbags[$id];
     box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
-/* Mobile */
 @media (max-width: 900px) {
     .product-page {
         grid-template-columns: 1fr;
@@ -168,7 +184,6 @@ $product = $airbags[$id];
 }
 </style>
 </head>
-
 <body>
 
 <div class="page-wrapper">
@@ -182,6 +197,12 @@ $product = $airbags[$id];
 
             <button class="slider-btn left" onclick="prevImg()">❮</button>
             <button class="slider-btn right" onclick="nextImg()">❯</button>
+
+            <div class="slider-indicators">
+                <?php foreach($product['images'] as $index => $img): ?>
+                    <span class="<?= $index === 0 ? 'active' : '' ?>" onclick="goToImg(<?= $index ?>)"></span>
+                <?php endforeach; ?>
+            </div>
         </div>
 
         <!-- INFO -->
@@ -200,10 +221,14 @@ $product = $airbags[$id];
 <script>
 let index = 0;
 const images = document.querySelectorAll('.slider-box img');
+const indicators = document.querySelectorAll('.slider-indicators span');
 
 function showImg(i) {
     images.forEach(img => img.classList.remove('active'));
+    indicators.forEach(ind => ind.classList.remove('active'));
     images[i].classList.add('active');
+    indicators[i].classList.add('active');
+    index = i;
 }
 
 function nextImg() {
@@ -214,6 +239,10 @@ function nextImg() {
 function prevImg() {
     index = (index - 1 + images.length) % images.length;
     showImg(index);
+}
+
+function goToImg(i) {
+    showImg(i);
 }
 </script>
 
