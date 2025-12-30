@@ -1,5 +1,4 @@
 <?php
-// Ativa exibição de erros para debugging
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -7,7 +6,6 @@ error_reporting(E_ALL);
 require_once '../auth/config.php';
 require_once '../includes/header.php';
 
-// Produtos de exemplo (mesmos do airbags.php) com imagens adicionais e ano
 $airbags = [
     "Airbag Frontal" => [
         "name" => "Airbag Frontal",
@@ -16,8 +14,8 @@ $airbags = [
         "condition" => "Novo",
         "year" => "2023",
         "images" => [
-            "https://via.placeholder.com/500x300.png?text=Airbag+Frontal+1",
-            "https://via.placeholder.com/500x300.png?text=Airbag+Frontal+2"
+            "https://via.placeholder.com/600x400.png?text=Airbag+Frontal+1",
+            "https://via.placeholder.com/600x400.png?text=Airbag+Frontal+2"
         ]
     ],
     "Airbag Lateral" => [
@@ -27,39 +25,16 @@ $airbags = [
         "condition" => "Bom",
         "year" => "2020",
         "images" => [
-            "https://prod-images.custojusto.pt/play/1618649487-airbag-lateral-frente-esquerdo-bmw-7-730-d.jpg",
-            "https://via.placeholder.com/500x300.png?text=Airbag+Lateral+2"
-        ]
-    ],
-    "Airbag do Condutor" => [
-        "name" => "Airbag do Condutor",
-        "price" => "€130,00",
-        "desc" => "Airbag De Volante Volkswagen Polo (6R1, 6C1)",
-        "condition" => "Excelente",
-        "year" => "2021",
-        "images" => [
-            "https://ireland.apollo.olxcdn.com/v1/files/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmbiI6InIyNmFoeG8yc2pxcy1TVERWVExQVCIsInciOlt7ImZuIjoiNm1nandscDdrZ2RiMi1TVERWVExQVCIsInMiOiIxNiIsImEiOiIwIiwicCI6IjEwLC0xMCJ9XX0.Hj3zWQOYCPQWlXTbYIBuUr_Y6iw_Drbp-afpCrGNnZE/image;s=1024x0;q=80",
-            "https://via.placeholder.com/500x300.png?text=Airbag+Condutor+2"
-        ]
-    ],
-    "Airbag do Passageiro" => [
-        "name" => "Airbag do Passageiro",
-        "price" => "€73,00",
-        "desc" => "CHEVROLET MATIZ 800 2008 0.8I 52CV 5P BRANCO",
-        "condition" => "Razoavel",
-        "year" => "2008",
-        "images" => [
-            "https://ireland.apollo.olxcdn.com/v1/files/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmbiI6Ims5Nmd3MXc0YnJ5bDMtU1REVlRMUFQiLCJ3IjpbeyJmbiI6IjZtZ2p3bHA3a2dkYjItU1REVlRMUFQiLCJzIjoiMTYiLCJhIjoiMCIsInAiOiIxMCwtMTAifV19.l-OBLkNgzznXAO98HxiHW2iemuINkzBdrYdRRohQtvc/image;s=1024x0;q=80",
-            "https://via.placeholder.com/500x300.png?text=Airbag+Passageiro+2"
+            "https://ireland.apollo.olxcdn.com/v1/files/ypt90zps5mz51-PT/image;s=1000x700",
+            "https://ireland.apollo.olxcdn.com/v1/files/sq3up22boc28-PT/image;s=1000x700"
         ]
     ]
 ];
 
-// Pega o id do produto da URL
 $id = $_GET['id'] ?? null;
 
 if (!$id || !isset($airbags[$id])) {
-    echo "<h2 style='text-align:center; margin-top:50px;'>Produto não encontrado!</h2>";
+    echo "<h2 style='text-align:center; margin-top:120px;'>Produto não encontrado</h2>";
     require_once '../includes/footer.php';
     exit;
 }
@@ -72,92 +47,175 @@ $product = $airbags[$id];
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title><?= $product['name'] ?> - Detalhes</title>
+<title><?= $product['name'] ?></title>
+
 <link rel="stylesheet" href="../assets/css/style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <style>
-.product-detail-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin: 50px 20px;
+/* Espaço para o header */
+.page-wrapper {
+    padding: 130px 20px 80px;
 }
 
-.images-gallery {
-    flex: 1;
-    min-width: 300px;
-    max-width: 500px;
-    margin-right: 30px;
+/* Layout principal */
+.product-page {
+    max-width: 1100px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
 }
 
-.images-gallery img {
+/* SLIDER */
+.slider-box {
+    background: #fff;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    position: relative;
+}
+
+.slider-box img {
     width: 100%;
-    border-radius: 10px;
-    margin-bottom: 10px;
+    border-radius: 15px;
+    display: none;
 }
 
+.slider-box img.active {
+    display: block;
+}
+
+/* Setas */
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.slider-btn.left { left: 15px; }
+.slider-btn.right { right: 15px; }
+
+.slider-btn:hover {
+    background: #4caf70;
+}
+
+/* INFO */
 .product-info {
-    flex: 1;
-    min-width: 250px;
-    max-width: 400px;
+    background: #fff;
+    border-radius: 20px;
+    padding: 35px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
 }
 
 .product-info h2 {
     color: #2e7d32;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .product-info .desc {
-    font-size: 15px;
-    margin-bottom: 10px;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 20px;
 }
 
-.product-info .condition,
-.product-info .year,
-.product-info .price {
+.product-info .spec {
     font-weight: bold;
     margin-bottom: 8px;
-    font-size: 14px;
 }
 
+.product-info .price {
+    font-size: 22px;
+    font-weight: bold;
+    color: #ff3d3d;
+    margin: 25px 0;
+}
+
+/* Botão */
 .product-info .btn {
-    padding: 10px 18px;
+    margin-top: auto;
+    padding: 14px;
     border: none;
     background: linear-gradient(45deg, #4caf70, #66d78b);
     color: #fff;
-    border-radius: 25px;
-    cursor: pointer;
+    border-radius: 30px;
+    font-size: 16px;
     font-weight: bold;
-    font-size: 15px;
-    transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
-    display: inline-block;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
 }
 
 .product-info .btn:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-    background: linear-gradient(45deg, #66d78b, #4caf70);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+/* Mobile */
+@media (max-width: 900px) {
+    .product-page {
+        grid-template-columns: 1fr;
+    }
 }
 </style>
 </head>
+
 <body>
 
-<div class="product-detail-container">
-    <div class="images-gallery">
-        <?php foreach($product['images'] as $img): ?>
-            <img src="<?= $img ?>" alt="<?= $product['name'] ?>">
-        <?php endforeach; ?>
-    </div>
-    <div class="product-info">
-        <h2><?= $product['name'] ?></h2>
-        <div class="desc"><?= $product['desc'] ?></div>
-        <div class="condition">Estado: <?= $product['condition'] ?></div>
-        <div class="year">Ano: <?= $product['year'] ?></div>
-        <div class="price">Preço: <?= $product['price'] ?></div>
-        <button class="btn">Adicionar ao carrinho</button>
+<div class="page-wrapper">
+    <div class="product-page">
+
+        <!-- SLIDER -->
+        <div class="slider-box">
+            <?php foreach($product['images'] as $index => $img): ?>
+                <img src="<?= $img ?>" class="<?= $index === 0 ? 'active' : '' ?>">
+            <?php endforeach; ?>
+
+            <button class="slider-btn left" onclick="prevImg()">❮</button>
+            <button class="slider-btn right" onclick="nextImg()">❯</button>
+        </div>
+
+        <!-- INFO -->
+        <div class="product-info">
+            <h2><?= $product['name'] ?></h2>
+            <div class="desc"><?= $product['desc'] ?></div>
+            <div class="spec">Estado: <?= $product['condition'] ?></div>
+            <div class="spec">Ano: <?= $product['year'] ?></div>
+            <div class="price"><?= $product['price'] ?></div>
+            <button class="btn">Adicionar ao carrinho</button>
+        </div>
+
     </div>
 </div>
+
+<script>
+let index = 0;
+const images = document.querySelectorAll('.slider-box img');
+
+function showImg(i) {
+    images.forEach(img => img.classList.remove('active'));
+    images[i].classList.add('active');
+}
+
+function nextImg() {
+    index = (index + 1) % images.length;
+    showImg(index);
+}
+
+function prevImg() {
+    index = (index - 1 + images.length) % images.length;
+    showImg(index);
+}
+</script>
 
 <?php require_once '../includes/footer.php'; ?>
 </body>

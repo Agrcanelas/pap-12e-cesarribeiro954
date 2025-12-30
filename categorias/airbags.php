@@ -12,13 +12,13 @@ require_once '../includes/header.php';
 $airbags = [
     [
         "img" => "https://via.placeholder.com/300x200.png?text=Airbag+Frontal",
-        "name" => "Airbag Frontal",
+        "name" => "Airbag cortina",
         "price" => "€120,00",
         "desc" => "Proteção frontal para condutor e passageiro.",
         "condition" => "Novo"
     ],
     [
-        "img" => "https://prod-images.custojusto.pt/play/1618649487-airbag-lateral-frente-esquerdo-bmw-7-730-d.jpg",
+        "img" => "https://ireland.apollo.olxcdn.com/v1/files/46n9h4lbxox81-PT/image;s=1000x700",
         "name" => "Airbag Lateral",
         "price" => "€115,00",
         "desc" => "Airbag lateral frente esquerdo BMW 7 730 D",
