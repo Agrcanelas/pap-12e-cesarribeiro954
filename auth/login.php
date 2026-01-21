@@ -110,7 +110,7 @@ h2 { margin-bottom: 25px; font-size: 22px; color: #2e7d32; }
         <h1>Ecopeças</h1>
     </div>
 
-    <h2>Login</h2>
+    <h2>Entrar</h2>
 
     <?php if($message): ?>
         <p class="message" style="color: <?= $messageColor ?>"><?= $message ?></p>
