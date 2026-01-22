@@ -1,40 +1,80 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+/* ========= RAIZ DO SITE ========= */
+$base = dirname($_SERVER['SCRIPT_NAME']);
+$base = explode('/categorias', $base)[0];
+/* ================================= */
+
+// Idioma
+if (isset($_GET['lang'])) {
+    $_SESSION['lang'] = $_GET['lang'];
+}
+$lang = $_SESSION['lang'] ?? 'pt';
+
+// Tema
+if (isset($_GET['theme'])) {
+    $_SESSION['theme'] = $_GET['theme'];
+}
+$theme = $_SESSION['theme'] ?? 'light';
+
+// Traduções
+$translations = [
+    'pt' => [
+        'home' => 'Inicio',
+        'cart' => 'Carrinho',
+        'login' => 'Entrar',
+        'theme' => 'Modo',
+        'offers' => 'Ofertas',
+        'logout' => 'Sair'
+    ],
+    'en' => [
+        'home' => 'Home',
+        'cart' => 'Cart',
+        'login' => 'Login',
+        'theme' => 'Mode',
+        'offers' => 'Offers',
+        'logout' => 'Logout'
+    ]
+];
+
+$user_logged_in = isset($_SESSION['user_id']);
+$user_name = $_SESSION['user_name'] ?? '';
+?>
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="<?= $lang ?>">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Carrinho - Ecopeças</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
-<!-- Favicon -->
-<link rel="icon" href="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg?w=360" type="image/png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-* { box-sizing: border-box; margin:0; padding:0; font-family:'Roboto', sans-serif; }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
 
+/* ======= BODY ======= */
 body {
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    padding: 50px 20px;
-    background: url('https://st2.depositphotos.com/1001335/10397/i/950/depositphotos_103971628-stock-photo-concept-of-auto-parts-shopping.jpg') no-repeat center center/cover;
-    background-size: cover;
-    backdrop-filter: blur(2px);
+    background: url('https://st2.depositphotos.com/1001335/10397/i/950/depositphotos_103971628-stock-photo-concept-of-auto-parts-shopping.jpg') no-repeat center/cover;
+    padding: 140px 20px 40px; /* espaço para o header */
 }
 
+/* ======= CARRINHO ======= */
 .cart-container {
-    background: rgba(255,255,255,0.4);
-    width: 100%;
     max-width: 700px;
+    margin: auto;
+    background: rgba(255,255,255,0.45);
     border-radius: 25px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
     padding: 40px;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.cart-container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
 }
 
 .cart-title {
@@ -44,12 +84,12 @@ body {
     gap: 15px;
     margin-bottom: 40px;
 }
+
 .cart-title img {
     width: 60px;
-    height: 60px;
     border-radius: 50%;
-    object-fit: cover;
 }
+
 .cart-title span {
     font-size: 34px;
     font-weight: bold;
@@ -57,313 +97,136 @@ body {
 }
 
 .cart-item {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:20px 20px;
-    border-radius:15px;
-    margin-bottom:20px;
-    background: rgba(255,255,255,0.5);
-    box-shadow:0 6px 20px rgba(0,0,0,0.08);
-    transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 15px;
+    background: rgba(255,255,255,0.6);
 }
 
-.cart-item:hover {
-    transform: translateY(-5px);
-    box-shadow:0 12px 30px rgba(0,0,0,0.15);
-    background: rgba(224,255,229,0.6);
+.cart-item h3 {
+    color: #333;
 }
 
-.item-info h3 { margin-bottom:8px; color:#333; font-size:18px; }
-.item-info p { color:#555; font-size:14px; }
-
-.item-quantity { display:flex; align-items:center; gap:10px; }
-
-.item-quantity input {
-    width:60px;
-    padding:8px;
-    text-align:center;
-    border-radius:10px;
-    border:1px solid #ccc;
-    transition:border 0.3s, box-shadow 0.3s;
+.cart-item p {
+    color: #555;
 }
 
-.item-quantity input:focus {
-    border-color:#66d78b;
-    box-shadow:0 0 10px rgba(102,215,139,0.5);
+.cart-item input {
+    width: 60px;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
 }
 
 .remove-btn {
-    background: linear-gradient(135deg, #ff6b6b, #ff3d3d);
-    border:none;
-    color:#fff;
-    padding:10px 18px;
-    border-radius:50px;
-    cursor:pointer;
-    font-weight:bold;
-    transition: all 0.3s;
-}
-
-.remove-btn:hover {
-    transform: scale(1.1);
-    box-shadow:0 6px 20px rgba(255,61,61,0.4);
-}
-
-.cart-total {
-    text-align:right;
-    margin-top:25px;
-    font-size:24px;
-    font-weight:bold;
-    color:#2e7d32;
-    transition: transform 0.3s ease;
-}
-
-/* Mensagem de envio grátis */
-.shipping-msg {
-    text-align:right;
-    font-size:16px;
-    margin-top:5px;
-    color:#4caf70;
-    font-weight:bold;
-}
-
-.checkout-btn {
-    margin-top:20px;
-    width:100%;
-    padding:16px;
-    background: linear-gradient(135deg, #66d78b, #4caf70);
-    color:#fff;
-    border:none;
-    border-radius:50px;
-    font-size:18px;
-    font-weight:bold;
-    cursor:pointer;
-    transition: all 0.3s ease;
-    box-shadow:0 6px 20px rgba(76,175,112,0.3);
-}
-
-.checkout-btn:hover {
-    transform: scale(1.03);
-    box-shadow:0 10px 30px rgba(76,175,112,0.4);
-}
-
-.finalizar-container {
-    background: rgba(255,255,255,0.4);
-    border-radius: 20px;
-    padding: 30px;
-    margin-top: 30px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    display: none;
-    opacity: 0;
-    transition: all 0.5s ease;
-    position: relative;
-    z-index: 10;
-}
-
-.finalizar-container.active {
-    display: block;
-    opacity: 1;
-}
-
-.finalizar-container h2 {
-    text-align: center;
-    color: #2e7d32;
-    margin-bottom: 25px;
-    font-size:28px;
-}
-
-.finalizar-container form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.finalizar-container label {
-    font-weight: bold;
-    color: #2e7d32;
-}
-
-.finalizar-container input, .finalizar-container select {
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-    transition: border 0.3s, box-shadow 0.3s;
-}
-
-.finalizar-container input:focus, .finalizar-container select:focus {
-    border-color:#66d78b;
-    box-shadow:0 0 8px rgba(102,215,139,0.5);
-    outline:none;
-}
-
-.payment-methods {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.payment-methods label {
-    font-weight: normal;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    background: #ff3d3d;
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 30px;
     cursor: pointer;
 }
 
-.confirm-btn {
-    margin-top: 20px;
+.cart-total {
+    text-align: right;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 25px;
+    color: #2e7d32;
+}
+
+.checkout-btn {
+    margin-top: 25px;
+    width: 100%;
     padding: 16px;
-    background: linear-gradient(135deg, #66d78b, #4caf70);
-    color:#fff;
+    background: #4caf70;
+    color: #fff;
+    border: none;
+    border-radius: 40px;
     font-size: 18px;
     font-weight: bold;
-    border:none;
-    border-radius: 50px;
-    cursor:pointer;
-    transition: all 0.3s ease;
-    box-shadow:0 6px 20px rgba(76,175,112,0.3);
-}
-
-.confirm-btn:hover {
-    transform: scale(1.03);
-    box-shadow:0 10px 30px rgba(76,175,112,0.4);
-}
-
-@media (max-width:600px){
-    .cart-item{ flex-direction: column; align-items:flex-start; gap:15px; }
-    .item-quantity{ justify-content:flex-start; }
-    .cart-total{ text-align:left; }
-    .finalizar-container form { gap: 12px; }
-    .payment-methods { gap: 8px; }
-    .cart-title { flex-direction: column; gap: 10px; }
+    cursor: pointer;
 }
 </style>
 </head>
+
 <body>
 
+<!-- ================= HEADER ORIGINAL ================= -->
+<header id="mainHeader" style="background:#2e7d32; padding:15px 30px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 4px 10px rgba(0,0,0,0.1); border-radius:10px; flex-wrap:wrap; gap:10px; position:fixed; top:15px; left:15px; right:15px; z-index:1000;">
+
+    <div style="display:flex; align-items:center; gap:10px;">
+        <img src="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg" style="height:50px;">
+        <span style="font-size:28px; font-weight:bold; color:#fff;">Ecopeças</span>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+
+        <nav style="display:flex; gap:25px; font-weight:bold;">
+            <a href="<?= $base ?>/index.php" style="color:#fff; text-decoration:none;"><i class="fa fa-home"></i> <?= $translations[$lang]['home'] ?></a>
+            <a href="<?= $base ?>/cart.php" style="color:#fff; text-decoration:none;"><i class="fa fa-shopping-cart"></i> <?= $translations[$lang]['cart'] ?></a>
+            <a href="<?= $base ?>/ofertas.php" style="color:#fff; text-decoration:none;"><i class="fa fa-tags"></i> <?= $translations[$lang]['offers'] ?></a>
+        </nav>
+
+        <form method="get">
+            <input type="hidden" name="lang" value="<?= $lang ?>">
+            <button name="theme" value="<?= $theme=='light'?'dark':'light' ?>" style="border:none; border-radius:20px; padding:6px 12px; cursor:pointer;">
+                <?= $theme=='light'?'🌞':'🌜' ?>
+            </button>
+        </form>
+
+        <form method="get" style="display:flex; gap:6px;">
+            <button name="lang" value="pt" style="border:none; background:none;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Portugal.svg" width="28">
+            </button>
+            <button name="lang" value="en" style="border:none; background:none;">
+                <img src="https://upload.wikimedia.org/wikipedia/en/a/ae/Flag_of_the_United_Kingdom.svg" width="28">
+            </button>
+        </form>
+
+        <?php if($user_logged_in): ?>
+            <span style="color:#fff;">Olá, <?= htmlspecialchars($user_name) ?> 😄</span>
+            <a href="<?= $base ?>/auth/logout.php" style="color:#fff; font-weight:bold;">Sair</a>
+        <?php else: ?>
+            <a href="<?= $base ?>/auth/login.php" style="color:#fff; font-weight:bold;">Entrar</a>
+        <?php endif; ?>
+    </div>
+</header>
+
+<!-- ================= CARRINHO ================= -->
 <div class="cart-container">
 
     <div class="cart-title">
-        <img src="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg" alt="Logo Ecopeças">
-        <span>Ecopeças</span>
+        <img src="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg">
+        <span>Carrinho</span>
     </div>
 
     <div class="cart-item">
-        <div class="item-info">
+        <div>
             <h3>Filtro de Óleo</h3>
-            <p>Preço: €50,00</p>
+            <p>Preço: €50</p>
         </div>
-        <div class="item-quantity">
-            <input type="number" value="1" min="1">
-        </div>
+        <input type="number" value="1" min="1">
         <button class="remove-btn">Remover</button>
     </div>
 
     <div class="cart-item">
-        <div class="item-info">
+        <div>
             <h3>Pastilhas de Freio</h3>
-            <p>Preço: €120,00</p>
+            <p>Preço: €120</p>
         </div>
-        <div class="item-quantity">
-            <input type="number" value="2" min="1">
-        </div>
+        <input type="number" value="2" min="1">
         <button class="remove-btn">Remover</button>
     </div>
 
-    <div class="cart-total">Total: €290,00</div>
-    <div class="shipping-msg" id="shippingMsg"></div>
+    <div class="cart-total">Total: €290</div>
 
-    <button class="checkout-btn" id="toggleCheckout">Finalizar Compra</button>
-
-    <div class="finalizar-container" id="finalizarForm">
-        <h2>Finalizar Compra</h2>
-        <form>
-            <label for="nome">Nome Completo</label>
-            <input type="text" id="nome" placeholder="Seu nome">
-
-            <label for="email">Email</label>
-            <input type="email" id="email" placeholder="email@exemplo.com">
-
-            <label for="telefone">Telefone</label>
-            <input type="tel" id="telefone" placeholder="(XX) XXXXX-XXXX">
-
-            <label for="rua">Rua</label>
-            <input type="text" id="rua" placeholder="Nome da rua, nº">
-
-            <label for="cidade">Cidade</label>
-            <input type="text" id="cidade" placeholder="Cidade">
-
-            <label for="cep">CEP</label>
-            <input type="text" id="cep" placeholder="00000-000">
-
-            <label for="pais">País</label>
-            <select id="pais">
-                <option>Portugal</option>
-                <option>Espanha</option>
-                <option>Brasil</option>
-                <option>Outro</option>
-            </select>
-
-            <div class="payment-methods">
-                <label><input type="radio" name="pagamento" value="cartao" checked> Cartão de Crédito/Débito</label>
-                <label><input type="radio" name="pagamento" value="mbway"> MBWay</label>
-                <label><input type="radio" name="pagamento" value="paypal"> PayPal</label>
-            </div>
-
-            <button type="submit" class="confirm-btn">Confirmar Compra</button>
-        </form>
-    </div>
+    <button class="checkout-btn">Finalizar Compra</button>
 </div>
-
-<script>
-const cartItems = document.querySelectorAll('.cart-item');
-const totalEl = document.querySelector('.cart-total');
-const shippingMsg = document.getElementById('shippingMsg');
-const toggleBtn = document.getElementById('toggleCheckout');
-const finalizarForm = document.getElementById('finalizarForm');
-
-function updateTotal() {
-    let total = 0;
-    document.querySelectorAll('.cart-item').forEach(item => {
-        const priceText = item.querySelector('.item-info p').innerText;
-        const price = parseFloat(priceText.replace('Preço: €','').replace(',', '.'));
-        const quantity = parseInt(item.querySelector('.item-quantity input').value);
-        total += price * quantity;
-    });
-    totalEl.style.transform = 'scale(1.2)';
-    totalEl.innerText = 'Total: €' + total.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    
-    // Atualiza mensagem de envio
-    if(total <= 120) {
-        shippingMsg.innerText = 'Envio grátis para compras acima de €120!';
-        shippingMsg.style.color = '#000000ff';
-    } else {
-        shippingMsg.innerText = 'Envio normal';
-        shippingMsg.style.color = '#ff6b6b';
-    }
-
-    setTimeout(()=>{ totalEl.style.transform='scale(1)'; },200);
-}
-
-cartItems.forEach(item => {
-    const qtyInput = item.querySelector('.item-quantity input');
-    const removeBtn = item.querySelector('.remove-btn');
-
-    qtyInput.addEventListener('input', updateTotal);
-    removeBtn.addEventListener('click', () => {
-        item.remove();
-        updateTotal();
-    });
-});
-
-updateTotal();
-
-toggleBtn.addEventListener('click', () => {
-    finalizarForm.classList.toggle('active');
-    finalizarForm.scrollIntoView({ behavior: 'smooth' });
-});
-</script>
 
 </body>
 </html>
