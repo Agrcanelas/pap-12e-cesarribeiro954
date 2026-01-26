@@ -260,9 +260,13 @@ body {
         </nav>
 
         <!-- PESQUISA -->
-        <div class="search-box">
-            <input type="text" placeholder="Pesquisar produtos...">
-            <button><i class="fa fa-search"></i></button>
+        <div style="position:relative; display:flex; align-items:center;">
+            <input type="text" id="searchBox" placeholder="Pesquisar produtos..."
+                   style="padding:10px 20px; border-radius:30px; border:none; outline:none; width:260px; font-size:15px; box-shadow:0 3px 10px rgba(0,0,0,0.2); transition:0.3s;">
+            <button type="button"
+                    style="position:absolute; right:0; border:none; background:#66d78b; border-radius:50%; width:36px; height:36px; cursor:pointer; color:#fff; display:flex; justify-content:center; align-items:center;">
+                <i class="fa fa-search"></i>
+            </button>
         </div>
 
         <!-- MODO -->
