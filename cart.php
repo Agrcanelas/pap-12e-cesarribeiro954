@@ -48,6 +48,9 @@ $user_name = $_SESSION['user_name'] ?? '';
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Carrinho - Ecopeças</title>
 
+<!-- FAVICON ADICIONADO -->
+<link rel="icon" href="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg?w=360" type="image/png">
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
@@ -94,7 +97,7 @@ header#mainHeader {
     align-items:center;
     gap:45px; /* espaçamento maior entre itens */
     flex-wrap:wrap;
-    margin-left:auto; /* força itens para a direita */
+    margin-left:auto;
 }
 
 nav.menu {
@@ -119,7 +122,7 @@ nav.menu a {
 }
 
 .search-box input {
-    padding:10px 50px 10px 20px; /* espaço para o botão */
+    padding:10px 50px 10px 20px;
     border-radius:30px;
     border:none;
     outline:none;
@@ -136,7 +139,7 @@ nav.menu a {
     border:none;
     background:#66d78b;
     border-radius:50%;
-    width:36px; /* um pouquinho maior para ficar bonito */
+    width:36px;
     height:36px;
     cursor:pointer;
     color:#fff;
@@ -245,7 +248,6 @@ body {
 <body>
 
 <header id="mainHeader">
-
     <div class="logo-container">
         <img src="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg">
         <div class="logo-text">Ecopeças</div>
@@ -331,6 +333,7 @@ body {
     </div>
 
     <div class="cart-total">Total: €290</div>
+
     <button class="checkout-btn">Finalizar Compra</button>
 </div>
 
