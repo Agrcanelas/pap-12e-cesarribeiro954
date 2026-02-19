@@ -1,174 +1,148 @@
 <?php
-// Ativa exibição de erros para debugging
+// Ativa exibição de erros para debugging durante o desenvolvimento
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-session_start();
-require_once '../auth/config.php';
-require_once '../includes/header.php';
+// Inicia a sessão para manter idioma e tema
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// Produtos de exemplo da categoria Interior
-$interior = [
-    [
-        "img" => "https://via.placeholder.com/300x200.png?text=Banco+Couro",
-        "name" => "Banco de Couro",
-        "price" => "€220,00",
-        "desc" => "Banco confortável em couro premium para maior luxo e estilo.",
-        "condition" => "Novo"
-    ],
-    [
-        "img" => "https://via.placeholder.com/300x200.png?text=Tapetes+Automotivos",
-        "name" => "Tapetes Automotivos",
-        "price" => "€45,00",
-        "desc" => "Tapetes resistentes e fáceis de limpar, perfeitos para qualquer veículo.",
-        "condition" => "Bom"
-    ],
-    [
-        "img" => "https://via.placeholder.com/300x200.png?text=Volante+Esportivo",
-        "name" => "Volante Esportivo",
-        "price" => "€85,00",
-        "desc" => "Volante ergonômico que oferece melhor controle e conforto.",
-        "condition" => "Excelente"
-    ],
-    [
-        "img" => "https://via.placeholder.com/300x200.png?text=Capa+de+Banco",
-        "name" => "Capa de Banco",
-        "price" => "€30,00",
-        "desc" => "Capa protetora que mantém seus bancos limpos e bem conservados.",
-        "condition" => "Novo"
-    ]
-];
+// 1. Ligar à Base de Dados
+// Ajusta o caminho se o ficheiro config.php estiver noutra pasta
+require_once '../auth/config.php'; 
+
+// 2. Procurar o ID da categoria "airbags" na tabela
+$cat_slug = 'interior';
+$stmt_cat = $conn->prepare("SELECT id FROM categories WHERE slug = ?");
+$stmt_cat->bind_param("s", $cat_slug);
+$stmt_cat->execute();
+$res_cat = $stmt_cat->get_result();
+$cat_data = $res_cat->fetch_assoc();
+
+if (!$cat_data) {
+    die("Erro: Categoria 'airbags' não encontrada na base de dados. Verifica a tabela 'categories'.");
+}
+
+$category_id = $cat_data['id'];
+
+// 3. Procurar os produtos pertencentes a esta categoria
+$stmt_prod = $conn->prepare("SELECT * FROM products WHERE category_id = ?");
+$stmt_prod->bind_param("i", $category_id);
+$stmt_prod->execute();
+$products_result = $stmt_prod->get_result();
+
+// 4. Incluir o Header (que já tem o CSS global e menu)
+require_once '../includes/header.php';
 ?>
 
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="<?= $lang ?>">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Interior - Ecopeças</title>
-<link rel="stylesheet" href="../assets/css/style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <title>Airbags - Ecopeças</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* Estilos específicos para a grelha de produtos */
+        .products-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            padding: 40px;
+        }
 
-<style>
-.products-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin: 50px 20px;
-}
+        .product-card {
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            width: 300px;
+            text-align: center;
+            padding: 20px;
+            transition: transform 0.3s ease;
+        }
 
-.product-card {
-    width: 250px;
-    margin: 15px;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 15px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    text-align: center;
-    padding: 15px;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
+        /* Suporte ao Modo Escuro */
+        body.dark .product-card {
+            background: #1e1e1e;
+            color: #fff;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
 
-.product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-}
+        .product-card:hover {
+            transform: translateY(-10px);
+        }
 
-.product-card img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 10px;
-}
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
 
-.product-card h3 {
-    font-size: 18px;
-    margin: 10px 0;
-    color: #2e7d32;
-}
+        .product-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
 
-.product-card .desc {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 10px;
-}
+        .product-card .price {
+            font-size: 1.2rem;
+            color: #2e7d32;
+            font-weight: bold;
+            margin: 10px 0;
+        }
 
-.product-card .condition {
-    font-size: 13px;
-    color: #2e7d32;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
+        body.dark .product-card .price {
+            color: #4caf50;
+        }
 
-.product-card .price {
-    font-weight: bold;
-    color: #ff3d3d;
-    font-size: 16px;
-    margin-bottom: 10px;
-}
+        .product-card .btn {
+            display: inline-block;
+            background: #2e7d32;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: 0.3s;
+        }
 
-/* Botão "Adicionar ao carrinho" */
-.product-card .btn {
-    margin-top: 10px;
-    padding: 10px 18px;
-    border: none;
-    background: linear-gradient(45deg, #4caf70, #66d78b);
-    color: #fff;
-    border-radius: 25px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 15px;
-    text-decoration: none;
-    transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
-    display: inline-block;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
-
-.product-card .btn:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-    background: linear-gradient(45deg, #66d78b, #4caf70);
-}
-
-/* Botão "Ver detalhes" discreto */
-.btn-details {
-    display: block;
-    margin: 5px auto 0 auto;
-    padding: 5px 12px;
-    background: #ccc;
-    color: #333;
-    border-radius: 20px;
-    font-size: 13px;
-    text-decoration: none;
-    text-align: center;
-    transition: 0.3s;
-}
-
-.btn-details:hover {
-    background: #bbb;
-}
-</style>
+        .product-card .btn:hover {
+            background: #1b5e20;
+        }
+    </style>
 </head>
+<body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>">
 
-<body>
-
-<h1 style="text-align:center; margin-top:30px;">Produtos - Interior</h1>
+<h1 style="text-align:center; margin-top:30px;">
+    <?= ($lang == 'pt') ? 'Produtos - Airbags' : 'Products - Airbags' ?>
+</h1>
 
 <div class="products-container">
-<?php foreach($interior as $product): ?>
-    <div class="product-card">
-        <img src="<?= $product['img'] ?>" alt="<?= $product['name'] ?>">
-        <h3><?= $product['name'] ?></h3>
-        <div class="desc"><?= $product['desc'] ?></div>
-        <div class="condition">Estado: <?= $product['condition'] ?></div>
-        <div class="price"><?= $product['price'] ?></div>
-        <button class="btn">Adicionar ao carrinho</button>
-        <a href="../produto/produto.php?id=<?= urlencode($product['name']) ?>" class="btn-details">Ver detalhes</a>
-    </div>
-<?php endforeach; ?>
+    <?php if ($products_result->num_rows > 0): ?>
+        <?php while($product = $products_result->fetch_assoc()): ?>
+            <div class="product-card">
+                <img src="<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>">
+                
+                <h3><?= htmlspecialchars($product['name']) ?></h3>
+                
+                <div class="price">€<?= number_format($product['price'], 2, ',', '.') ?></div>
+                
+                <p><strong>Estado:</strong> <?= htmlspecialchars($product['condition_state']) ?></p>
+                
+                <a href="../produto.php?id=<?= $product['id'] ?>" class="btn">
+                    <?= ($lang == 'pt') ? 'Ver Detalhes' : 'View Details' ?>
+                </a>
+            </div>
+        <?php endwhile; ?>
+    <?php else: ?>
+        <p style="text-align:center; width:100%;">
+            <?= ($lang == 'pt') ? 'Nenhum produto encontrado nesta categoria.' : 'No products found in this category.' ?>
+        </p>
+    <?php endif; ?>
 </div>
 
 <?php require_once '../includes/footer.php'; ?>
-
 </body>
 </html>
