@@ -14,8 +14,7 @@ $airbags = [
         "condition" => "Novo",
         "year" => "2023",
         "images" => [
-            "https://s3.eu-central-1.wasabisys.com/atena-cloud/149/parts/213963/197b9f1584a330.webp",
-            "https://s3.eu-central-1.wasabisys.com/atena-cloud/149/parts/213963/197b9f15c1b336.webp"
+            
         ]
     ],
     "Airbag Lateral" => [
@@ -24,12 +23,10 @@ $airbags = [
         "desc" => "Airbag lateral frente esquerdo BMW 7 730 D",
         "condition" => "Bom",
         "year" => "2020",
-        "images" => [
-            "https://ireland.apollo.olxcdn.com/v1/files/ypt90zps5mz51-PT/image;s=1000x700",
-            "https://ireland.apollo.olxcdn.com/v1/files/sq3up22boc28-PT/image;s=1000x700"
+        
         ]
     ]
-];
+
 
 $id = $_GET['id'] ?? null;
 
