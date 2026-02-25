@@ -60,14 +60,17 @@ $user_name = $_SESSION['user_name'] ?? '';
             </a>
         </nav>
 
-        <div style="position:relative; display:flex; align-items:center;">
-            <input type="text" id="searchBox" placeholder="Pesquisar produtos..."
-                   style="padding:10px 20px; border-radius:30px; border:none; outline:none; width:260px; font-size:15px; box-shadow:0 3px 10px rgba(0,0,0,0.2); transition:0.3s;">
-            <button type="button"
-                    style="position:absolute; right:0; border:none; background:#66d78b; border-radius:50%; width:36px; height:36px; cursor:pointer; color:#fff; display:flex; justify-content:center; align-items:center;">
-                <i class="fa fa-search"></i>
-            </button>
-        </div>
+        <form action="<?= $base ?>/search.php" method="GET" style="position:relative; display:flex; align-items:center; margin:0;">
+    <input type="text" name="q" id="searchBox" placeholder="Pesquisar produtos..." required
+           style="padding:10px 45px 10px 10px; border-radius:30px; border:none; outline:none; width:260px; font-size:15px; box-shadow:0 3px 10px rgba(0,0,0,0.2); transition:0.3s;">
+    
+    <button type="submit"
+            style="position:absolute; right:0; border:none; background:#66d78b; border-radius:50%; width:38px; height:36px; cursor:pointer; color:#fff; display:flex; justify-content:center; align-items:center; transition: 0.3s;"
+            onmouseover="this.style.background='#2e7d32'"
+            onmouseout="this.style.background='#66d78b'">
+        <i class="fa fa-search"></i>
+    </button>
+</form>
 
         <form method="get" style="margin:0; display:flex; align-items:center; gap:8px;">
             <input type="hidden" name="lang" value="<?= $lang ?>">
