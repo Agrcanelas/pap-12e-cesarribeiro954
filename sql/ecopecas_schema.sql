@@ -15,7 +15,8 @@ CREATE TABLE products (
   description TEXT,
   year INT,
   condition_state VARCHAR(50),
-  price DECIMAL(10,2)
+  price DECIMAL(10,2),
+  image_url VARCHAR(255) DEFAULT ''
 );
 
 CREATE TABLE orders (
@@ -34,5 +35,15 @@ CREATE TABLE order_items (
   qty INT,
   price DECIMAL(10,2),
   FOREIGN KEY (order_id) REFERENCES orders(id),
+  FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+CREATE TABLE cart (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  product_id INT NOT NULL,
+  quantity INT DEFAULT 1,
+  UNIQUE KEY unique_cart (user_id, product_id),
+  FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (product_id) REFERENCES products(id)
 );

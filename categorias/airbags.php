@@ -185,10 +185,10 @@ require_once '../includes/header.php';
                         <?= ($lang == 'pt') ? 'Detalhes' : 'Details' ?>
                     </a>
                     
-                    <a href="#" onclick="alert('Item adicionado ao seu carrinho!'); return false;" class="btn btn-cart">
-                        <i class="fa fa-cart-plus"></i> 
-                        <?= ($lang == 'pt') ? 'Adicionar' : 'Add' ?>
-                    </a>
+                    <a href="../add_to_cart.php?id=<?= $product['id'] ?>" class="btn btn-cart">
+    <i class="fa fa-cart-plus"></i> 
+    <?= ($lang == 'pt') ? 'Adicionar' : 'Add' ?>
+</a>
                 </div>
             </div>
         <?php endwhile; ?>

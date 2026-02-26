@@ -69,9 +69,10 @@ if (!empty($query_term)) {
                         <a href="<?= $base ?>/produto.php?id=<?= $product['id'] ?>" class="btn btn-details">
                             <i class="fa fa-info-circle"></i> Detalhes
                         </a>
-                        <a href="#" class="btn btn-cart">
-                            <i class="fa fa-cart-plus"></i> Adicionar
-                        </a>
+                       <a href="<?= $base ?>/add_to_cart.php?id=<?= $product['id'] ?>" class="btn btn-cart">
+                        <i class="fa fa-cart-plus"></i> 
+                        <?= ($lang == 'pt') ? 'Adicionar' : 'Add' ?>
+                    </a>
                     </div>
                 </div>
             <?php endwhile; ?>

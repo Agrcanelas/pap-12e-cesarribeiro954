@@ -2,340 +2,140 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+require_once 'auth/config.php'; 
+require_once 'includes/header.php';
 
-/* ========= RAIZ DO SITE ========= */
-$base = dirname($_SERVER['SCRIPT_NAME']);
-$base = explode('/categorias', $base)[0];
-/* ================================= */
-
-// Idioma
-if (isset($_GET['lang'])) {
-    $_SESSION['lang'] = $_GET['lang'];
-}
+// Variáveis para as traduções (mantendo o teu padrão)
 $lang = $_SESSION['lang'] ?? 'pt';
 
-// Tema
-if (isset($_GET['theme'])) {
-    $_SESSION['theme'] = $_GET['theme'];
+// Se não está logado, cart vazio
+if (!isset($_SESSION['user_id'])) {
+    $cart_items = array();
+} else {
+    // Ler diretamente da base de dados
+    $user_id = $_SESSION['user_id'];
+    $stmt = $conn->prepare("SELECT product_id, quantity FROM cart WHERE user_id = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    
+    $cart_items = array();
+    while ($row = $res->fetch_assoc()) {
+        $cart_items[$row['product_id']] = $row['quantity'];
+    }
 }
-$theme = $_SESSION['theme'] ?? 'light';
 
-// Traduções
-$translations = [
-    'pt' => [
-        'home' => 'Inicio',
-        'cart' => 'Carrinho',
-        'login' => 'Entrar',
-        'offers' => 'Ofertas',
-        'logout' => 'Sair'
-    ],
-    'en' => [
-        'home' => 'Home',
-        'cart' => 'Cart',
-        'login' => 'Login',
-        'offers' => 'Offers',
-        'logout' => 'Logout'
-    ]
-];
-
-$user_logged_in = isset($_SESSION['user_id']);
-$user_name = $_SESSION['user_name'] ?? '';
+$total = 0;
 ?>
+
 <!DOCTYPE html>
 <html lang="<?= $lang ?>">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Carrinho - Ecopeças</title>
+    <meta charset="UTF-8">
+    <title><?= ($lang == 'pt') ? 'O Meu Carrinho' : 'My Cart' ?> - Ecopeças</title>
+    <style>
+        .cart-container { padding: 50px 20px; min-height: 70vh; }
+        .cart-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .cart-table th { background: #2e7d32; color: #fff; padding: 15px; text-transform: uppercase; font-size: 14px; }
+        .cart-table td { padding: 20px; border-bottom: 1px solid #eee; text-align: center; }
+        
+        body.dark .cart-table { background: #1e1e1e; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        body.dark .cart-table td { border-bottom: 1px solid #333; }
 
-<!-- FAVICON ADICIONADO -->
-<link rel="icon" href="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg?w=360" type="image/png">
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-<style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-}
-
-/* ======= HEADER ======= */
-header#mainHeader {
-    background:#2e7d32;
-    padding:18px 50px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    box-shadow:0 4px 10px rgba(0,0,0,0.1);
-    position:fixed;
-    top:0;
-    left:0;
-    right:0;
-    z-index:1000;
-}
-
-.logo-container {
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-
-.logo-container img {
-    height:50px;
-}
-
-.logo-text {
-    font-size:28px;
-    font-weight:bold;
-    color:#fff;
-}
-
-.header-right {
-    display:flex;
-    align-items:center;
-    gap:45px; /* espaçamento maior entre itens */
-    flex-wrap:wrap;
-    margin-left:auto;
-}
-
-nav.menu {
-    display:flex;
-    gap:45px; /* espaçamento maior entre links */
-    font-weight:bold;
-}
-
-nav.menu a {
-    color:#fff;
-    text-decoration:none;
-    display:flex;
-    align-items:center;
-    gap:6px;
-}
-
-/* ===== PESQUISA ===== */
-.search-box {
-    position: relative;
-    display:flex;
-    align-items:center;
-}
-
-.search-box input {
-    padding:10px 50px 10px 20px;
-    border-radius:30px;
-    border:none;
-    outline:none;
-    width:260px;
-    font-size:15px;
-    box-shadow:0 3px 10px rgba(0,0,0,0.2);
-}
-
-.search-box button {
-    position:absolute;
-    right:0px; /* mantém o botão no canto direito */
-    top:50%;
-    transform:translateY(-50%);
-    border:none;
-    background:#66d78b;
-    border-radius:50%;
-    width:36px;
-    height:36px;
-    cursor:pointer;
-    color:#fff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-/* ===== BANDEIRAS ===== */
-.flag {
-    border-radius:2px;
-    transition:0.3s ease;
-}
-
-.flag:hover {
-    box-shadow:0 0 12px 4px rgba(255,255,255,0.6);
-    transform:scale(1.1);
-}
-
-/* ======= BODY ======= */
-body {
-    min-height: 100vh;
-    background: url('https://st2.depositphotos.com/1001335/10397/i/950/depositphotos_103971628-stock-photo-concept-of-auto-parts-shopping.jpg') no-repeat center/cover;
-    background-size: cover;
-    padding: 160px 20px 40px; /* espaço para header fixo */
-}
-
-/* ======= CARRINHO ======= */
-.cart-container {
-    max-width: 700px;
-    margin: auto;
-    background: rgba(255,255,255,0.45);
-    border-radius: 25px;
-    padding: 40px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-}
-
-.cart-title {
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:15px;
-    margin-bottom:40px;
-}
-
-.cart-title img {
-    width:60px;
-    border-radius:50%;
-}
-
-.cart-title span {
-    font-size:34px;
-    font-weight:bold;
-    color:#2e7d32;
-}
-
-.cart-item {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:20px;
-    margin-bottom:20px;
-    border-radius:15px;
-    background:rgba(255,255,255,0.6);
-}
-
-.cart-item input {
-    width:60px;
-    padding:8px;
-    border-radius:10px;
-    border:1px solid #ccc;
-}
-
-.remove-btn {
-    background:#ff3d3d;
-    color:#fff;
-    border:none;
-    padding:10px 18px;
-    border-radius:30px;
-    cursor:pointer;
-}
-
-.cart-total {
-    text-align:right;
-    font-size:24px;
-    font-weight:bold;
-    margin-top:25px;
-    color:#2e7d32;
-}
-
-.checkout-btn {
-    margin-top:25px;
-    width:100%;
-    padding:16px;
-    background:#4caf70;
-    color:#fff;
-    border:none;
-    border-radius:40px;
-    font-size:18px;
-    font-weight:bold;
-    cursor:pointer;
-}
-</style>
+        .btn-remove { color: #e74c3c; transition: 0.3s; font-size: 1.2rem; cursor: pointer; text-decoration: none; }
+        .btn-remove:hover { transform: scale(1.2); color: #c0392b; }
+        
+        .checkout-box { margin-top: 30px; text-align: right; background: #f9f9f9; padding: 25px; border-radius: 15px; }
+        body.dark .checkout-box { background: #252525; }
+    </style>
 </head>
+<body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>">
 
-<body>
+<div class="container cart-container">
+    <h1 style="margin-bottom: 30px; font-weight: 800; color: #2e7d32;">
+        <i class="fa fa-shopping-cart"></i> <?= ($lang == 'pt') ? 'Carrinho de Compras' : 'Shopping Cart' ?>
+    </h1>
 
-<header id="mainHeader">
-    <div class="logo-container">
-        <img src="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg">
-        <div class="logo-text">Ecopeças</div>
-    </div>
+    <?php if (!empty($cart_items)): ?>
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th><?= ($lang == 'pt') ? 'Produto' : 'Product' ?></th>
+                    <th><?= ($lang == 'pt') ? 'Preço' : 'Price' ?></th>
+                    <th><?= ($lang == 'pt') ? 'Quantidade' : 'Quantity' ?></th>
+                    <th>Subtotal</th>
+                    <th><?= ($lang == 'pt') ? 'Remover' : 'Remove' ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php 
+                // Percorrer os IDs que estão na sessão
+                foreach ($cart_items as $id => $quantity): 
+                    // Ir à base de dados buscar os detalhes deste produto específico
+                    $stmt = $conn->prepare("SELECT name, price, image_url FROM products WHERE id = ?");
+                    $stmt->bind_param("i", $id);
+                    $stmt->execute();
+                    $res = $stmt->get_result();
+                    
+                    if ($product = $res->fetch_assoc()):
+                        $subtotal = $product['price'] * $quantity;
+                        $total += $subtotal;
+                ?>
+                <tr>
+                    <td style="display: flex; align-items: center; gap: 15px; text-align: left;">
+                        <img src="images/<?= htmlspecialchars($product['image_url']) ?>" style="width: 70px; height: 70px; object-fit: cover; border-radius: 10px;">
+                        <span style="font-weight: bold;"><?= htmlspecialchars($product['name']) ?></span>
+                    </td>
+                    <td><?= number_format($product['price'], 2, ',', '.') ?>€</td>
+                    <td>
+                        <span style="padding: 5px 15px; background: #eee; border-radius: 20px; color: #333; font-weight: bold;">
+                            <?= $quantity ?>
+                        </span>
+                    </td>
+                    <td style="font-weight: bold; color: #2e7d32;"><?= number_format($subtotal, 2, ',', '.') ?>€</td>
+                    <td>
+                        <a href="remove_from_cart.php?id=<?= $id ?>" class="btn-remove" onclick="return confirm('Remover produto?')">
+                            <i class="fa fa-trash-alt"></i>
+                        </a>
+                    </td>
+                </tr>
+                <?php 
+                    endif;
+                endforeach; 
+                ?>
+            </tbody>
+        </table>
 
-    <div class="header-right">
-
-        <nav class="menu">
-            <a href="<?= $base ?>/index.php"><i class="fa fa-home"></i> <?= $translations[$lang]['home'] ?></a>
-            <a href="<?= $base ?>/cart.php"><i class="fa fa-shopping-cart"></i> <?= $translations[$lang]['cart'] ?></a>
-            <a href="<?= $base ?>/ofertas.php"><i class="fa fa-tags"></i> <?= $translations[$lang]['offers'] ?></a>
-        </nav>
-
-        <!-- PESQUISA -->
-        <div style="position:relative; display:flex; align-items:center;">
-            <input type="text" id="searchBox" placeholder="Pesquisar produtos..."
-                   style="padding:10px 20px; border-radius:30px; border:none; outline:none; width:260px; font-size:15px; box-shadow:0 3px 10px rgba(0,0,0,0.2); transition:0.3s;">
-            <button type="button"
-                    style="position:absolute; right:0; border:none; background:#66d78b; border-radius:50%; width:36px; height:36px; cursor:pointer; color:#fff; display:flex; justify-content:center; align-items:center;">
-                <i class="fa fa-search"></i>
-            </button>
+        <div class="checkout-box">
+            <h2 style="margin: 0;">Total: <span style="color: #2e7d32;"><?= number_format($total, 2, ',', '.') ?>€</span></h2>
+            
+            <div style="display: flex; justify-content: flex-end; gap: 15px; margin-top: 20px;">
+                <a href="index.php" style="text-decoration: none; color: #666; padding: 15px 25px;"><?= ($lang == 'pt') ? 'Continuar a Comprar' : 'Continue Shopping' ?></a>
+                
+                <?php if(isset($_SESSION['user_id'])): ?>
+                    <button style="background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); color: white; border: none; padding: 15px 40px; border-radius: 50px; font-weight: bold; cursor: pointer;">
+                        <?= ($lang == 'pt') ? 'Finalizar Encomenda' : 'Checkout' ?>
+                    </button>
+                <?php else: ?>
+                    <a href="auth/login.php" style="background: #66d78b; color: white; border: none; padding: 15px 40px; border-radius: 50px; font-weight: bold; text-decoration: none;">
+                        <?= ($lang == 'pt') ? 'Login para Comprar' : 'Login to Checkout' ?>
+                    </a>
+                <?php endif; ?>
+            </div>
         </div>
 
-        <!-- MODO -->
-        <form method="get">
-            <input type="hidden" name="lang" value="<?= $lang ?>">
-            <button name="theme" value="<?= $theme=='light'?'dark':'light' ?>" style="background:#fff;border:none;border-radius:20px;padding:6px 14px;font-weight:bold;color:#2e7d32;">
-                <?= $theme=='light'?'🌞':'🌜' ?>
-            </button>
-        </form>
-
-        <!-- BANDEIRAS -->
-        <form method="get" style="display:flex; gap:10px;">
-            <button name="lang" value="pt" style="border:none;background:none;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Portugal.svg" class="flag" width="28">
-            </button>
-            <button name="lang" value="en" style="border:none;background:none;">
-                <img src="https://upload.wikimedia.org/wikipedia/en/a/ae/Flag_of_the_United_Kingdom.svg" class="flag" width="28">
-            </button>
-        </form>
-
-        <!-- LOGIN -->
-        <div>
-            <?php if($user_logged_in): ?>
-                <span style="color:#fff;font-weight:bold;margin-right:12px;">
-                    Olá, <?= htmlspecialchars($user_name) ?> 😄
-                </span>
-                <a href="<?= $base ?>/auth/logout.php" style="color:#fff;font-weight:bold;text-decoration:none;">
-                    <i class="fa fa-sign-out-alt"></i> <?= $translations[$lang]['logout'] ?>
-                </a>
-            <?php else: ?>
-                <a href="<?= $base ?>/auth/login.php" style="color:#fff;font-weight:bold;text-decoration:none;">
-                    <i class="fa fa-user"></i> <?= $translations[$lang]['login'] ?>
-                </a>
-            <?php endif; ?>
+    <?php else: ?>
+        <div style="text-align: center; padding: 60px;">
+            <i class="fa fa-shopping-basket" style="font-size: 5rem; color: #ddd; margin-bottom: 20px;"></i>
+            <h2><?= ($lang == 'pt') ? 'O seu carrinho está vazio' : 'Your cart is empty' ?></h2>
+            <br>
+            <a href="index.php" style="background: #2e7d32; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: bold;">
+                <?= ($lang == 'pt') ? 'Ver Produtos' : 'View Products' ?>
+            </a>
         </div>
-
-    </div>
-</header>
-
-<div class="cart-container">
-    <div class="cart-title">
-        <img src="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg">
-        <span>Carrinho</span>
-    </div>
-
-    <div class="cart-item">
-        <div>
-            <h3>Filtro de Óleo</h3>
-            <p>Preço: €50</p>
-        </div>
-        <input type="number" value="1">
-        <button class="remove-btn">Remover</button>
-    </div>
-
-    <div class="cart-item">
-        <div>
-            <h3>Pastilhas de Freio</h3>
-            <p>Preço: €120</p>
-        </div>
-        <input type="number" value="2">
-        <button class="remove-btn">Remover</button>
-    </div>
-
-    <div class="cart-total">Total: €290</div>
-
-    <button class="checkout-btn">Finalizar Compra</button>
+    <?php endif; ?>
 </div>
 
+<?php require_once 'includes/footer.php'; ?>
 </body>
 </html>
