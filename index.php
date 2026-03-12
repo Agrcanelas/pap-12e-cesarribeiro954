@@ -17,19 +17,15 @@ $t = [
         'slider3' => 'Sustentabilidade e confiança',
         'slider4' => 'Melhor seleção de interiores!',
         'slider5' => 'Fidelidade e confiança',
-
         'see_products' => 'Ver Produtos',
-
         'about_title' => 'Sobre a Ecopeças',
         'about_text' => 'A Ecopeças é uma plataforma dedicada à venda de peças automóveis usadas e recondicionadas, promovendo sustentabilidade, economia e confiança. Todas as peças são verificadas para garantir qualidade e segurança.',
         'about_slogan' => 'Ajude a salvar o planeta! ♻️',
-
         'cat_motor' => 'Motor e Transmissão',
         'cat_lighting' => 'Iluminação',
         'cat_suspension' => 'Suspensão',
         'cat_electric' => 'Elétrica',
         'cat_interior' => 'Interior',
-
         'search_placeholder' => 'Pesquisar produtos...'
     ],
     'en' => [
@@ -38,19 +34,15 @@ $t = [
         'slider3' => 'Sustainability and trust',
         'slider4' => 'Best interior selection!',
         'slider5' => 'Loyalty and trust',
-
         'see_products' => 'View Products',
-
         'about_title' => 'About Ecopeças',
         'about_text' => 'Ecopeças is a platform dedicated to selling used and reconditioned auto parts, promoting sustainability, savings, and trust. All parts are inspected to ensure quality and safety.',
         'about_slogan' => 'Help save the planet! ♻️',
-
         'cat_motor' => 'Engine & Transmission',
         'cat_lighting' => 'Lighting',
         'cat_suspension' => 'Suspension',
         'cat_electric' => 'Electrical',
         'cat_interior' => 'Interior',
-
         'search_placeholder' => 'Search products...'
     ]
 ];
@@ -67,8 +59,29 @@ $t = [
 <link rel="icon" href="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg?w=360">
 
 <style>
+/* Efeito de Scroll Suave */
+html { scroll-behavior: smooth; }
+
 body {
     background: url('https://wallpapers.com/images/hd/cool-green-background-yldkpcmn6kp9767o.jpg') no-repeat center center/cover;
+    background-attachment: fixed;
+}
+
+/* ---------- ANIMAÇÃO DE SUBIDA ---------- */
+@keyframes subirCategorias {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animar-subida {
+    animation: subirCategorias 1s ease-out forwards;
+    scroll-margin-top: 100px; /* Margem para o scroll não colar no topo */
 }
 
 /* ---------- SLIDER ---------- */
@@ -110,6 +123,7 @@ body {
     display:flex;
     flex-wrap:wrap;
     justify-content:center;
+    padding: 20px 0;
 }
 .card {
     width:250px;
@@ -118,9 +132,13 @@ body {
     background:rgba(255,255,255,0.85);
     border-radius:15px;
     text-align:center;
-    transition:transform .3s;
+    transition:transform .3s, box-shadow .3s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
-.card:hover { transform:translateY(-5px); }
+.card:hover { 
+    transform:translateY(-8px); 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
 .card img {
     width:100%;
     height:150px;
@@ -130,13 +148,15 @@ body {
 .card .btn {
     display:inline-block;
     margin-top:10px;
-    padding:8px 14px;
+    padding:10px 18px;
     background:#4caf70;
     color:#fff;
     border-radius:25px;
     text-decoration:none;
     font-weight:bold;
+    transition: background 0.3s;
 }
+.card .btn:hover { background: #2e7d32; }
 
 /* ---------- ABOUT ---------- */
 .about-box {
@@ -171,7 +191,6 @@ body {
 
 <?php require_once __DIR__ . '/includes/header.php'; ?>
 
-<!-- SLIDER -->
 <div class="slider-container">
     <div class="slides-wrapper">
         <div class="slider-slide"><img src="https://blog.kroftools.com/wp-content/uploads/2023/11/pecas-de-automoveis.png"><div class="slide-text"><?= $t[$lang]['slider1'] ?></div></div>
@@ -182,31 +201,31 @@ body {
     </div>
 </div>
 
-<!-- CATEGORIAS -->
-<div class="cards-container">
-<?php
-$categories = [
- ["img"=>"https://netun.com/cdn/shop/articles/01-Airbag_civicsi.jpg","name"=>"Airbags","file"=>"airbags.php"],
- ["img"=>"https://blog.mixauto.com.br/wp-content/uploads/2018/05/caixa-de-cambio.jpg","name"=>$t[$lang]['cat_motor'],"file"=>"MotorTransmição.php"],
- ["img"=>"https://s7d9.scene7.com/is/image/dow/AdobeStock_385390317","name"=>$t[$lang]['cat_lighting'],"file"=>"iluminação.php"],
- ["img"=>"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ5NwDgRfalMhSg_JrDaskCoPjKOi3HHhxMA","name"=>$t[$lang]['cat_suspension'],"file"=>"suspencao.php"],
- ["img"=>"https://reparadorsa.com.br/wp-content/uploads/2022/12/RSA_MATERIAS-2_05-12_HEADER.png","name"=>$t[$lang]['cat_electric'],"file"=>"eletrica.php"],
- ["img"=>"https://global-img.bitauto.com/usercenter/yhzx/20250815/793/w1200_yichecar_522658379372509.jpg.webp","name"=>$t[$lang]['cat_interior'],"file"=>"interior.php"]
-];
+<div id="categorias" class="animar-subida">
+    <div class="cards-container">
+    <?php
+    $categories = [
+     ["img"=>"https://netun.com/cdn/shop/articles/01-Airbag_civicsi.jpg","name"=>"Airbags","file"=>"airbags.php"],
+     ["img"=>"https://blog.mixauto.com.br/wp-content/uploads/2018/05/caixa-de-cambio.jpg","name"=>$t[$lang]['cat_motor'],"file"=>"MotorTransmição.php"],
+     ["img"=>"https://s7d9.scene7.com/is/image/dow/AdobeStock_385390317","name"=>$t[$lang]['cat_lighting'],"file"=>"iluminação.php"],
+     ["img"=>"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ5NwDgRfalMhSg_JrDaskCoPjKOi3HHhxMA","name"=>$t[$lang]['cat_suspension'],"file"=>"suspencao.php"],
+     ["img"=>"https://reparadorsa.com.br/wp-content/uploads/2022/12/RSA_MATERIAS-2_05-12_HEADER.png","name"=>$t[$lang]['cat_electric'],"file"=>"eletrica.php"],
+     ["img"=>"https://global-img.bitauto.com/usercenter/yhzx/20250815/793/w1200_yichecar_522658379372509.jpg.webp","name"=>$t[$lang]['cat_interior'],"file"=>"interior.php"]
+    ];
 
-foreach($categories as $c){
-    echo "<div class='card'>
-            <img src='{$c['img']}'>
-            <h3>{$c['name']}</h3>
-            <a class='btn' href='categorias/{$c['file']}'>
-                {$t[$lang]['see_products']}
-            </a>
-          </div>";
-}
-?>
+    foreach($categories as $c){
+        echo "<div class='card'>
+                <img src='{$c['img']}'>
+                <h3>{$c['name']}</h3>
+                <a class='btn' href='categorias/{$c['file']}'>
+                    {$t[$lang]['see_products']}
+                </a>
+              </div>";
+    }
+    ?>
+    </div>
 </div>
 
-<!-- ABOUT -->
 <div class="about-box">
     <div class="about-text">
         <h2><?= $t[$lang]['about_title'] ?></h2>
