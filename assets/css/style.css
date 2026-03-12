@@ -1,190 +1,80 @@
+/* --- 1. VARIÁVEIS DE CORES (O Cérebro do Tema) --- */
+:root {
+    --bg-site: #e8f5e9;       /* Verde clarinho original */
+    --bg-card: #ffffff;       /* Fundo branco das categorias/ofertas */
+    --texto: #333333;
+    --header-bg: #2e7d32;     /* Verde forte do Header */
+    --input-bg: #ffffff;      /* Fundo da pesquisa */
+    --borda: #dddddd;
+    --preco: #1b5e20;
+}
+
+/* --- 2. CORES DO MODO ESCURO --- */
+body.dark {
+    --bg-site: #121212 !important;
+    --bg-card: #1e1e1e !important;
+    --texto: #f1f1f1 !important;
+    --header-bg: #1a1a1a !important;
+    --input-bg: #2d2d2d !important;
+    --borda: #333333 !important;
+    --preco: #66d78b !important;
+}
+
+/* --- 3. APLICAÇÃO GLOBAL --- */
 body {
-  font-family: Arial, sans-serif;
-  background: #e8f5e9;
-  margin: 0;
-  padding: 0;
-  color: #333;
+    font-family: 'Roboto', Arial, sans-serif;
+    background-color: var(--bg-site) !important;
+    color: var(--texto) !important;
+    margin: 0;
+    padding: 0;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
-header {
-  background: #2e7d32;
-  color: #fff;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1em 2em;
+/* HEADER E ELEMENTOS FILHOS */
+header#mainHeader {
+    background-color: var(--header-bg) !important;
+    transition: background 0.3s ease;
 }
 
-header .logo {
-  font-size: 1.5em;
-  font-weight: bold;
+/* BARRA DE PESQUISA (Resolve o erro de continuar branca) */
+#searchBox {
+    background-color: var(--input-bg) !important;
+    color: var(--texto) !important;
+    border: 1px solid var(--borda) !important;
+    transition: background 0.3s ease;
 }
 
-header nav a,
-header .user-menu a {
-  color: #fff;
-  margin: 0 10px;
-  text-decoration: none;
-  font-weight: bold;
+/* CATEGORIAS, OFERTAS, CARRINHO E CARDS (As "partes brancas") */
+.card, 
+.product-card, 
+.category-card, 
+.categories-container, 
+.offers-section, 
+.cart-segment, 
+.cart-container, 
+.finalizar-container {
+    background-color: var(--bg-card) !important;
+    color: var(--texto) !important;
+    border: 1px solid var(--borda) !important;
+    transition: background 0.3s ease;
 }
 
-header nav a:hover,
-header .user-menu a:hover {
-  text-decoration: underline;
+/* Ajuste de Preços e Títulos */
+.price, .card .price {
+    color: var(--preco) !important;
 }
 
-main {
-  padding: 20px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+.card h3, .logo-text {
+    color: #fff; /* Mantém branco no header */
 }
 
-.card {
-  background: #fff;
-  padding: 1em;
-  margin: 1em;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-  width: 300px;
-  text-align: center;
-  transition: transform 0.2s;
-}
-
-.card:hover {
-  transform: scale(1.03);
-}
-
-.card img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.card h3 {
-  margin: 0.5em 0;
-  color: #2e7d32;
-}
-
-.card p {
-  font-size: 0.9em;
-  margin: 0.3em 0;
-}
-
-.card .price {
-  font-size: 1.2em;
-  font-weight: bold;
-  color: #1b5e20;
-  margin-top: 0.5em;
+body.dark .card h3 {
+    color: var(--preco); /* Títulos dos cards ficam verdes no escuro */
 }
 
 footer {
-  background: #1b5e20;
-  color: #fff;
-  padding: 1em;
-  text-align: center;
-  margin-top: 20px;
-}
-/* --- Estilos gerais --- */
-body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    transition: background 0.3s, color 0.3s;
-}
-
-header#mainHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    transition: background 0.3s, color 0.3s;
-}
-
-header .menu a {
-    text-decoration: none;
-    margin-right: 20px;
-    font-weight: bold;
-    transition: color 0.3s;
-}
-
-header .menu a.active {
-    text-decoration: underline;
-}
-
-header .logo-text {
-    font-size: 28px;
-    font-weight: bold;
-}
-
-/* Botão de pesquisa */
-.search-box input {
-    padding:10px 20px;
-    border-radius:30px;
-    border:none;
-    outline:none;
-    width:260px;
-}
-
-.search-box button {
-    border:none;
-    background:#4caf70;
-    color:#fff;
-    border-radius:50%;
-    width:36px;
-    height:36px;
-}
-
-/* --- Tema Claro --- */
-body.light {
-    background: #f5f5f5;
-    color: #121212;
-}
-
-body.light header#mainHeader {
-    background: #2e7d32;
-}
-
-body.light .menu a, 
-body.light .user-menu a {
+    background-color: var(--header-bg);
     color: #fff;
-}
-
-/* --- Tema Escuro --- */
-body.dark {
-    background: #121212;
-    color: #f0f0f0;
-}
-
-body.dark header#mainHeader {
-    background: #1b5e20;
-}
-
-body.dark .menu a, 
-body.dark .user-menu a {
-    color: #fff;
-}
-
-/* Cards, containers, inputs, etc */
-body.light .cards-container, body.light .cart-container, body.light .finalizar-container {
-    background: rgba(255,255,255,0.4);
-    color: #000;
-}
-
-body.dark .cards-container, body.dark .cart-container, body.dark .finalizar-container {
-    background: rgba(50,50,50,0.6);
-    color: #fff;
-}
-
-body.light input, body.light select {
-    background: #fff;
-    color: #000;
-}
-
-body.dark input, body.dark select {
-    background: rgba(70,70,70,0.8);
-    color: #fff;
+    padding: 20px;
+    text-align: center;
 }
