@@ -1,75 +1,61 @@
-/* --- 1. VARIÁVEIS DE CORES (O Cérebro do Tema) --- */
-:root {
-    --bg-site: #e8f5e9;       /* Verde clarinho original */
-    --bg-card: #ffffff;       /* Fundo branco das categorias/ofertas */
-    --texto: #333333;
-    --header-bg: #2e7d32;     /* Verde forte do Header */
-    --input-bg: #ffffff;      /* Fundo da pesquisa */
-    --borda: #dddddd;
-    --preco: #1b5e20;
-}
-
-/* --- 2. CORES DO MODO ESCURO --- */
-body.dark {
-    --bg-site: #121212 !important;
-    --bg-card: #1e1e1e !important;
-    --texto: #f1f1f1 !important;
-    --header-bg: #1a1a1a !important;
-    --input-bg: #2d2d2d !important;
-    --borda: #333333 !important;
-    --preco: #66d78b !important;
-}
-
-/* --- 3. APLICAÇÃO GLOBAL --- */
-body {
-    font-family: 'Roboto', Arial, sans-serif;
-    background-color: var(--bg-site) !important;
-    color: var(--texto) !important;
-    margin: 0;
-    padding: 0;
-    transition: background 0.3s ease, color 0.3s ease;
-}
-
-/* HEADER E ELEMENTOS FILHOS */
-header#mainHeader {
-    background-color: var(--header-bg) !important;
-    transition: background 0.3s ease;
-}
-
-/* BARRA DE PESQUISA (Resolve o erro de continuar branca) */
-#searchBox {
-    background-color: var(--input-bg) !important;
-    color: var(--texto) !important;
-    border: 1px solid var(--borda) !important;
-    transition: background 0.3s ease;
-}
-
-/* CATEGORIAS, OFERTAS, CARRINHO E CARDS (As "partes brancas") */
-.card, 
-.product-card, 
-.category-card, 
-.categories-container, 
-.offers-section, 
-.cart-segment, 
-.cart-container, 
-.finalizar-container {
-    background-color: var(--bg-card) !important;
-    color: var(--texto) !important;
-    border: 1px solid var(--borda) !important;
-    transition: background 0.3s ease;
-}
-
-/* Ajuste de Preços e Títulos */
+/* --- 4. AJUSTE DE PREÇOS E TÍTULOS --- */
 .price, .card .price {
     color: var(--preco) !important;
 }
 
-.card h3, .logo-text {
-    color: #fff; /* Mantém branco no header */
+/* Títulos das categorias - AGORA SEMPRE VERDES */
+.card h3 {
+    color: #2e7d32 !important; /* Verde forte Ecopeças */
+    font-weight: bold !important;
 }
 
+/* Mantém o texto do logo branco no header */
+.logo-text {
+    color: #fff !important;
+}
+
+/* MODO ESCURO: Títulos ficam com o verde neon */
 body.dark .card h3 {
-    color: var(--preco); /* Títulos dos cards ficam verdes no escuro */
+    color: var(--preco) !important;
+}
+
+/* --- 5. EFEITO BORDA SUSTENTÁVEL (SOBRE ECOPEÇAS) --- */
+.about-box { 
+    max-width: 1200px; 
+    margin: 70px auto 40px; 
+    padding: 30px 45px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    background: var(--bg-card) !important; /* Respeita o modo escuro/claro */
+    color: var(--texto) !important;
+    border-radius: 18px; 
+    position: relative;
+    z-index: 1;
+}
+
+/* A borda animada com cores de natureza */
+.about-box::after {
+    content: "";
+    position: absolute;
+    top: -4px; left: -4px; right: -4px; bottom: -4px;
+    background: linear-gradient(45deg, #2e7d32, #81c784, #4caf50, #1b5e20);
+    background-size: 300% 300%;
+    z-index: -1;
+    border-radius: 22px;
+    animation: ecoBorder 6s ease infinite;
+}
+
+@keyframes ecoBorder {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Brilho extra ao passar o rato */
+.about-box:hover {
+    box-shadow: 0 0 25px rgba(46, 125, 50, 0.5);
+    transform: scale(1.01);
 }
 
 footer {
