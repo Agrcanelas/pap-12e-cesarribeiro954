@@ -1,110 +1,147 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+ob_start();
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
+
+/* ========= 1. LIGAÇÃO À BASE DE DADOS ========= */
+$host = "localhost";
+$user = "root";
+$pass = ""; 
+$dbname = "ecopecas"; 
+
+$conn = new mysqli($host, $user, $pass, $dbname);
+if ($conn->connect_error) { die("Erro de ligação"); }
+
+/* ========= 2. LÓGICA DE UPLOAD ========= */
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['foto_perfil']) && isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+    $target_dir = "uploads/perfil/";
+    if (!is_dir($target_dir)) { mkdir($target_dir, 0777, true); }
+
+    $ext = strtolower(pathinfo($_FILES['foto_perfil']['name'], PATHINFO_EXTENSION));
+    $nome_foto = "user_" . $user_id . "_" . time() . "." . $ext;
+    
+    if (move_uploaded_file($_FILES['foto_perfil']['tmp_name'], $target_dir . $nome_foto)) {
+        $conn->query("UPDATE users SET foto_perfil = '$nome_foto' WHERE id = '$user_id'");
+        header("Location: perfil.php");
+        exit();
+    }
 }
 
-// Bloquear acesso se não estiver logado
-if (!isset($_SESSION['user_id'])) {
-    header("Location: auth/login.php");
-    exit();
+/* ========= 3. BUSCAR DADOS EXATOS DO UTILIZADOR ========= */
+if (!isset($_SESSION['user_id'])) { header("Location: auth/login.php"); exit(); }
+$user_id = $_SESSION['user_id'];
+
+$res_user = $conn->query("SELECT * FROM users WHERE id = '$user_id'");
+$user_db = $res_user->fetch_assoc();
+
+$user_name = $user_db['nome'] ?? $_SESSION['user_name'] ?? 'Utilizador';
+$foto_perfil = $user_db['foto_perfil'] ?? '';
+
+// DATA EXATA: Verifica se existe a coluna data_registo ou criado_em
+$data_bruta = $user_db['data_registo'] ?? $user_db['criado_em'] ?? '';
+if ($data_bruta) {
+    $data_exata = date('d/m/Y', strtotime($data_bruta));
+} else {
+    $data_exata = date('d/m/Y'); // Caso não tenha data, mostra a de hoje
 }
 
-// CORREÇÃO DO CAMINHO DO HEADER:
-// Tentamos encontrar o header.php na mesma pasta ou na pasta includes
-$header_path = __DIR__ . '/header.php';
-if (!file_exists($header_path)) {
-    $header_path = __DIR__ . '/includes/header.php';
-}
+// Contar carrinho
+$res_cart = $conn->query("SELECT COUNT(*) as total FROM cart WHERE user_id = '$user_id'");
+$cart_count = ($res_cart) ? $res_cart->fetch_assoc()['total'] : 0;
 ?>
 <!DOCTYPE html>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Perfil - Ecopeças</title>
+    <link rel="icon" type="image/png" href="img/logo.png"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .perfil-wrapper {
-            max-width: 900px;
-            margin: 50px auto;
-            padding: 20px;
-        }
+        :root { --verde: #2e7d32; }
+        body { background: #f0f2f5; font-family: 'Segoe UI', sans-serif; margin: 0; }
+        
         .perfil-card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 40px;
-            text-align: center;
+            max-width: 700px; margin: 50px auto; background: white; padding: 40px;
+            border-radius: 25px; border: 5px solid var(--verde); text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); animation: fadeIn 0.6s ease;
         }
-        /* Garantir que o avatar herda o verde do teu tema */
-        .avatar-grande {
-            width: 120px; height: 120px;
-            background: #2e7d32; color: white;
-            border-radius: 50%;
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .avatar-container { position: relative; width: 150px; height: 150px; margin: 0 auto 25px; }
+        .avatar-box {
+            width: 150px; height: 150px; background: var(--verde); border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 50px; font-weight: bold;
-            margin-bottom: 20px;
-            border: 5px solid #66d78b;
+            color: white; font-size: 70px; border: 4px solid white; overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); transition: 0.3s;
         }
-        .perfil-nome { font-size: 32px; color: #333; margin: 10px 0; }
-        .grid-info {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
-            width: 100%; text-align: left;
-            margin-top: 20px; border-top: 1px solid #eee; padding-top: 30px;
+        .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        .btn-camera {
+            position: absolute; bottom: 8px; right: 8px; 
+            background: white; color: var(--verde);
+            width: 42px; height: 42px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; border: 2px solid var(--verde);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: 0.3s;
         }
-        .info-item { background: #f9f9f9; padding: 15px; border-radius: 10px; }
-        .info-item label { display: block; font-size: 11px; color: #2e7d32; font-weight: bold; }
-        .btn-voltar {
-            margin-top: 30px; background: #2e7d32; color: white;
-            text-decoration: none; padding: 12px 30px; border-radius: 30px;
-            font-weight: bold; transition: 0.3s;
-        }
-        .btn-voltar:hover { background: #4caf50; transform: translateY(-3px); }
+        .btn-camera:hover { background: var(--verde); color: white; transform: rotate(-15deg); }
+
+        .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin: 30px 0; }
+        .stat-item { padding: 15px; border: 1px solid #eee; border-radius: 15px; transition: 0.3s; cursor: pointer; }
+        .stat-item:hover { transform: translateY(-5px); border-color: var(--verde); background: #f8fdf9; }
+        .stat-item i { font-size: 24px; color: var(--verde); }
+        
+        .btn-home { display: inline-block; padding: 12px 30px; background: var(--verde); color: white; text-decoration: none; border-radius: 25px; font-weight: bold; transition: 0.3s; }
+        .btn-home:hover { opacity: 0.9; transform: translateY(-2px); }
     </style>
 </head>
-<body style="background: #f0f2f5; font-family: sans-serif; margin:0;">
+<body>
 
-    <?php 
-    // Aqui ele vai carregar o header usando o caminho que definimos acima
-    if (file_exists($header_path)) {
-        include $header_path;
-    } else {
-        echo "<div style='background:red; color:white; padding:10px;'>Erro: header.php não encontrado!</div>";
-    }
-    ?>
+<?php 
+if (file_exists('header.php')) { include 'header.php'; } 
+elseif (file_exists('includes/header.php')) { include 'includes/header.php'; }
+elseif (file_exists('../header.php')) { include '../header.php'; }
+?>
 
-    <div class="perfil-wrapper">
-        <div class="perfil-card">
-            <div class="avatar-grande">
-                <?= strtoupper(substr($_SESSION['user_name'] ?? 'U', 0, 1)) ?>
-            </div>
-            <h1 class="perfil-nome">Olá, <?= htmlspecialchars($user_name ?? $_SESSION['user_name']) ?>!</h1>
-            
-            <div class="grid-info">
-                <div class="info-item">
-                    <label>Nome de Utilizador</label>
-                    <span><?= htmlspecialchars($_SESSION['user_name']) ?></span>
-                </div>
-                <div class="info-item">
-                    <label>ID da Conta</label>
-                    <span>#<?= $_SESSION['user_id'] ?></span>
-                </div>
-                <div class="info-item">
-                    <label>Estado</label>
-                    <span style="color: #2e7d32; font-weight:bold;">Online</span>
-                </div>
-                <div class="info-item">
-                    <label>Ano Atual</label>
-                    <span>2026</span>
-                </div>
-            </div>
+<div class="perfil-card">
+    <div class="avatar-container">
+        <div class="avatar-box">
+            <?php if($foto_perfil && file_exists("uploads/perfil/$foto_perfil")): ?>
+                <img src="uploads/perfil/<?= $foto_perfil ?>">
+            <?php else: ?>
+                <?= strtoupper(substr($user_name, 0, 1)) ?>
+            <?php endif; ?>
+        </div>
+        
+        <form action="" method="POST" enctype="multipart/form-data" id="form-foto">
+            <label for="input-foto" class="btn-camera"><i class="fa fa-camera"></i></label>
+            <input type="file" name="foto_perfil" id="input-foto" style="display:none" onchange="this.form.submit()">
+        </form>
+    </div>
 
-            <a href="index.php" class="btn-voltar">Voltar para a Loja</a>
+    <h1 style="margin: 0; color: #222;"><?= htmlspecialchars($user_name) ?></h1>
+
+    <div class="stats">
+        <div class="stat-item" onclick="window.location.href='cart.php'">
+            <i class="fa fa-shopping-cart"></i>
+            <div style="font-size: 18px; margin-top: 5px;"><b><?= $cart_count ?></b></div>
+            <label style="font-size:11px; color:#999; text-transform: uppercase;">Produtos</label>
+        </div>
+        <div class="stat-item">
+            <i class="fa fa-id-card"></i>
+            <div style="font-size: 18px; margin-top: 5px;"><b>#<?= $user_id ?></b></div>
+            <label style="font-size:11px; color:#999; text-transform: uppercase;">ID</label>
+        </div>
+        <div class="stat-item">
+            <i class="fa fa-calendar-alt"></i>
+            <div style="font-size: 18px; margin-top: 5px;"><b><?= $data_exata ?></b></div>
+            <label style="font-size:11px; color:#999; text-transform: uppercase;">Membro Desde</label>
         </div>
     </div>
 
+    <a href="index.php" class="btn-home">Ir para a Loja</a>
+</div>
+
 </body>
 </html>
+<?php ob_end_flush(); ?>

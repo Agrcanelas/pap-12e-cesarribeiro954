@@ -4,12 +4,8 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 /* ========= LÓGICA DE SESSÃO (Tema e Língua) ========= */
-if (isset($_GET['theme'])) {
-    $_SESSION['theme'] = $_GET['theme'];
-}
-if (isset($_GET['lang'])) {
-    $_SESSION['lang'] = $_GET['lang'];
-}
+if (isset($_GET['theme'])) { $_SESSION['theme'] = $_GET['theme']; }
+if (isset($_GET['lang'])) { $_SESSION['lang'] = $_GET['lang']; }
 
 $lang = $_SESSION['lang'] ?? 'pt';
 $theme = $_SESSION['theme'] ?? 'light';
@@ -26,6 +22,25 @@ $translations = [
 
 $user_logged_in = isset($_SESSION['user_id']);
 $user_name = $_SESSION['user_name'] ?? '';
+
+/* ========= BUSCAR DADOS (FOTO E CARRINHO) ========= */
+$foto_header = "";
+$contagem_header = 0;
+
+if ($user_logged_in) {
+    $conn_h = new mysqli("localhost", "root", "", "ecopecas");
+    if (!$conn_h->connect_error) {
+        $res_h = $conn_h->query("SELECT foto_perfil FROM users WHERE id = '".$_SESSION['user_id']."'");
+        if ($res_h && $row_h = $res_h->fetch_assoc()) {
+            $foto_header = $row_h['foto_perfil'];
+        }
+        $res_c = $conn_h->query("SELECT COUNT(*) as total FROM cart WHERE user_id = '".$_SESSION['user_id']."'");
+        if ($res_c) {
+            $contagem_header = $res_c->fetch_assoc()['total'];
+        }
+        $conn_h->close();
+    }
+}
 ?>
 <link rel="icon" type="image/png" href="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg">
 <link rel="stylesheet" href="<?= $base ?>/style.css">
@@ -42,24 +57,36 @@ $user_name = $_SESSION['user_name'] ?? '';
         position: relative; z-index: 1000; transition: background 0.3s ease;
     }
     .flag { border-radius: 2px; transition: 0.3s ease; width: 28px; height: 18px; }
-    .flag:hover { box-shadow: 0 0 12px 4px rgba(255,255,255,0.6); transform: scale(1.1); }
-    #searchBox {
-        background: var(--input-bg, #fff) !important;
-        color: var(--texto, #333) !important;
-        padding: 10px 45px 10px 15px; border-radius: 30px; border: none; outline: none; width: 260px; font-size: 15px; box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-    }
-    /* Estilo para o link do utilizador */
-    .user-profile-link {
-        color: #fff;
-        text-decoration: none;
+    #searchBox { background: var(--input-bg, #fff) !important; color: var(--texto, #333) !important; padding: 10px 45px 10px 15px; border-radius: 30px; border: none; outline: none; width: 260px; font-size: 15px; }
+    
+    .user-profile-link { color: #fff; text-decoration: none; font-weight: bold; padding: 5px 10px; border-radius: 20px; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+    .user-profile-link:hover { background: rgba(255, 255, 255, 0.2); }
+
+    /* ESTILO DA BOLINHA COM ANIMAÇÃO */
+    .cart-btn { position: relative; display: flex; align-items: center; color: #fff; text-decoration: none; gap: 5px; }
+    .cart-badge {
+        position: absolute;
+        top: -8px;
+        left: 8px;
+        background: #ff4444;
+        color: white;
+        font-size: 10px;
         font-weight: bold;
-        padding: 5px 10px;
-        border-radius: 20px;
-        transition: all 0.3s ease;
+        min-width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1.5px solid #2e7d32;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        animation: pulseBadge 2s infinite; /* Faz a bolinha "piscar/pulsar" */
     }
-    .user-profile-link:hover {
-        background: rgba(255, 255, 255, 0.2);
-        color: #66d78b;
+
+    @keyframes pulseBadge {
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7); }
+        70% { transform: scale(1.1); box-shadow: 0 0 0 5px rgba(255, 68, 68, 0); }
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 68, 68, 0); }
     }
 </style>
 
@@ -72,7 +99,15 @@ $user_name = $_SESSION['user_name'] ?? '';
     <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
         <nav class="menu" style="display:flex; gap:25px; font-weight:bold; align-items:center;">
             <a href="<?= $base ?>/index.php" style="color:#fff; text-decoration:none;"><i class="fa fa-home"></i> <?= $translations[$lang]['home'] ?></a>
-            <a href="<?= $base ?>/cart.php" style="color:#fff; text-decoration:none;"><i class="fa fa-shopping-cart"></i> <?= $translations[$lang]['cart'] ?></a>
+            
+            <a href="<?= $base ?>/cart.php" class="cart-btn">
+                <i class="fa fa-shopping-cart"></i>
+                <?php if($contagem_header > 0): ?>
+                    <span class="cart-badge"><?= $contagem_header ?></span>
+                <?php endif; ?>
+                <span><?= $translations[$lang]['cart'] ?></span>
+            </a>
+
             <a href="<?= $base ?>/ofertas.php" style="color:#fff; text-decoration:none;"><i class="fa fa-tags"></i> <?= $translations[$lang]['offers'] ?></a>
         </nav>
 
@@ -95,7 +130,12 @@ $user_name = $_SESSION['user_name'] ?? '';
         <div class="user-menu" style="display:flex; align-items:center; gap:10px;">
             <?php if($user_logged_in): ?>
                 <a href="<?= $base ?>/perfil.php" class="user-profile-link">
-                    <i class="fa fa-user-circle"></i> Olá, <?= htmlspecialchars($user_name) ?>
+                    <?php if(!empty($foto_header)): ?>
+                        <img src="<?= $base ?>/uploads/perfil/<?= $foto_header ?>" style="width:30px; height:30px; border-radius:50%; object-fit:cover; border:2px solid #fff;">
+                    <?php else: ?>
+                        <i class="fa fa-user-circle"></i>
+                    <?php endif; ?>
+                    Olá, <?= htmlspecialchars(explode(' ', $user_name)[0]) ?>
                 </a>
                 <a href="<?= $base ?>/auth/logout.php" style="color:#fff; font-weight:bold; text-decoration:none;" title="<?= $translations[$lang]['logout'] ?>">
                     <i class="fa fa-sign-out-alt"></i>
