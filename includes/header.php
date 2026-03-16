@@ -48,6 +48,19 @@ $user_name = $_SESSION['user_name'] ?? '';
         color: var(--texto, #333) !important;
         padding: 10px 45px 10px 15px; border-radius: 30px; border: none; outline: none; width: 260px; font-size: 15px; box-shadow: 0 3px 10px rgba(0,0,0,0.2);
     }
+    /* Estilo para o link do utilizador */
+    .user-profile-link {
+        color: #fff;
+        text-decoration: none;
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+    }
+    .user-profile-link:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #66d78b;
+    }
 </style>
 
 <header id="mainHeader">
@@ -79,12 +92,18 @@ $user_name = $_SESSION['user_name'] ?? '';
             <button type="submit" name="lang" value="en" style="background:none; border:none; cursor:pointer;"><img src="https://upload.wikimedia.org/wikipedia/en/a/ae/Flag_of_the_United_Kingdom.svg" class="flag"></button>
         </form>
 
-        <div class="user-menu">
+        <div class="user-menu" style="display:flex; align-items:center; gap:10px;">
             <?php if($user_logged_in): ?>
-                <span style="color:#fff; font-weight:bold; margin-right:10px;">Olá, <?= htmlspecialchars($user_name) ?> 😄</span>
-                <a href="<?= $base ?>/auth/logout.php" style="color:#fff; font-weight:bold; text-decoration:none;"><i class="fa fa-sign-out-alt"></i></a>
+                <a href="<?= $base ?>/perfil.php" class="user-profile-link">
+                    <i class="fa fa-user-circle"></i> Olá, <?= htmlspecialchars($user_name) ?>
+                </a>
+                <a href="<?= $base ?>/auth/logout.php" style="color:#fff; font-weight:bold; text-decoration:none;" title="<?= $translations[$lang]['logout'] ?>">
+                    <i class="fa fa-sign-out-alt"></i>
+                </a>
             <?php else: ?>
-                <a href="<?= $base ?>/auth/login.php" style="color:#fff; font-weight:bold; text-decoration:none;"><i class="fa fa-user"></i> <?= $translations[$lang]['login'] ?></a>
+                <a href="<?= $base ?>/auth/login.php" style="color:#fff; font-weight:bold; text-decoration:none;">
+                    <i class="fa fa-user"></i> <?= $translations[$lang]['login'] ?>
+                </a>
             <?php endif; ?>
         </div>
     </div>
