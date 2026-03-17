@@ -36,7 +36,6 @@ $user_db = $res_user->fetch_assoc();
 
 $user_name = $user_db['nome'] ?? $_SESSION['user_name'] ?? 'Utilizador';
 $foto_perfil = $user_db['foto_perfil'] ?? '';
-// Novo campo: Compras totais (se não tiveres a coluna na DB, ele assume 0)
 $total_compras = $user_db['total_compras'] ?? 0;
 
 $data_bruta = $user_db['data_registo'] ?? $user_db['criado_em'] ?? '';
@@ -49,6 +48,9 @@ if ($data_bruta) {
 // Contar carrinho
 $res_cart = $conn->query("SELECT COUNT(*) as total FROM cart WHERE user_id = '$user_id'");
 $cart_count = ($res_cart) ? $res_cart->fetch_assoc()['total'] : 0;
+
+// Verificar se é admin para o selo
+$is_admin = (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin');
 ?>
 <!DOCTYPE html>
 <html lang="pt">
@@ -87,7 +89,15 @@ $cart_count = ($res_cart) ? $res_cart->fetch_assoc()['total'] : 0;
         }
         .btn-camera:hover { background: var(--verde); color: white; transform: rotate(-15deg); }
 
-        /* Ajustado para 4 colunas */
+        /* SELO ADMIN */
+        .badge-admin {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: linear-gradient(135deg, #1b5e20, #4caf50);
+            color: white; padding: 6px 18px; border-radius: 50px;
+            font-size: 13px; font-weight: bold; text-transform: uppercase;
+            margin-top: 12px; box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+        }
+
         .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 30px 0; }
         .stat-item { padding: 15px 5px; border: 1px solid #eee; border-radius: 15px; transition: 0.3s; cursor: pointer; }
         .stat-item:hover { transform: translateY(-5px); border-color: var(--verde); background: #f8fdf9; }
@@ -123,6 +133,12 @@ elseif (file_exists('header.php')) { include 'header.php'; }
     </div>
 
     <h1 style="margin: 0; color: #222;"><?= htmlspecialchars($user_name) ?></h1>
+
+    <?php if ($is_admin): ?>
+        <div class="badge-admin">
+            <i class="fas fa-user-shield"></i> Conta Administrador
+        </div>
+    <?php endif; ?>
 
     <div class="stats">
         <div class="stat-item" onclick="window.location.href='cart.php'">

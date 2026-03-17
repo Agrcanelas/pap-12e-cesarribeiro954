@@ -11,17 +11,13 @@ $user_id = $_SESSION['user_id'];
 $user_name = $_SESSION['user_name'] ?? 'Cliente';
 $mostrar_sucesso = false;
 
-/* ========= 1. LÓGICA DE PROCESSAMENTO (Mesma Página) ========= */
+/* ========= 1. LÓGICA DE PROCESSAMENTO ========= */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmar_checkout'])) {
-    // Limpar o carrinho na base de dados
     $stmt_del = $conn->prepare("DELETE FROM cart WHERE user_id = ?");
     $stmt_del->bind_param("i", $user_id);
     
     if ($stmt_del->execute()) {
-        // --- LINHA ADICIONADA: Atualiza o total de compras do utilizador ---
         $conn->query("UPDATE users SET total_compras = total_compras + 1 WHERE id = '$user_id'");
-        // ------------------------------------------------------------------
-
         $mostrar_sucesso = true;
         $metodo_usado = $_POST['metodo'] ?? 'multibanco';
         $morada_final = $_POST['morada'] ?? '';
@@ -57,24 +53,31 @@ if (!$mostrar_sucesso) {
 <head>
     <meta charset="UTF-8">
     <title>Finalizar Compra | Ecopeças</title>
+    <link rel="icon" type="image/png" href="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg"> 
+    
     <style>
-        /* ESTILO ORIGINAL (CLEAN) */
-        body { background: #f9fafb; font-family: 'Inter', -apple-system, sans-serif; }
-        .checkout-wrapper { padding: 130px 20px 80px; max-width: 1100px; margin: auto; }
-        .checkout-grid { display: grid; grid-template-columns: 1fr 400px; gap: 30px; }
+        body { background: #f9fafb; font-family: 'Inter', -apple-system, sans-serif; margin: 0; }
         
+        /* 🛠️ AJUSTE DE POSICIONAMENTO PARA O HEADER NÃO TAPAR */
+        .checkout-wrapper { 
+            padding: 120px 20px 80px; /* Espaço suficiente para o header fixo */
+            max-width: 1100px; 
+            margin: auto; 
+            min-height: 80vh;
+        }
+
+        .checkout-grid { display: grid; grid-template-columns: 1fr 400px; gap: 30px; }
         .checkout-card { background: #fff; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         .checkout-title { font-size: 22px; font-weight: bold; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: #333; }
         
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-weight: 600; color: #666; font-size: 14px; }
         .form-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; outline: none; transition: 0.3s; box-sizing: border-box; }
-        .form-group input:focus { border-color: #2e7d32; }
+        .form-group input:focus { border-color: #2e7d32; box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1); }
 
         .resumo-item { display: flex; justify-content: space-between; margin-bottom: 10px; color: #555; }
         .resumo-total { border-top: 2px solid #eee; margin-top: 15px; padding-top: 15px; display: flex; justify-content: space-between; font-size: 24px; font-weight: 800; color: #2e7d32; }
         
-        /* PAGAMENTO ESTILO ORIGINAL */
         .metodo-pagamento { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
         .pagamento-opt { border: 2px solid #eee; padding: 15px; border-radius: 12px; cursor: pointer; text-align: center; transition: 0.3s; color: #666; }
         .pagamento-opt input { display: none; }
@@ -82,13 +85,16 @@ if (!$mostrar_sucesso) {
         .pagamento-opt.active { border-color: #2e7d32; background: #f0f9f1; color: #2e7d32; font-weight: bold; }
 
         .btn-pagar { width: 100%; background: #2e7d32; color: white; border: none; padding: 18px; border-radius: 15px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-pagar:hover { background: #246328; transform: translateY(-3px); }
+        .btn-pagar:hover { background: #246328; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
 
         /* SUCESSO */
         .success-box { text-align: center; padding: 50px; }
         .success-icon { font-size: 60px; color: #2e7d32; margin-bottom: 20px; }
 
-        @media (max-width: 850px) { .checkout-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 850px) { 
+            .checkout-grid { grid-template-columns: 1fr; } 
+            .checkout-wrapper { padding-top: 100px; }
+        }
     </style>
 </head>
 <body>
@@ -168,11 +174,11 @@ if (!$mostrar_sucesso) {
 
                     <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
                         <div class="resumo-item"><span>Subtotal:</span><span><?= number_format($total_carrinho, 2, ',', '.') ?> €</span></div>
-                        <div class="resumo-item"><span>Portes:</span><span><?= $frete == 0 ? 'GRÁTIS' : number_format($frete, 2, ',', '.') . ' €' ?></span></div>
+                        <div class="resumo-item"><span>Portes:</span><span><?= $frete == 0 ? '<b style="color:green">GRÁTIS</b>' : number_format($frete, 2, ',', '.') . ' €' ?></span></div>
                         <div class="resumo-total"><span>Total:</span><span><?= number_format($total_final, 2, ',', '.') ?> €</span></div>
                     </div>
 
-                    <button type="submit" form="form-final" class="btn-pagar">Confirmar Pagamento</button>
+                    <button type="submit" form="form-final" class="btn-pagar">Finalizar Compra <i class="fa fa-lock"></i></button>
                 </div>
             </div>
         </div>

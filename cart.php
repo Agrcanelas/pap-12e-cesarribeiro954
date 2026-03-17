@@ -7,7 +7,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// Lógica para atualizar a quantidade se vier via GET (setinhas)
+// Lógica para atualizar a quantidade
 if (isset($_GET['update_id']) && isset($_GET['new_qty'])) {
     $cart_id = (int)$_GET['update_id'];
     $new_qty = (int)$_GET['new_qty'];
@@ -16,7 +16,7 @@ if (isset($_GET['update_id']) && isset($_GET['new_qty'])) {
         $stmt_upd->bind_param("iii", $new_qty, $cart_id, $_SESSION['user_id']);
         $stmt_upd->execute();
     }
-    header("Location: cart.php"); // Recarrega para atualizar totais
+    header("Location: cart.php"); 
     exit();
 }
 
@@ -42,16 +42,34 @@ if (!$stmt) {
 <head>
     <meta charset="UTF-8">
     <title>Meu Carrinho | Ecopeças</title>
+    <link rel="icon" type="image/png" href="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg"> 
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
-        .cart-wrapper { padding: 130px 20px 80px; max-width: 900px; margin: auto; min-height: 80vh; }
-        .cart-container { background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        body { margin: 0; padding: 0; }
+
+        .cart-wrapper { 
+            padding: 110px 20px 60px; /* Ajustado para não ficar sob o header */
+            max-width: 900px; 
+            margin: auto; 
+            min-height: 70vh;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cart-container { 
+            background: #fff; 
+            padding: 25px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+        }
+
+        .cart-container h2 { margin-top: 0; margin-bottom: 20px; }
         .cart-item { display: flex; align-items: center; padding: 20px 0; border-bottom: 1px solid #eee; }
         .cart-item img { width: 70px; height: 70px; border-radius: 12px; object-fit: cover; }
         .cart-info { flex: 1; margin-left: 20px; }
         .cart-price { font-weight: bold; color: #2e7d32; font-size: 18px; margin-right: 20px; }
         
-        /* ESTILO DAS SETINHAS */
+        /* SETINHAS */
         .qty-control { display: flex; align-items: center; gap: 10px; margin-top: 5px; }
         .btn-qty { 
             display: flex; align-items: center; justify-content: center;
@@ -64,23 +82,42 @@ if (!$stmt) {
 
         .btn-remove { color: #ff4d4d; background: #fff5f5; border: 1px solid #ffebeb; padding: 12px; border-radius: 12px; transition: 0.3s; text-decoration: none; }
         .btn-remove:hover { background: #ff4d4d; color: #fff; transform: scale(1.1); }
-        .cart-footer-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; gap: 15px; }
-        .btn-ver-mais { flex: 1; text-align: center; padding: 16px; border-radius: 15px; text-decoration: none; font-weight: bold; color: #4b5563; background: #f3f4f6; border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; }
-        .btn-finalizar { flex: 2; text-align: center; background: #2e7d32; color: #fff; padding: 18px; border-radius: 15px; text-decoration: none; font-weight: bold; font-size: 18px; box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3); display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; }
+        
+        /* ⚡ EFEITOS DA BARRA DE PROGRESSO ⚡ */
         .mini-frete-box { margin: 30px 0 20px; padding: 25px; background: #f9fafb; border-radius: 15px; border: 1px dashed #d1d5db; }
+        
         @keyframes celebra { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
         .msg-sucesso { color: #166534; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 12px; animation: celebra 0.8s infinite; margin-bottom: 15px; font-size: 18px; }
-        .progress-bg-mini { width: 100%; height: 14px; background: #e5e7eb; border-radius: 20px; overflow: hidden; }
-        .progress-fill-mini { height: 100%; background: linear-gradient(90deg, #4caf50, #81c784, #2e7d32); background-size: 200% 100%; animation: moveGradient 2s linear infinite; transition: width 0.8s; }
+        
+        .progress-bg-mini { width: 100%; height: 14px; background: #e5e7eb; border-radius: 20px; overflow: hidden; position: relative; }
+        
+        .progress-fill-mini { 
+            height: 100%; 
+            background: linear-gradient(90deg, #4caf50, #81c784, #2e7d32); 
+            background-size: 200% 100%;
+            animation: moveGradient 2s linear infinite;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+
         @keyframes moveGradient { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-        .barra-cheia { box-shadow: 0 0 15px rgba(34, 197, 94, 0.5); background: linear-gradient(90deg, #fbbf24, #22c55e, #fbbf24) !important; }
+        
+        .barra-cheia { 
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.5); 
+            background: linear-gradient(90deg, #fbbf24, #22c55e, #fbbf24) !important;
+            background-size: 200% 100% !important;
+        }
+
         .total-box { display: flex; justify-content: space-between; font-size: 26px; font-weight: 800; margin-top: 15px; }
+        .cart-footer-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; gap: 15px; }
+        .btn-ver-mais { flex: 1; text-align: center; padding: 16px; border-radius: 15px; text-decoration: none; font-weight: bold; color: #4b5563; background: #f3f4f6; border: 1px solid #e5e7eb; transition: 0.3s; }
+        .btn-finalizar { flex: 2; text-align: center; background: #2e7d32; color: #fff; padding: 18px; border-radius: 15px; text-decoration: none; font-weight: bold; font-size: 18px; box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3); transition: 0.3s; }
+        .btn-finalizar:hover { transform: scale(1.02); background: #256629; }
     </style>
 </head>
 <body>
 <div class="cart-wrapper">
     <div class="cart-container">
-        <h2 style="margin-bottom:25px;">🛒 O meu Carrinho</h2>
+        <h2>🛒 O meu Carrinho</h2>
         <?php 
         $items = [];
         if (isset($result) && $result) {
@@ -95,6 +132,7 @@ if (!$stmt) {
         if($percentagem > 100) $percentagem = 100;
         $falta = $meta - $total_carrinho;
         ?>
+
         <?php if(empty($items)): ?>
             <div style="text-align:center; padding: 60px;">
                 <p style="font-size:18px;">O teu carrinho está vazio, César.</p><br>
@@ -110,7 +148,6 @@ if (!$stmt) {
                     <img src="<?= htmlspecialchars($imagem) ?>" onerror="this.src='https://via.placeholder.com/70'">
                     <div class="cart-info">
                         <h4 style="margin:0;"><?= htmlspecialchars($nome) ?></h4>
-                        
                         <div class="qty-control">
                             <a href="cart.php?update_id=<?= $item['cart_id'] ?>&new_qty=<?= $item['quantity'] - 1 ?>" class="btn-qty">-</a>
                             <span class="qty-num"><?= $item['quantity'] ?></span>
@@ -126,15 +163,20 @@ if (!$stmt) {
                 <?php if($total_carrinho >= $meta): ?>
                     <div class="msg-sucesso"><i class="fa fa-truck-fast"></i> PORTES GRÁTIS ATIVADOS! <i class="fa fa-truck-fast"></i></div>
                 <?php else: ?>
-                    <span style="display:block; text-align:center; font-size:15px; margin-bottom:10px;">Faltam <strong><?= number_format($falta, 2, ',', '.') ?>€</strong> para o envio ser grátis!</span>
+                    <span style="display:block; text-align:center; font-size:15px; margin-bottom:10px;">Faltam <strong><?= number_format($falta, 2, ',', '.') ?>€</strong> para o envio grátis!</span>
                 <?php endif; ?>
-                <div class="progress-bg-mini"><div class="progress-fill-mini <?= ($total_carrinho >= $meta) ? 'barra-cheia' : '' ?>" style="width: <?= $percentagem ?>%;"></div></div>
+                
+                <div class="progress-bg-mini">
+                    <div class="progress-fill-mini <?= ($total_carrinho >= $meta) ? 'barra-cheia' : '' ?>" 
+                         style="width: <?= $percentagem ?>%;">
+                    </div>
+                </div>
             </div>
 
             <div class="total-box"><span>Total:</span><span style="color: #2e7d32;"><?= number_format($total_carrinho, 2, ',', '.') ?> €</span></div>
             
             <div class="cart-footer-actions">
-                <a href="index.php#categorias" class="btn-ver-mais"><i class="fa fa-arrow-left"></i> Adicionar mais peças</a>
+                <a href="index.php" class="btn-ver-mais">Adicionar mais peças</a>
                 <a href="checkout.php" class="btn-finalizar">Finalizar Encomenda <i class="fa fa-check-double"></i></a>
             </div>
         <?php endif; ?>
