@@ -22,6 +22,7 @@ $translations = [
 
 $user_logged_in = isset($_SESSION['user_id']);
 $user_name = $_SESSION['user_name'] ?? '';
+$is_admin = isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
 
 /* ========= BUSCAR DADOS (FOTO E CARRINHO) ========= */
 $foto_header = "";
@@ -56,13 +57,36 @@ if ($user_logged_in) {
         flex-wrap: wrap; gap: 10px; width: 100%; box-sizing: border-box; 
         position: relative; z-index: 1000; transition: background 0.3s ease;
     }
-    .flag { border-radius: 2px; transition: 0.3s ease; width: 28px; height: 18px; }
+
+    /* BANDEIRAS: TAMANHO UNIFORME E BRILHO */
+    .flag { 
+        border-radius: 2px; 
+        transition: 0.3s ease; 
+        width: 28px; 
+        height: 18px; 
+        object-fit: cover;
+        display: block;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
+    }
+    .flag:hover { 
+        transform: scale(1.1); 
+        filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9)); 
+        cursor: pointer;
+    }
+    .lang-btn { background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; }
+
     #searchBox { background: var(--input-bg, #fff) !important; color: var(--texto, #333) !important; padding: 10px 45px 10px 15px; border-radius: 30px; border: none; outline: none; width: 260px; font-size: 15px; }
     
     .user-profile-link { color: #fff; text-decoration: none; font-weight: bold; padding: 5px 10px; border-radius: 20px; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
     .user-profile-link:hover { background: rgba(255, 255, 255, 0.2); }
 
-    /* ESTILO DA BOLINHA COM ANIMAÇÃO */
+    .nav-link { color: #fff; text-decoration: none; display: flex; align-items: center; gap: 6px; transition: 0.3s; }
+    .nav-link:hover { opacity: 0.8; }
+
+    /* ÍCONE DE ADMIN (FERRAMENTA) CORRIGIDO */
+    .admin-link { color: #fff; text-decoration: none; font-size: 18px; transition: 0.3s; display: flex; align-items: center; padding: 5px; }
+    .admin-link:hover { color: #66d78b; transform: scale(1.2); }
+
     .cart-btn { position: relative; display: flex; align-items: center; color: #fff; text-decoration: none; gap: 5px; }
     .cart-badge {
         position: absolute;
@@ -80,7 +104,7 @@ if ($user_logged_in) {
         justify-content: center;
         border: 1.5px solid #2e7d32;
         box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        animation: pulseBadge 2s infinite; /* Faz a bolinha "piscar/pulsar" */
+        animation: pulseBadge 2s infinite;
     }
 
     @keyframes pulseBadge {
@@ -98,9 +122,9 @@ if ($user_logged_in) {
 
     <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
         <nav class="menu" style="display:flex; gap:25px; font-weight:bold; align-items:center;">
-            <a href="<?= $base ?>/index.php" style="color:#fff; text-decoration:none;"><i class="fa fa-home"></i> <?= $translations[$lang]['home'] ?></a>
+            <a href="<?= $base ?>/index.php" class="nav-link"><i class="fa fa-home"></i> <?= $translations[$lang]['home'] ?></a>
             
-            <a href="<?= $base ?>/cart.php" class="cart-btn">
+            <a href="<?= $base ?>/cart.php" class="cart-btn nav-link">
                 <i class="fa fa-shopping-cart"></i>
                 <?php if($contagem_header > 0): ?>
                     <span class="cart-badge"><?= $contagem_header ?></span>
@@ -108,7 +132,7 @@ if ($user_logged_in) {
                 <span><?= $translations[$lang]['cart'] ?></span>
             </a>
 
-            <a href="<?= $base ?>/ofertas.php" style="color:#fff; text-decoration:none;"><i class="fa fa-tags"></i> <?= $translations[$lang]['offers'] ?></a>
+            <a href="<?= $base ?>/ofertas.php" class="nav-link"><i class="fa fa-tags"></i> <?= $translations[$lang]['offers'] ?></a>
         </nav>
 
         <form action="<?= $base ?>/search.php" method="GET" style="position:relative; display:flex; align-items:center; margin:0;">
@@ -123,12 +147,23 @@ if ($user_logged_in) {
         </button>
 
         <form method="get" style="margin:0; display:flex; align-items:center; gap:8px;">
-            <button type="submit" name="lang" value="pt" style="background:none; border:none; cursor:pointer;"><img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Portugal.svg" class="flag"></button>
-            <button type="submit" name="lang" value="en" style="background:none; border:none; cursor:pointer;"><img src="https://upload.wikimedia.org/wikipedia/en/a/ae/Flag_of_the_United_Kingdom.svg" class="flag"></button>
+            <button type="submit" name="lang" value="pt" class="lang-btn">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Portugal.svg" class="flag">
+            </button>
+            <button type="submit" name="lang" value="en" class="lang-btn">
+                <img src="https://upload.wikimedia.org/wikipedia/en/a/ae/Flag_of_the_United_Kingdom.svg" class="flag">
+            </button>
         </form>
 
-        <div class="user-menu" style="display:flex; align-items:center; gap:10px;">
+        <div class="user-menu" style="display:flex; align-items:center; gap:12px;">
             <?php if($user_logged_in): ?>
+                
+                <?php if($is_admin): ?>
+                    <a href="<?= $base ?>/index.php?view=admin" class="admin-link" title="Administração">
+                        <i class="fa fa-tools"></i>
+                    </a>
+                <?php endif; ?>
+
                 <a href="<?= $base ?>/perfil.php" class="user-profile-link">
                     <?php if(!empty($foto_header)): ?>
                         <img src="<?= $base ?>/uploads/perfil/<?= $foto_header ?>" style="width:30px; height:30px; border-radius:50%; object-fit:cover; border:2px solid #fff;">
@@ -137,6 +172,7 @@ if ($user_logged_in) {
                     <?php endif; ?>
                     Olá, <?= htmlspecialchars(explode(' ', $user_name)[0]) ?>
                 </a>
+                
                 <a href="<?= $base ?>/auth/logout.php" style="color:#fff; font-weight:bold; text-decoration:none;" title="<?= $translations[$lang]['logout'] ?>">
                     <i class="fa fa-sign-out-alt"></i>
                 </a>

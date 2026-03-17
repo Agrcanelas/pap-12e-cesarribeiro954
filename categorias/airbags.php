@@ -81,6 +81,7 @@ require_once '../includes/header.php';
             object-fit: cover;
             border-radius: 15px;
             margin-bottom: 15px;
+            background-color: #f9f9f9; /* Fundo leve para caso a imagem falhe */
         }
 
         .product-card h3 {
@@ -102,7 +103,6 @@ require_once '../includes/header.php';
             color: #66d78b;
         }
 
-        /* --- BOTÕES MODERNOS PILL-STYLE --- */
         .card-buttons {
             display: flex;
             gap: 10px;
@@ -127,12 +127,10 @@ require_once '../includes/header.php';
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        /* Gradiente Saber Mais */
         .btn-details {
             background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
         }
 
-        /* Gradiente Adicionar ao Carrinho */
         .btn-cart {
             background: linear-gradient(135deg, #66d78b 0%, #43a047 100%);
         }
@@ -143,7 +141,6 @@ require_once '../includes/header.php';
             color: #fff;
         }
 
-        /* Animação especial para o ícone do carrinho no hover */
         .btn-cart:hover i {
             transform: rotate(-15deg) scale(1.2);
             transition: 0.2s;
@@ -156,7 +153,6 @@ require_once '../includes/header.php';
         .btn i {
             font-size: 0.9rem;
         }
-
     </style>
 </head>
 <body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>">
@@ -169,7 +165,7 @@ require_once '../includes/header.php';
     <?php if ($products_result->num_rows > 0): ?>
         <?php while($product = $products_result->fetch_assoc()): ?>
             <div class="product-card">
-                <img src="<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>">
+                <img src="../assets/img/produtos/<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>">
                 
                 <h3><?= htmlspecialchars($product['name']) ?></h3>
                 
@@ -186,9 +182,9 @@ require_once '../includes/header.php';
                     </a>
                     
                     <a href="../add_to_cart.php?id=<?= $product['id'] ?>" class="btn btn-cart">
-    <i class="fa fa-cart-plus"></i> 
-    <?= ($lang == 'pt') ? 'Adicionar' : 'Add' ?>
-</a>
+                        <i class="fa fa-cart-plus"></i> 
+                        <?= ($lang == 'pt') ? 'Adicionar' : 'Add' ?>
+                    </a>
                 </div>
             </div>
         <?php endwhile; ?>

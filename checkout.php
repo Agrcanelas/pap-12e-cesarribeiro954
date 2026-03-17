@@ -18,6 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmar_checkout'])
     $stmt_del->bind_param("i", $user_id);
     
     if ($stmt_del->execute()) {
+        // --- LINHA ADICIONADA: Atualiza o total de compras do utilizador ---
+        $conn->query("UPDATE users SET total_compras = total_compras + 1 WHERE id = '$user_id'");
+        // ------------------------------------------------------------------
+
         $mostrar_sucesso = true;
         $metodo_usado = $_POST['metodo'] ?? 'multibanco';
         $morada_final = $_POST['morada'] ?? '';

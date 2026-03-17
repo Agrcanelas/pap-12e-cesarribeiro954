@@ -36,13 +36,14 @@ $user_db = $res_user->fetch_assoc();
 
 $user_name = $user_db['nome'] ?? $_SESSION['user_name'] ?? 'Utilizador';
 $foto_perfil = $user_db['foto_perfil'] ?? '';
+// Novo campo: Compras totais (se não tiveres a coluna na DB, ele assume 0)
+$total_compras = $user_db['total_compras'] ?? 0;
 
-// DATA EXATA: Verifica se existe a coluna data_registo ou criado_em
 $data_bruta = $user_db['data_registo'] ?? $user_db['criado_em'] ?? '';
 if ($data_bruta) {
     $data_exata = date('d/m/Y', strtotime($data_bruta));
 } else {
-    $data_exata = date('d/m/Y'); // Caso não tenha data, mostra a de hoje
+    $data_exata = date('d/m/Y');
 }
 
 // Contar carrinho
@@ -61,7 +62,7 @@ $cart_count = ($res_cart) ? $res_cart->fetch_assoc()['total'] : 0;
         body { background: #f0f2f5; font-family: 'Segoe UI', sans-serif; margin: 0; }
         
         .perfil-card {
-            max-width: 700px; margin: 50px auto; background: white; padding: 40px;
+            max-width: 800px; margin: 50px auto; background: white; padding: 40px;
             border-radius: 25px; border: 5px solid var(--verde); text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1); animation: fadeIn 0.6s ease;
         }
@@ -86,21 +87,23 @@ $cart_count = ($res_cart) ? $res_cart->fetch_assoc()['total'] : 0;
         }
         .btn-camera:hover { background: var(--verde); color: white; transform: rotate(-15deg); }
 
-        .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin: 30px 0; }
-        .stat-item { padding: 15px; border: 1px solid #eee; border-radius: 15px; transition: 0.3s; cursor: pointer; }
+        /* Ajustado para 4 colunas */
+        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 30px 0; }
+        .stat-item { padding: 15px 5px; border: 1px solid #eee; border-radius: 15px; transition: 0.3s; cursor: pointer; }
         .stat-item:hover { transform: translateY(-5px); border-color: var(--verde); background: #f8fdf9; }
-        .stat-item i { font-size: 24px; color: var(--verde); }
+        .stat-item i { font-size: 22px; color: var(--verde); }
         
         .btn-home { display: inline-block; padding: 12px 30px; background: var(--verde); color: white; text-decoration: none; border-radius: 25px; font-weight: bold; transition: 0.3s; }
         .btn-home:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        @media (max-width: 600px) { .stats { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
 
 <?php 
-if (file_exists('header.php')) { include 'header.php'; } 
-elseif (file_exists('includes/header.php')) { include 'includes/header.php'; }
-elseif (file_exists('../header.php')) { include '../header.php'; }
+if (file_exists('includes/header.php')) { include 'includes/header.php'; }
+elseif (file_exists('header.php')) { include 'header.php'; }
 ?>
 
 <div class="perfil-card">
@@ -125,17 +128,25 @@ elseif (file_exists('../header.php')) { include '../header.php'; }
         <div class="stat-item" onclick="window.location.href='cart.php'">
             <i class="fa fa-shopping-cart"></i>
             <div style="font-size: 18px; margin-top: 5px;"><b><?= $cart_count ?></b></div>
-            <label style="font-size:11px; color:#999; text-transform: uppercase;">Produtos</label>
+            <label style="font-size:10px; color:#999; text-transform: uppercase;">No Carrinho</label>
         </div>
+
+        <div class="stat-item">
+            <i class="fa fa-bag-shopping"></i>
+            <div style="font-size: 18px; margin-top: 5px;"><b><?= $total_compras ?></b></div>
+            <label style="font-size:10px; color:#999; text-transform: uppercase;">Compras</label>
+        </div>
+
         <div class="stat-item">
             <i class="fa fa-id-card"></i>
             <div style="font-size: 18px; margin-top: 5px;"><b>#<?= $user_id ?></b></div>
-            <label style="font-size:11px; color:#999; text-transform: uppercase;">ID</label>
+            <label style="font-size:10px; color:#999; text-transform: uppercase;">ID</label>
         </div>
+
         <div class="stat-item">
             <i class="fa fa-calendar-alt"></i>
             <div style="font-size: 18px; margin-top: 5px;"><b><?= $data_exata ?></b></div>
-            <label style="font-size:11px; color:#999; text-transform: uppercase;">Membro Desde</label>
+            <label style="font-size:10px; color:#999; text-transform: uppercase;">Membro</label>
         </div>
     </div>
 
