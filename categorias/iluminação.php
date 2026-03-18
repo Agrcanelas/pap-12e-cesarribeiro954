@@ -27,14 +27,11 @@ if (!$cat_data) {
 $category_id = $cat_data['id'];
 $titulo_exibicao = ($lang == 'pt') ? $cat_data['nome_pt'] : $cat_data['nome_en'];
 
-// 3. Procurar os produtos (Usando 'name' conforme vimos no teu print)
+// 3. Procurar os produtos
 $stmt_prod = $conn->prepare("SELECT * FROM products WHERE category_id = ?");
 $stmt_prod->bind_param("i", $category_id);
 $stmt_prod->execute();
 $products_result = $stmt_prod->get_result();
-
-// 4. Incluir o Header
-require_once '../includes/header.php';
 ?>
 
 <!DOCTYPE html>
@@ -44,12 +41,21 @@ require_once '../includes/header.php';
     <title><?= $titulo_exibicao ?> - Ecopeças</title>
     <link rel="stylesheet" href="../style.css">
     <style>
+        /* AJUSTE: Classe para o título ficar colado ao novo header */
+        .category-title {
+            text-align:center; 
+            margin-top: 30px; 
+            margin-bottom: 10px;
+            font-weight: 800; 
+            color: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#fff' : '#2e7d32' ?>;
+        }
+
         .products-container {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 30px;
-            padding: 40px;
+            padding: 20px 40px 40px 40px; /* Padding superior reduzido */
         }
 
         .product-card {
@@ -104,7 +110,6 @@ require_once '../includes/header.php';
             color: #66d78b;
         }
 
-        /* --- BOTÕES MODERNOS PILL-STYLE (Tal e qual Airbags) --- */
         .card-buttons {
             display: flex;
             gap: 10px;
@@ -157,9 +162,14 @@ require_once '../includes/header.php';
         }
     </style>
 </head>
-<body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>">
+<body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>" style="margin:0; padding:0;">
 
-<h1 style="text-align:center; margin-top:40px; font-weight: 800; color: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#fff' : '#2e7d32' ?>;">
+<?php 
+// HEADER INCLUÍDO NO LOCAL CORRETO
+require_once '../includes/header.php'; 
+?>
+
+<h1 class="category-title">
     <?= ($lang == 'pt') ? 'Produtos: ' . $cat_data['nome_pt'] : 'Products: ' . $cat_data['nome_en'] ?>
 </h1>
 

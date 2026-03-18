@@ -33,8 +33,7 @@ $stmt_prod->bind_param("i", $category_id);
 $stmt_prod->execute();
 $products_result = $stmt_prod->get_result();
 
-// 4. Incluir o Header
-require_once '../includes/header.php';
+// HEADER REMOVIDO DAQUI
 ?>
 
 <!DOCTYPE html>
@@ -44,13 +43,21 @@ require_once '../includes/header.php';
     <title><?= $titulo_exibicao ?> - Ecopeças</title>
     <link rel="stylesheet" href="../style.css">
     <style>
-        /* --- ESTILO IGUAL AO AIRBAGS (CLONADO) --- */
+        /* AJUSTE: Margens do título para alinhar com o novo Header */
+        .category-title {
+            text-align:center; 
+            margin-top: 30px; 
+            margin-bottom: 10px;
+            font-weight: 800; 
+            color: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#fff' : '#2e7d32' ?>;
+        }
+
         .products-container {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 30px;
-            padding: 40px;
+            padding: 20px 40px 40px 40px; /* Reduzi padding superior */
         }
 
         .product-card {
@@ -105,7 +112,6 @@ require_once '../includes/header.php';
             color: #66d78b;
         }
 
-        /* --- BOTÕES MODERNOS PILL-STYLE --- */
         .card-buttons {
             display: flex;
             gap: 10px;
@@ -158,9 +164,14 @@ require_once '../includes/header.php';
         }
     </style>
 </head>
-<body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>">
+<body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>" style="margin:0; padding:0;">
 
-<h1 style="text-align:center; margin-top:40px; font-weight: 800; color: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#fff' : '#2e7d32' ?>;">
+<?php 
+// HEADER INCLUÍDO NO LOCAL CORRETO
+require_once '../includes/header.php'; 
+?>
+
+<h1 class="category-title">
     <?= ($lang == 'pt') ? 'Produtos: ' . $cat_data['nome_pt'] : 'Products: ' . $cat_data['nome_en'] ?>
 </h1>
 

@@ -1,20 +1,19 @@
 <?php
-// Ativa exibição de erros para debugging durante o desenvolvimento
+// Ativa exibição de erros para debugging
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Inicia a sessão para manter idioma e tema
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
 // 1. Ligar à Base de Dados
-// Ajusta o caminho se o ficheiro config.php estiver noutra pasta
 require_once '../auth/config.php'; 
+$lang = $_SESSION['lang'] ?? 'pt';
 
-// 2. Procurar o ID da categoria "airbags" na tabela
-$cat_slug = 'motor';
+// 2. Procurar o ID da categoria "motor" (ou o slug que definires na BD)
+$cat_slug = 'motor'; 
 $stmt_cat = $conn->prepare("SELECT id FROM categories WHERE slug = ?");
 $stmt_cat->bind_param("s", $cat_slug);
 $stmt_cat->execute();
@@ -22,123 +21,168 @@ $res_cat = $stmt_cat->get_result();
 $cat_data = $res_cat->fetch_assoc();
 
 if (!$cat_data) {
-    die("Erro: Categoria 'airbags' não encontrada na base de dados. Verifica a tabela 'categories'.");
+    die("Erro: Categoria 'Motor/Transmissão' não encontrada.");
 }
 
 $category_id = $cat_data['id'];
 
-// 3. Procurar os produtos pertencentes a esta categoria
+// 3. Procurar os produtos
 $stmt_prod = $conn->prepare("SELECT * FROM products WHERE category_id = ?");
 $stmt_prod->bind_param("i", $category_id);
 $stmt_prod->execute();
 $products_result = $stmt_prod->get_result();
-
-// 4. Incluir o Header (que já tem o CSS global e menu)
-require_once '../includes/header.php';
 ?>
 
 <!DOCTYPE html>
 <html lang="<?= $lang ?>">
 <head>
     <meta charset="UTF-8">
-    <title>Airbags - Ecopeças</title>
+    <title><?= ($lang == 'pt') ? 'Motor/Transmissão' : 'Engine/Transmission' ?> - Ecopeças</title>
     <link rel="stylesheet" href="../style.css">
     <style>
-        /* Estilos específicos para a grelha de produtos */
+        /* AJUSTE DE ALINHAMENTO */
+        .category-title {
+            text-align:center; 
+            margin-top: 30px; 
+            margin-bottom: 10px;
+            font-weight: 800; 
+            color: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#fff' : '#2e7d32' ?>;
+        }
+
         .products-container {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 25px;
-            padding: 40px;
+            gap: 30px;
+            padding: 20px 40px 40px 40px; 
         }
 
         .product-card {
             background: #fff;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            width: 300px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            width: 320px;
             text-align: center;
-            padding: 20px;
-            transition: transform 0.3s ease;
+            padding: 25px;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #f0f0f0;
         }
 
-        /* Suporte ao Modo Escuro */
         body.dark .product-card {
             background: #1e1e1e;
             color: #fff;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            border: 1px solid #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
 
         .product-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
         }
 
         .product-card img {
             width: 100%;
             height: 200px;
             object-fit: cover;
-            border-radius: 10px;
+            border-radius: 15px;
             margin-bottom: 15px;
         }
 
         .product-card h3 {
-            font-size: 1.4rem;
-            margin-bottom: 10px;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            height: 45px;
+            overflow: hidden;
+            font-weight: 700;
         }
 
         .product-card .price {
-            font-size: 1.2rem;
+            font-size: 1.6rem;
             color: #2e7d32;
-            font-weight: bold;
+            font-weight: 800;
             margin: 10px 0;
         }
 
-        body.dark .product-card .price {
-            color: #4caf50;
+        body.dark .product-card .price { color: #66d78b; }
+
+        .card-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
         }
 
-        .product-card .btn {
-            display: inline-block;
-            background: #2e7d32;
+        .btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 5px;
             text-decoration: none;
-            border-radius: 25px;
-            transition: 0.3s;
+            border-radius: 50px; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        .product-card .btn:hover {
-            background: #1b5e20;
+        .btn-details { background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); }
+        .btn-cart { background: linear-gradient(135deg, #66d78b 0%, #43a047 100%); }
+
+        .btn:hover {
+            transform: scale(1.04);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            color: #fff;
         }
+
+        .btn i { font-size: 0.9rem; }
     </style>
 </head>
-<body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>">
+<body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>" style="margin:0; padding:0;">
 
-<h1 style="text-align:center; margin-top:30px;">
-    <?= ($lang == 'pt') ? 'Produtos - Airbags' : 'Products - Airbags' ?>
+<?php 
+// HEADER DENTRO DO BODY
+require_once '../includes/header.php'; 
+?>
+
+<h1 class="category-title">
+    <?= ($lang == 'pt') ? 'Produtos: Motor/Transmissão' : 'Products: Engine/Transmission' ?>
 </h1>
 
 <div class="products-container">
     <?php if ($products_result->num_rows > 0): ?>
         <?php while($product = $products_result->fetch_assoc()): ?>
             <div class="product-card">
-                <img src="<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>">
+                <img src="../assets/img/produtos/<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>">
                 
                 <h3><?= htmlspecialchars($product['name']) ?></h3>
                 
                 <div class="price">€<?= number_format($product['price'], 2, ',', '.') ?></div>
                 
-                <p><strong>Estado:</strong> <?= htmlspecialchars($product['condition_state']) ?></p>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 5px;">
+                    <strong>Estado:</strong> <?= htmlspecialchars($product['condition_state']) ?>
+                </p>
                 
-                <a href="../produto.php?id=<?= $product['id'] ?>" class="btn">
-                    <?= ($lang == 'pt') ? 'Ver Detalhes' : 'View Details' ?>
-                </a>
+                <div class="card-buttons">
+                    <a href="../produto.php?id=<?= $product['id'] ?>" class="btn btn-details">
+                        <i class="fa fa-info-circle"></i> 
+                        <?= ($lang == 'pt') ? 'Detalhes' : 'Details' ?>
+                    </a>
+                    
+                    <a href="../add_to_cart.php?id=<?= $product['id'] ?>" class="btn btn-cart">
+                        <i class="fa fa-cart-plus"></i> 
+                        <?= ($lang == 'pt') ? 'Adicionar' : 'Add' ?>
+                    </a>
+                </div>
             </div>
         <?php endwhile; ?>
     <?php else: ?>
-        <p style="text-align:center; width:100%;">
-            <?= ($lang == 'pt') ? 'Nenhum produto encontrado nesta categoria.' : 'No products found in this category.' ?>
+        <p style="text-align:center; width:100%; font-size: 1.2rem; margin-top: 50px;">
+            <?= ($lang == 'pt') ? 'Nenhum componente encontrado.' : 'No components found.' ?>
         </p>
     <?php endif; ?>
 </div>

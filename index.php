@@ -107,7 +107,7 @@ $txt = $t[$lang];
         .item-removido { background-color: #ffebee !important; opacity: 0.7; }
 
         /* SLIDER */
-        .slider-container { max-width:1100px; height:280px; margin:20px auto; overflow:hidden; border-radius:15px; box-shadow:0 8px 20px rgba(0,0,0,0.4); }
+        .slider-container { max-width:1150px; height:280px; margin:20px auto; overflow:hidden; border-radius:15px; box-shadow:0 8px 20px rgba(0,0,0,0.4); }
         .slides-wrapper { display:flex; width:500%; transition:1s ease; }
         .slider-slide { width:20%; position:relative; }
         .slider-slide img { width:100%; height:280px; object-fit:cover; }

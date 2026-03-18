@@ -31,8 +31,7 @@ $stmt_prod->bind_param("i", $category_id);
 $stmt_prod->execute();
 $products_result = $stmt_prod->get_result();
 
-// 4. Incluir o Header
-require_once '../includes/header.php';
+// REMOVI O HEADER DAQUI (ESTAVA NO LUGAR ERRADO)
 ?>
 
 <!DOCTYPE html>
@@ -42,12 +41,21 @@ require_once '../includes/header.php';
     <title>Airbags - Ecopeças</title>
     <link rel="stylesheet" href="../style.css">
     <style>
+        /* AJUSTE: Reduzi a margem do título para não sobrar tanto espaço */
+        .category-title {
+            text-align:center; 
+            margin-top: 30px; /* Reduzido de 40px para 30px */
+            margin-bottom: 10px;
+            font-weight: 800; 
+            color: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#fff' : '#2e7d32' ?>;
+        }
+
         .products-container {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 30px;
-            padding: 40px;
+            padding: 20px 40px 40px 40px; /* Reduzi o padding superior */
         }
 
         .product-card {
@@ -81,7 +89,7 @@ require_once '../includes/header.php';
             object-fit: cover;
             border-radius: 15px;
             margin-bottom: 15px;
-            background-color: #f9f9f9; /* Fundo leve para caso a imagem falhe */
+            background-color: #f9f9f9;
         }
 
         .product-card h3 {
@@ -155,9 +163,14 @@ require_once '../includes/header.php';
         }
     </style>
 </head>
-<body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>">
+<body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>" style="margin:0; padding:0;">
 
-<h1 style="text-align:center; margin-top:40px; font-weight: 800; color: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#fff' : '#2e7d32' ?>;">
+<?php 
+// O HEADER DEVE SER INCLUÍDO AQUI, DENTRO DO BODY
+require_once '../includes/header.php'; 
+?>
+
+<h1 class="category-title">
     <?= ($lang == 'pt') ? 'Produtos: Airbags' : 'Products: Airbags' ?>
 </h1>
 
