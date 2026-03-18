@@ -122,9 +122,9 @@ function googleTranslateElementInit() {
         height: 40px; /* Altura fixa para manter o alinhamento perfeito */
     }
     .search-btn {
-        position: absolute; right: 2px; top: 50%; transform: translateY(-50%); 
+        position: absolute; right: 0px; top: 50%; transform: translateY(-50%); 
         border: none; background: #66d78b; border-radius: 50%; 
-        width: 34px; height: 34px; cursor: pointer; color: #fff;
+        width: 36px; height: 37px; cursor: pointer; color: #fff;
         display: flex; align-items: center; justify-content: center;
     }
 
