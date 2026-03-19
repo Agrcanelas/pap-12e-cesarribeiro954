@@ -10,7 +10,7 @@ $theme = $_SESSION['theme'] ?? 'light';
 /* ========= RAIZ DO SITE (Caminho Dinâmico) ========= */
 $base = dirname($_SERVER['SCRIPT_NAME']);
 $base = explode('/categorias', $base)[0]; 
-$base = explode('/auth', $base)[0]; // Garante que não duplica se estiver na pasta auth
+$base = explode('/auth', $base)[0]; 
 $base = rtrim($base, '/');
 
 $lang = $_SESSION['lang'] ?? 'pt';
@@ -88,38 +88,21 @@ function googleTranslateElementInit() {
         margin: 0 auto;
         padding: 12px 20px;
         display: flex;
-        align-items: center; /* Alinha todos os blocos ao centro verticalmente */
+        align-items: center;
         justify-content: space-between;
         gap: 20px;
     }
 
     .header-left { display: flex; align-items: center; gap: 30px; }
-    
-    /* AJUSTE: Garante que a pesquisa não suba */
-    .header-center { 
-        flex: 1; 
-        display: flex; 
-        justify-content: center; 
-        align-items: center; 
-    }
-
+    .header-center { flex: 1; display: flex; justify-content: center; align-items: center; }
     .header-right { display: flex; align-items: center; gap: 15px; }
 
-    /* PESQUISA CORRIGIDA */
-    .search-wrapper { 
-        position: relative; 
-        width: 100%; 
-        max-width: 400px; 
-        margin: 0; /* Remove margens do formulário que o empurram para cima */
-        display: flex;
-        align-items: center;
-    }
+    .search-wrapper { position: relative; width: 100%; max-width: 400px; margin: 0; display: flex; align-items: center; }
     #searchBox { 
         background: #fff !important; color: #333 !important; 
         padding: 10px 45px 10px 20px; border-radius: 30px; 
         border: none; outline: none; width: 100%; font-size: 15px; 
-        box-sizing: border-box;
-        height: 40px; /* Altura fixa para manter o alinhamento perfeito */
+        box-sizing: border-box; height: 40px; 
     }
     .search-btn {
         position: absolute; right: 0px; top: 50%; transform: translateY(-50%); 
@@ -128,29 +111,62 @@ function googleTranslateElementInit() {
         display: flex; align-items: center; justify-content: center;
     }
 
-    /* LINKS E BOTÕES */
     .nav-link { 
         color: #fff; text-decoration: none; font-weight: bold; 
-        display: flex; align-items: center; gap: 8px; transition: 0.3s;
-        height: 40px; /* Alinhado com a altura da pesquisa */
+        display: flex; align-items: center; gap: 8px; transition: 0.3s; height: 40px;
     }
     .nav-link:hover { opacity: 0.8; }
     .cart-btn { position: relative; }
     .cart-badge {
         position: absolute; top: -5px; left: 10px; background: #ff4444; color: white; 
         font-size: 11px; font-weight: bold; min-width: 18px; height: 18px; 
-        border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-        border: 2px solid #2e7d32;
+        border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #2e7d32;
     }
     .theme-btn {
         background:#fff; border:none; border-radius:20px; padding:7px 15px; 
         cursor:pointer; font-weight:bold; color:#2e7d32; display:flex; align-items:center; gap:5px; height: 35px;
     }
+
+    /* =====================================================================
+       4. REGRAS DO MODO DARK (CORES SITE TODO - ADMIN + SOBRE)
+       ===================================================================== */
+    
+    body.dark { background-color: #121212 !important; color: #ffffff !important; }
+    body.dark #mainHeader { background-color: #1a1a1a !important; }
+    
+    body.dark #searchBox, body.dark .goog-te-gadget-simple, body.dark .theme-btn {
+        background-color: #252525 !important; color: #ffffff !important; border: 1px solid #444 !important;
+    }
+    body.dark .goog-te-gadget-simple span { color: #66d78b !important; }
+
+    /* CAIXAS GLOBAIS: Categorias, Sobre Nós, Admin Cards, Tabelas e Formulários */
+    body.dark .box, body.dark .card, body.dark .categoria, body.dark .produto-box,
+    body.dark section, body.dark table, body.dark .admin-container,
+    body.dark div[id*="sobre"], body.dark section[class*="sobre"],
+    body.dark div[class*="admin"], body.dark form,
+    body.dark div[style*="background-color: white"],
+    body.dark div[style*="background: #fff"],
+    body.dark div[style*="background-color: #ffffff"] {
+        background-color: #1e1e1e !important;
+        color: #ffffff !important;
+        border-color: #333333 !important;
+    }
+
+    /* Campos de Edição de Admin e inputs */
+    body.dark input[type="text"], body.dark input[type="number"], 
+    body.dark input[type="file"], body.dark textarea, body.dark select {
+        background-color: #2a2a2a !important;
+        color: #fff !important;
+        border: 1px solid #444 !important;
+    }
+
+    /* Links e botões dentro das áreas dark */
+    body.dark a:not(.nav-link):not(.search-btn) { color: #66d78b; }
+    body.dark td, body.dark th { border-bottom: 1px solid #333 !important; color: #fff !important; }
 </style>
 
 <header id="mainHeader">
     <div class="header-container">
-        
         <div class="header-left">
             <div style="display:flex; align-items:center; gap:10px;">
                 <img src="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg" style="height:45px; border-radius: 8px;">
@@ -178,15 +194,12 @@ function googleTranslateElementInit() {
             <button id="theme-toggle" class="theme-btn">
                 <span id="theme-icon"><?= $theme == 'light' ? '🌞' : '🌜' ?></span>
             </button>
-
             <div id="google_translate_element"></div>
-
             <div style="display:flex; align-items:center; gap:15px; border-left: 1px solid rgba(255,255,255,0.2); padding-left: 15px;">
                 <?php if($user_logged_in): ?>
                     <?php if($is_admin): ?>
                         <a href="<?= $base ?>/index.php?view=admin" style="color:#fff; font-size:18px;" title="Painel Admin"><i class="fa fa-tools"></i></a>
                     <?php endif; ?>
-
                     <a href="<?= $base ?>/perfil.php" class="nav-link">
                         <?php if(!empty($foto_header)): ?>
                             <img src="<?= $base ?>/uploads/perfil/<?= $foto_header ?>" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:2px solid #fff;">
@@ -201,11 +214,12 @@ function googleTranslateElementInit() {
                 <?php endif; ?>
             </div>
         </div>
-
     </div>
 </header>
 
 <script>
+if ('<?= $theme ?>' === 'dark') { document.body.classList.add('dark'); }
+
 document.getElementById('theme-toggle').addEventListener('click', function() {
     const isDark = document.body.classList.toggle('dark');
     document.getElementById('theme-icon').innerHTML = isDark ? '🌜' : '🌞';

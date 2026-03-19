@@ -23,7 +23,7 @@ require_once 'includes/header.php';
 
 $user_id = $_SESSION['user_id'];
 $total_carrinho = 0;
-$total_poupanca = 0; // Nova variável para somar a poupança total
+$total_poupanca = 0; 
 
 $sql = "SELECT p.*, c.quantity, c.id AS cart_id FROM cart c INNER JOIN products p ON c.product_id = p.id WHERE c.user_id = ?";
 $stmt = $conn->prepare($sql);
@@ -34,15 +34,10 @@ $items = [];
 
 while($row = $result->fetch_assoc()) {
     $preco_original = $row['price'] ?? $row['preco'] ?? 0;
-    $preco_final = $preco_original;
-    
-    // Se estiver em oferta, calcular a poupança
     if (isset($row['em_oferta']) && $row['em_oferta'] == 1 && isset($row['preco_antigo']) && $row['preco_antigo'] > 0) {
-        // O 'price' já é o preço com desconto, o 'preco_antigo' é o original
         $poupanca_unidade = $row['preco_antigo'] - $preco_original;
         $total_poupanca += ($poupanca_unidade * $row['quantity']);
     }
-
     $total_carrinho += ($preco_original * $row['quantity']);
     $items[] = $row;
 }
@@ -70,13 +65,28 @@ $falta = $meta - $total_carrinho;
             --bg-body: #f3f4f6;
             --p-red: #d32f2f;
             --p-offer: #e53935;
+            --card-bg: #ffffff;
+            --text-main: #121212;
+            --text-sub: #666666;
+            --border-color: #f0f0f0;
+        }
+
+        /* AJUSTES MODO DARK */
+        body.dark {
+            --bg-body: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #ffffff;
+            --text-sub: #bbbbbb;
+            --border-color: #333333;
+            --p-green-light: #143616;
         }
 
         body { 
             background-color: var(--bg-body);
             font-family: 'Plus Jakarta Sans', sans-serif;
             margin: 0;
-            color: var(--p-dark);
+            color: var(--text-main);
+            transition: background 0.3s ease;
         }
 
         .main-wrapper { 
@@ -95,10 +105,32 @@ $falta = $meta - $total_carrinho;
         .cart-grid.is-empty { display: block; }
 
         .cart-items-wrapper {
-            background: #ffffff;
+            background: var(--card-bg);
             border-radius: 30px;
             padding: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /* ANIMAÇÃO DA CAIXA VAZIA */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .empty-cart-icon {
+            font-size: 80px;
+            color: var(--p-green);
+            margin-bottom: 25px;
+            animation: float 3s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        .empty-cart-text {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-main) !important;
+            margin-bottom: 15px;
         }
 
         .cart-items-wrapper h1 {
@@ -109,14 +141,14 @@ $falta = $meta - $total_carrinho;
             align-items: center;
             gap: 15px;
             letter-spacing: -1px;
+            color: var(--text-main);
         }
 
         .premium-card {
             display: flex;
             align-items: center;
             padding: 20px 0;
-            border-bottom: 1px solid #f0f0f0;
-            transition: 0.3s ease;
+            border-bottom: 1px solid var(--border-color);
         }
         .premium-card:last-child { border-bottom: none; }
 
@@ -124,112 +156,70 @@ $falta = $meta - $total_carrinho;
             width: 100px; height: 100px;
             border-radius: 18px;
             object-fit: cover;
-            background: #f9f9f9;
+            background: #2a2a2a;
         }
 
-        .prod-details { flex: 1; padding: 0 20px; }
-        .prod-details h4 { margin: 0 0 5px; font-size: 18px; font-weight: 700; color: var(--p-dark); }
-        .prod-details span { color: #888; font-size: 13px; font-weight: 600; }
+        .prod-details h4 { margin: 0 0 5px; font-size: 18px; font-weight: 700; color: var(--text-main); }
+        .prod-details span { color: var(--text-sub); font-size: 13px; font-weight: 600; }
         
-        .badge-offer-mini {
-            background: var(--p-offer);
-            color: #fff;
-            font-size: 10px;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: 800;
-            margin-left: 5px;
-            vertical-align: middle;
-        }
-
         .qty-control {
             display: flex;
             align-items: center;
-            background: #f5f5f5;
+            background: var(--bg-body);
             border-radius: 12px;
             padding: 4px;
         }
         .qty-btn {
             width: 32px; height: 32px;
-            background: #fff; border-radius: 10px;
+            background: var(--card-bg); border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
-            text-decoration: none; color: #000; font-weight: 800;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            text-decoration: none; color: var(--text-main); font-weight: 800;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .qty-num { padding: 0 12px; font-weight: 700; color: var(--p-green); }
 
-        .prod-price { font-size: 20px; font-weight: 800; min-width: 130px; text-align: right; color: var(--p-dark); }
+        .prod-price { font-size: 20px; font-weight: 800; min-width: 130px; text-align: right; color: var(--text-main); }
         .price-discounted { color: var(--p-offer); }
-        .old-price-cart { font-size: 14px; text-decoration: line-through; color: #bbb; display: block; font-weight: 600; }
 
-        .remove-icon {
-            margin-left: 20px;
-            color: var(--p-red);
-            font-size: 22px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #fff5f5;
-        }
-        .remove-icon:hover { color: #b71c1c; transform: scale(1.1); background: #ffebee; }
-
-        /* Sidebar & Progress Bar */
         .summary-sidebar {
-            background: #ffffff;
-            color: var(--p-dark);
+            background: var(--card-bg);
+            color: var(--text-main);
             padding: 35px;
             border-radius: 30px;
             position: sticky;
             top: 150px;
             border: 2px solid var(--p-green);
-            box-shadow: 0 15px 40px rgba(46, 125, 50, 0.08);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
         }
 
-        .shipping-box-premium { margin-bottom: 30px; background: var(--p-green-light); padding: 15px; border-radius: 15px; position: relative; }
-        .shipping-info { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; font-weight: 700; }
+        .shipping-box-premium { margin-bottom: 30px; background: var(--p-green-light); padding: 15px; border-radius: 15px; }
         
-        .progress-container { width: 100%; height: 8px; background: rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden; }
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #4caf50, #81c784, #2e7d32);
-            transition: width 0.8s ease;
+        .progress-container { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
+        
+        body.dark .remove-icon { background: #331a1a; }
+        .remove-icon {
+            margin-left: 20px; color: var(--p-red); font-size: 22px;
+            display: flex; align-items: center; justify-content: center;
+            width: 40px; height: 40px; border-radius: 50%; background: #fff5f5;
         }
 
-        .total-row-premium {
-            display: flex; justify-content: space-between; align-items: baseline;
-            margin: 15px 0;
+        .btn-return {
+            background: var(--p-green); color: white; padding: 15px 30px;
+            border-radius: 12px; display: inline-block; text-decoration: none;
+            font-weight: 800; margin-top: 20px;
         }
-        .total-row-premium span { font-size: 16px; font-weight: 600; color: #666; }
-        .total-row-premium b { font-size: 34px; font-weight: 900; color: var(--p-green); }
 
+        body.dark .savings-row { background: #2d1a1a; }
         .savings-row {
-            display: flex; justify-content: space-between;
-            color: var(--p-offer);
-            font-weight: 700;
-            font-size: 14px;
-            margin-bottom: 10px;
-            padding: 10px;
-            background: #fff5f5;
-            border-radius: 10px;
+            display: flex; justify-content: space-between; color: var(--p-offer);
+            font-weight: 700; font-size: 14px; margin-bottom: 10px;
+            padding: 10px; background: #fff5f5; border-radius: 10px;
         }
 
-        .btn-checkout-luxury {
-            display: flex; align-items: center; justify-content: center; gap: 12px;
-            background: var(--p-dark); color: #fff;
-            padding: 20px; border-radius: 18px;
-            text-decoration: none; font-weight: 800; font-size: 17px;
-            transition: 0.3s;
-        }
-        .btn-checkout-luxury:hover { background: var(--p-green); transform: translateY(-3px); }
-
-        .back-link { display: block; text-align: center; margin-top: 20px; color: #888; text-decoration: none; font-size: 14px; font-weight: 700; }
+        .total-row-premium b { font-size: 34px; font-weight: 900; color: var(--p-green); }
     </style>
 </head>
-<body>
+<body class="<?= $theme === 'dark' ? 'dark' : '' ?>">
 
 <div class="main-wrapper">
     <div class="cart-grid <?= empty($items) ? 'is-empty' : '' ?>">
@@ -237,9 +227,12 @@ $falta = $meta - $total_carrinho;
         <div class="cart-items-wrapper">
             <?php if(empty($items)): ?>
                 <div style="text-align: center; padding: 60px 0;">
-                    <i class="fa-solid fa-box-open" style="font-size: 60px; color: #eee; margin-bottom: 20px;"></i>
-                    <h2>O seu carrinho está vazio</h2>
-                    <a href="index.php" class="back-link">Voltar à loja</a>
+                    <div class="empty-cart-icon">
+                        <i class="fa-solid fa-box-open"></i>
+                    </div>
+                    <h2 class="empty-cart-text">O seu carrinho está vazio</h2>
+                    <p style="color: var(--text-sub); font-weight: 600;">Explore os nossos produtos e encontre as melhores peças.</p>
+                    <a href="index.php" class="btn-return">Explorar Loja</a>
                 </div>
             <?php else: ?>
                 <h1>O meu carrinho 🛒</h1>
@@ -250,10 +243,10 @@ $falta = $meta - $total_carrinho;
                     <div class="premium-card">
                         <img src="<?= htmlspecialchars($item['image'] ?? $item['imagem'] ?? '') ?>" class="prod-img" onerror="this.src='https://via.placeholder.com/150'">
                         
-                        <div class="prod-details">
+                        <div class="prod-details" style="flex:1; padding: 0 20px;">
                             <h4>
                                 <?= htmlspecialchars($item['name'] ?? $item['nome'] ?? 'Peça') ?>
-                                <?php if($is_promo): ?><span class="badge-offer-mini">OFERTA</span><?php endif; ?>
+                                <?php if($is_promo): ?><span class="badge-offer-mini" style="background:var(--p-offer); color:white; font-size:10px; padding:2px 8px; border-radius:4px; margin-left:5px;">OFERTA</span><?php endif; ?>
                             </h4>
                             <span>CÓD: #<?= $item['id'] ?></span>
                         </div>
@@ -266,7 +259,7 @@ $falta = $meta - $total_carrinho;
 
                         <div class="prod-price <?= $is_promo ? 'price-discounted' : '' ?>">
                             <?php if($is_promo && $item['preco_antigo'] > 0): ?>
-                                <span class="old-price-cart"><?= number_format($item['preco_antigo'] * $item['quantity'], 2, ',', '.') ?>€</span>
+                                <span style="font-size: 14px; text-decoration: line-through; color: var(--text-sub); display: block;"><?= number_format($item['preco_antigo'] * $item['quantity'], 2, ',', '.') ?>€</span>
                             <?php endif; ?>
                             <?= number_format($preco_unitario * $item['quantity'], 2, ',', '.') ?>€
                         </div>
@@ -281,35 +274,33 @@ $falta = $meta - $total_carrinho;
 
         <?php if(!empty($items)): ?>
         <div class="summary-sidebar">
-            <h3>Resumo</h3>
-
+            <h3 style="margin-top:0;">Resumo</h3>
             <div class="shipping-box-premium">
-                <div class="shipping-info">
+                <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:8px; font-weight:700;">
                     <span>Envio Grátis</span>
                     <span><?= ($total_carrinho >= $meta) ? 'CONCLUÍDO' : 'Faltam ' . number_format($falta, 2, ',', '.') . '€' ?></span>
                 </div>
                 <div class="progress-container">
-                    <div class="progress-bar-fill" style="width: <?= $percentagem ?>%;"></div>
+                    <div style="height:100%; width: <?= $percentagem ?>%; background: linear-gradient(90deg, #4caf50, #2e7d32); transition: 0.8s;"></div>
                 </div>
             </div>
 
             <?php if($total_poupanca > 0): ?>
                 <div class="savings-row">
-                    <span><i class="fa fa-tag"></i> Descontos Aplicados</span>
+                    <span><i class="fa fa-tag"></i> Poupança Total</span>
                     <span>- <?= number_format($total_poupanca, 2, ',', '.') ?>€</span>
                 </div>
             <?php endif; ?>
 
-            <div class="total-row-premium">
+            <div class="total-row-premium" style="display:flex; justify-content:space-between; align-items:baseline; margin: 20px 0;">
                 <span>Subtotal</span>
                 <b><?= number_format($total_carrinho, 2, ',', '.') ?>€</b>
             </div>
 
-            <a href="checkout.php" class="btn-checkout-luxury">
+            <a href="checkout.php" style="display:flex; align-items:center; justify-content:center; gap:12px; background:var(--p-green); color:white; padding:20px; border-radius:18px; text-decoration:none; font-weight:800; font-size:17px;">
                 FECHAR PEDIDO <i class="fa-solid fa-lock"></i>
             </a>
-
-            <a href="index.php" class="back-link">Continuar a comprar</a>
+            <a href="index.php" class="back-link" style="display:block; text-align:center; margin-top:20px; color:var(--text-sub); text-decoration:none; font-size:14px; font-weight:700;">Continuar a comprar</a>
         </div>
         <?php endif; ?>
     </div>
