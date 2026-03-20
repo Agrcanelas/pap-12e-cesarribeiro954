@@ -47,6 +47,14 @@ Site acessivel e simples par facil utilização
 ### ✅ Concluídas
 - Sistema de registo e login
 - Barra de navegação
+- Modo claro/escuro
+- Carrinho
+- Ofertas
+- Idiomas
+- Finalizar compra
+- Peril utilizador
+- painel admin
+
 ...
 
 ### 🔄 Em Desenvolvimento
