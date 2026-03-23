@@ -12,7 +12,7 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once '../auth/config.php'; 
 $lang = $_SESSION['lang'] ?? 'pt';
 
-// 2. Procurar o ID da categoria "motor" (ou o slug que definires na BD)
+// 2. Procurar o ID da categoria "motor"
 $cat_slug = 'motor'; 
 $stmt_cat = $conn->prepare("SELECT id FROM categories WHERE slug = ?");
 $stmt_cat->bind_param("s", $cat_slug);
@@ -39,8 +39,8 @@ $products_result = $stmt_prod->get_result();
     <meta charset="UTF-8">
     <title><?= ($lang == 'pt') ? 'Motor/Transmissão' : 'Engine/Transmission' ?> - Ecopeças</title>
     <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* AJUSTE DE ALINHAMENTO */
         .category-title {
             text-align:center; 
             margin-top: 30px; 
@@ -54,7 +54,7 @@ $products_result = $stmt_prod->get_result();
             flex-wrap: wrap;
             justify-content: center;
             gap: 30px;
-            padding: 20px 40px 40px 40px; 
+            padding: 20px 40px 100px 40px; /* Padding inferior aumentado para compensar a falta de footer */
         }
 
         .product-card {
@@ -88,6 +88,7 @@ $products_result = $stmt_prod->get_result();
             object-fit: cover;
             border-radius: 15px;
             margin-bottom: 15px;
+            background-color: #f9f9f9;
         }
 
         .product-card h3 {
@@ -127,7 +128,6 @@ $products_result = $stmt_prod->get_result();
             font-weight: bold;
             font-size: 0.8rem;
             text-transform: uppercase;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
         .btn-details { background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); }
@@ -144,10 +144,7 @@ $products_result = $stmt_prod->get_result();
 </head>
 <body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>" style="margin:0; padding:0;">
 
-<?php 
-// HEADER DENTRO DO BODY
-require_once '../includes/header.php'; 
-?>
+<?php require_once '../includes/header.php'; ?>
 
 <h1 class="category-title">
     <?= ($lang == 'pt') ? 'Produtos: Motor/Transmissão' : 'Products: Engine/Transmission' ?>
@@ -157,7 +154,7 @@ require_once '../includes/header.php';
     <?php if ($products_result->num_rows > 0): ?>
         <?php while($product = $products_result->fetch_assoc()): ?>
             <div class="product-card">
-                <img src="../assets/img/produtos/<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>">
+                <img src="../assets/img/produtos/<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Foto'">
                 
                 <h3><?= htmlspecialchars($product['name']) ?></h3>
                 
@@ -187,6 +184,5 @@ require_once '../includes/header.php';
     <?php endif; ?>
 </div>
 
-<?php require_once '../includes/footer.php'; ?>
 </body>
 </html>

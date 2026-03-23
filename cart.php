@@ -2,11 +2,16 @@
 session_start();
 require_once 'auth/config.php';
 
+// Verificar se o utilizador está logado
 if (!isset($_SESSION['user_id'])) {
     header("Location: auth/login.php");
     exit();
 }
 
+// Lógica de Tema (para evitar erros de variável indefinida)
+$theme = $_SESSION['theme'] ?? 'light';
+
+// Atualizar quantidade
 if (isset($_GET['update_id']) && isset($_GET['new_qty'])) {
     $cart_id = (int)$_GET['update_id'];
     $new_qty = (int)$_GET['new_qty'];
@@ -19,12 +24,14 @@ if (isset($_GET['update_id']) && isset($_GET['new_qty'])) {
     exit();
 }
 
+// Importar Cabeçalho
 require_once 'includes/header.php';
 
 $user_id = $_SESSION['user_id'];
 $total_carrinho = 0;
 $total_poupanca = 0; 
 
+// Procurar itens no carrinho
 $sql = "SELECT p.*, c.quantity, c.id AS cart_id FROM cart c INNER JOIN products p ON c.product_id = p.id WHERE c.user_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $user_id);
@@ -42,6 +49,7 @@ while($row = $result->fetch_assoc()) {
     $items[] = $row;
 }
 
+// Lógica da Barra de Progresso (Envio Grátis)
 $meta = 250;
 $percentagem = ($total_carrinho > 0) ? ($total_carrinho / $meta) * 100 : 0;
 if($percentagem > 100) $percentagem = 100;
@@ -71,7 +79,6 @@ $falta = $meta - $total_carrinho;
             --border-color: #f0f0f0;
         }
 
-        /* AJUSTES MODO DARK */
         body.dark {
             --bg-body: #121212;
             --card-bg: #1e1e1e;
@@ -126,13 +133,6 @@ $falta = $meta - $total_carrinho;
             display: inline-block;
         }
 
-        .empty-cart-text {
-            font-size: 26px;
-            font-weight: 800;
-            color: var(--text-main) !important;
-            margin-bottom: 15px;
-        }
-
         .cart-items-wrapper h1 {
             font-size: 32px;
             font-weight: 800;
@@ -140,7 +140,6 @@ $falta = $meta - $total_carrinho;
             display: flex;
             align-items: center;
             gap: 15px;
-            letter-spacing: -1px;
             color: var(--text-main);
         }
 
@@ -150,18 +149,7 @@ $falta = $meta - $total_carrinho;
             padding: 20px 0;
             border-bottom: 1px solid var(--border-color);
         }
-        .premium-card:last-child { border-bottom: none; }
 
-        .prod-img {
-            width: 100px; height: 100px;
-            border-radius: 18px;
-            object-fit: cover;
-            background: #2a2a2a;
-        }
-
-        .prod-details h4 { margin: 0 0 5px; font-size: 18px; font-weight: 700; color: var(--text-main); }
-        .prod-details span { color: var(--text-sub); font-size: 13px; font-weight: 600; }
-        
         .qty-control {
             display: flex;
             align-items: center;
@@ -169,21 +157,16 @@ $falta = $meta - $total_carrinho;
             border-radius: 12px;
             padding: 4px;
         }
+
         .qty-btn {
             width: 32px; height: 32px;
             background: var(--card-bg); border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
             text-decoration: none; color: var(--text-main); font-weight: 800;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .qty-num { padding: 0 12px; font-weight: 700; color: var(--p-green); }
-
-        .prod-price { font-size: 20px; font-weight: 800; min-width: 130px; text-align: right; color: var(--text-main); }
-        .price-discounted { color: var(--p-offer); }
 
         .summary-sidebar {
             background: var(--card-bg);
-            color: var(--text-main);
             padding: 35px;
             border-radius: 30px;
             position: sticky;
@@ -192,28 +175,35 @@ $falta = $meta - $total_carrinho;
             box-shadow: 0 15px 40px rgba(0,0,0,0.2);
         }
 
-        .shipping-box-premium { margin-bottom: 30px; background: var(--p-green-light); padding: 15px; border-radius: 15px; }
+        /* --- EFEITO DA BARRA DE PROGRESSO --- */
+        .progress-container { 
+            width: 100%; 
+            height: 12px; 
+            background: rgba(0,0,0,0.1); 
+            border-radius: 10px; 
+            overflow: hidden; 
+            margin-top: 10px;
+        }
         
-        .progress-container { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
-        
-        body.dark .remove-icon { background: #331a1a; }
-        .remove-icon {
-            margin-left: 20px; color: var(--p-red); font-size: 22px;
-            display: flex; align-items: center; justify-content: center;
-            width: 40px; height: 40px; border-radius: 50%; background: #fff5f5;
+        .progress-fill {
+            height: 100%; 
+            background: linear-gradient(90deg, #4caf50, #2e7d32); 
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
         }
 
-        .btn-return {
-            background: var(--p-green); color: white; padding: 15px 30px;
-            border-radius: 12px; display: inline-block; text-decoration: none;
-            font-weight: 800; margin-top: 20px;
+        /* Efeito de brilho a passar na barra */
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shine 2s infinite;
         }
 
-        body.dark .savings-row { background: #2d1a1a; }
-        .savings-row {
-            display: flex; justify-content: space-between; color: var(--p-offer);
-            font-weight: 700; font-size: 14px; margin-bottom: 10px;
-            padding: 10px; background: #fff5f5; border-radius: 10px;
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
 
         .total-row-premium b { font-size: 34px; font-weight: 900; color: var(--p-green); }
@@ -227,12 +217,9 @@ $falta = $meta - $total_carrinho;
         <div class="cart-items-wrapper">
             <?php if(empty($items)): ?>
                 <div style="text-align: center; padding: 60px 0;">
-                    <div class="empty-cart-icon">
-                        <i class="fa-solid fa-box-open"></i>
-                    </div>
+                    <div class="empty-cart-icon"><i class="fa-solid fa-box-open"></i></div>
                     <h2 class="empty-cart-text">O seu carrinho está vazio</h2>
-                    <p style="color: var(--text-sub); font-weight: 600;">Explore os nossos produtos e encontre as melhores peças.</p>
-                    <a href="index.php" class="btn-return">Explorar Loja</a>
+                    <a href="index.php" class="btn-return" style="background:var(--p-green); color:white; padding:15px 30px; border-radius:12px; text-decoration:none; font-weight:800;">Explorar Loja</a>
                 </div>
             <?php else: ?>
                 <h1>O meu carrinho 🛒</h1>
@@ -241,32 +228,20 @@ $falta = $meta - $total_carrinho;
                     $preco_unitario = $item['price'] ?? $item['preco'];
                 ?>
                     <div class="premium-card">
-                        <img src="<?= htmlspecialchars($item['image'] ?? $item['imagem'] ?? '') ?>" class="prod-img" onerror="this.src='https://via.placeholder.com/150'">
-                        
+                        <img src="<?= htmlspecialchars($item['image'] ?? $item['imagem'] ?? '') ?>" class="prod-img" style="width:100px; border-radius:15px;">
                         <div class="prod-details" style="flex:1; padding: 0 20px;">
-                            <h4>
-                                <?= htmlspecialchars($item['name'] ?? $item['nome'] ?? 'Peça') ?>
-                                <?php if($is_promo): ?><span class="badge-offer-mini" style="background:var(--p-offer); color:white; font-size:10px; padding:2px 8px; border-radius:4px; margin-left:5px;">OFERTA</span><?php endif; ?>
-                            </h4>
+                            <h4><?= htmlspecialchars($item['name'] ?? $item['nome'] ?? 'Peça') ?></h4>
                             <span>CÓD: #<?= $item['id'] ?></span>
                         </div>
-
                         <div class="qty-control">
                             <a href="cart.php?update_id=<?= $item['cart_id'] ?>&new_qty=<?= $item['quantity'] - 1 ?>" class="qty-btn">-</a>
-                            <span class="qty-num"><?= $item['quantity'] ?></span>
+                            <span class="qty-num" style="padding:0 10px; font-weight:bold;"><?= $item['quantity'] ?></span>
                             <a href="cart.php?update_id=<?= $item['cart_id'] ?>&new_qty=<?= $item['quantity'] + 1 ?>" class="qty-btn">+</a>
                         </div>
-
-                        <div class="prod-price <?= $is_promo ? 'price-discounted' : '' ?>">
-                            <?php if($is_promo && $item['preco_antigo'] > 0): ?>
-                                <span style="font-size: 14px; text-decoration: line-through; color: var(--text-sub); display: block;"><?= number_format($item['preco_antigo'] * $item['quantity'], 2, ',', '.') ?>€</span>
-                            <?php endif; ?>
+                        <div class="prod-price" style="margin-left:20px; font-weight:800;">
                             <?= number_format($preco_unitario * $item['quantity'], 2, ',', '.') ?>€
                         </div>
-
-                        <a href="remove_from_cart.php?id=<?= $item['cart_id'] ?>" class="remove-icon">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </a>
+                        <a href="remove_from_cart.php?id=<?= $item['cart_id'] ?>" style="margin-left:15px; color:red;"><i class="fa-solid fa-trash"></i></a>
                     </div>
                 <?php endforeach; ?>
             <?php endif; ?>
@@ -275,37 +250,36 @@ $falta = $meta - $total_carrinho;
         <?php if(!empty($items)): ?>
         <div class="summary-sidebar">
             <h3 style="margin-top:0;">Resumo</h3>
-            <div class="shipping-box-premium">
-                <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:8px; font-weight:700;">
+            <div style="background: var(--p-green-light); padding: 15px; border-radius: 15px;">
+                <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:700;">
                     <span>Envio Grátis</span>
                     <span><?= ($total_carrinho >= $meta) ? 'CONCLUÍDO' : 'Faltam ' . number_format($falta, 2, ',', '.') . '€' ?></span>
                 </div>
                 <div class="progress-container">
-                    <div style="height:100%; width: <?= $percentagem ?>%; background: linear-gradient(90deg, #4caf50, #2e7d32); transition: 0.8s;"></div>
+                    <div class="progress-fill" style="width: <?= $percentagem ?>%;"></div>
                 </div>
             </div>
-
-            <?php if($total_poupanca > 0): ?>
-                <div class="savings-row">
-                    <span><i class="fa fa-tag"></i> Poupança Total</span>
-                    <span>- <?= number_format($total_poupanca, 2, ',', '.') ?>€</span>
-                </div>
-            <?php endif; ?>
 
             <div class="total-row-premium" style="display:flex; justify-content:space-between; align-items:baseline; margin: 20px 0;">
                 <span>Subtotal</span>
                 <b><?= number_format($total_carrinho, 2, ',', '.') ?>€</b>
             </div>
 
-            <a href="checkout.php" style="display:flex; align-items:center; justify-content:center; gap:12px; background:var(--p-green); color:white; padding:20px; border-radius:18px; text-decoration:none; font-weight:800; font-size:17px;">
-                FECHAR PEDIDO <i class="fa-solid fa-lock"></i>
-            </a>
-            <a href="index.php" class="back-link" style="display:block; text-align:center; margin-top:20px; color:var(--text-sub); text-decoration:none; font-size:14px; font-weight:700;">Continuar a comprar</a>
+            <a href="checkout.php" style="display:block; text-align:center; background:var(--p-green); color:white; padding:20px; border-radius:18px; text-decoration:none; font-weight:800;">FECHAR PEDIDO</a>
         </div>
         <?php endif; ?>
     </div>
 </div>
 
-<?php require_once 'includes/footer.php'; ?>
+<?php 
+// Solução para o erro do Footer:
+if (file_exists('includes/footer.php')) {
+    include 'includes/footer.php';
+} elseif (file_exists('footer.php')) {
+    include 'footer.php';
+} else {
+    echo "";
+}
+?>
 </body>
 </html>

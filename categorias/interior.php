@@ -32,8 +32,6 @@ $stmt_prod = $conn->prepare("SELECT * FROM products WHERE category_id = ?");
 $stmt_prod->bind_param("i", $category_id);
 $stmt_prod->execute();
 $products_result = $stmt_prod->get_result();
-
-// REMOVIDO O HEADER DAQUI (ESTAVA ANTES DO HTML)
 ?>
 
 <!DOCTYPE html>
@@ -42,8 +40,8 @@ $products_result = $stmt_prod->get_result();
     <meta charset="UTF-8">
     <title><?= $titulo_exibicao ?> - Ecopeças</title>
     <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* AJUSTE DE ALINHAMENTO */
         .category-title {
             text-align:center; 
             margin-top: 30px; 
@@ -57,7 +55,7 @@ $products_result = $stmt_prod->get_result();
             flex-wrap: wrap;
             justify-content: center;
             gap: 30px;
-            padding: 20px 40px 40px 40px; /* Reduzido padding superior */
+            padding: 20px 40px 100px 40px; /* Padding inferior para compensar a ausência de footer */
         }
 
         .product-card {
@@ -91,6 +89,7 @@ $products_result = $stmt_prod->get_result();
             object-fit: cover;
             border-radius: 15px;
             margin-bottom: 15px;
+            background-color: #f9f9f9;
         }
 
         .product-card h3 {
@@ -108,9 +107,7 @@ $products_result = $stmt_prod->get_result();
             margin: 10px 0;
         }
 
-        body.dark .product-card .price {
-            color: #66d78b;
-        }
+        body.dark .product-card .price { color: #66d78b; }
 
         .card-buttons {
             display: flex;
@@ -132,8 +129,6 @@ $products_result = $stmt_prod->get_result();
             font-weight: bold;
             font-size: 0.8rem;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
         .btn-details { background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); }
@@ -145,18 +140,12 @@ $products_result = $stmt_prod->get_result();
             color: #fff;
         }
 
-        .btn-cart:hover i {
-            transform: rotate(-15deg) scale(1.2);
-            transition: 0.2s;
-        }
-
         .btn i { font-size: 0.9rem; }
     </style>
 </head>
 <body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>" style="margin:0; padding:0;">
 
 <?php 
-// HEADER INCLUÍDO DENTRO DO BODY PARA ALINHAMENTO CORRETO
 require_once '../includes/header.php'; 
 ?>
 
@@ -168,7 +157,7 @@ require_once '../includes/header.php';
     <?php if ($products_result->num_rows > 0): ?>
         <?php while($product = $products_result->fetch_assoc()): ?>
             <div class="product-card">
-                <img src="../images/<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>">
+                <img src="../assets/img/produtos/<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Foto'">
                 
                 <h3><?= htmlspecialchars($product['name']) ?></h3>
                 
@@ -198,6 +187,5 @@ require_once '../includes/header.php';
     <?php endif; ?>
 </div>
 
-<?php require_once '../includes/footer.php'; ?>
 </body>
 </html>

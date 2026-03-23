@@ -59,14 +59,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $message = $t[$lang]['fill_fields'];
         $messageColor = "red";
     } else {
-        // SQL ALTERADO: Agora busca a coluna 'role' também
+       
         $stmt = $conn->prepare("SELECT id, nome, senha, role FROM users WHERE email = ? LIMIT 1");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
 
         if($stmt->num_rows === 1){
-            // BIND ALTERADO: Adicionada a variável $role
+           
             $stmt->bind_result($id, $nomeRegistrado, $hashedPassword, $role);
             $stmt->fetch();
 

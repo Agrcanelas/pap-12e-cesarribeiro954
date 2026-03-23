@@ -58,7 +58,8 @@ if (strpos($estado, 'excelente') !== false) {
         body { font-family: 'Inter', sans-serif; background-color: #fcfcfc; color: #333; margin: 0; }
         body.dark { background-color: #121212; color: #eee; }
 
-        .page-wrapper { padding: 120px 20px 80px; }
+        /* Ajuste no padding inferior (de 80px para 150px) para compensar a falta do footer */
+        .page-wrapper { padding: 120px 20px 150px; } 
         
         .product-container-premium {
             max-width: 1200px; margin: auto;
@@ -205,8 +206,6 @@ if (strpos($estado, 'excelente') !== false) {
 
     </div>
 </div>
-
-<?php require_once 'includes/footer.php'; ?>
 
 </body>
 </html>

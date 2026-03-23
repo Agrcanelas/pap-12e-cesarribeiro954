@@ -11,6 +11,9 @@ if (session_status() === PHP_SESSION_NONE) {
 // 1. Ligar à Base de Dados
 require_once '../auth/config.php'; 
 
+// Garante que a variável $lang existe para não dar erro no HTML
+$lang = $_SESSION['lang'] ?? 'pt';
+
 // 2. Procurar o ID da categoria "airbags"
 $cat_slug = 'airbags';
 $stmt_cat = $conn->prepare("SELECT id FROM categories WHERE slug = ?");
@@ -30,8 +33,6 @@ $stmt_prod = $conn->prepare("SELECT * FROM products WHERE category_id = ?");
 $stmt_prod->bind_param("i", $category_id);
 $stmt_prod->execute();
 $products_result = $stmt_prod->get_result();
-
-// REMOVI O HEADER DAQUI (ESTAVA NO LUGAR ERRADO)
 ?>
 
 <!DOCTYPE html>
@@ -40,11 +41,11 @@ $products_result = $stmt_prod->get_result();
     <meta charset="UTF-8">
     <title>Airbags - Ecopeças</title>
     <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* AJUSTE: Reduzi a margem do título para não sobrar tanto espaço */
         .category-title {
             text-align:center; 
-            margin-top: 30px; /* Reduzido de 40px para 30px */
+            margin-top: 30px; 
             margin-bottom: 10px;
             font-weight: 800; 
             color: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#fff' : '#2e7d32' ?>;
@@ -55,7 +56,7 @@ $products_result = $stmt_prod->get_result();
             flex-wrap: wrap;
             justify-content: center;
             gap: 30px;
-            padding: 20px 40px 40px 40px; /* Reduzi o padding superior */
+            padding: 20px 40px 40px 40px;
         }
 
         .product-card {
@@ -107,9 +108,7 @@ $products_result = $stmt_prod->get_result();
             margin: 10px 0;
         }
 
-        body.dark .product-card .price {
-            color: #66d78b;
-        }
+        body.dark .product-card .price { color: #66d78b; }
 
         .card-buttons {
             display: flex;
@@ -131,42 +130,22 @@ $products_result = $stmt_prod->get_result();
             font-weight: bold;
             font-size: 0.8rem;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        .btn-details {
-            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
-        }
-
-        .btn-cart {
-            background: linear-gradient(135deg, #66d78b 0%, #43a047 100%);
-        }
+        .btn-details { background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); }
+        .btn-cart { background: linear-gradient(135deg, #66d78b 0%, #43a047 100%); }
 
         .btn:hover {
             transform: scale(1.04);
             box-shadow: 0 6px 15px rgba(0,0,0,0.2);
             color: #fff;
         }
-
-        .btn-cart:hover i {
-            transform: rotate(-15deg) scale(1.2);
-            transition: 0.2s;
-        }
-
-        .btn:active {
-            transform: scale(0.96);
-        }
-
-        .btn i {
-            font-size: 0.9rem;
-        }
     </style>
 </head>
 <body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>" style="margin:0; padding:0;">
 
 <?php 
-// O HEADER DEVE SER INCLUÍDO AQUI, DENTRO DO BODY
+// O HEADER É O ÚNICO COMPONENTE EXTERNO NECESSÁRIO
 require_once '../includes/header.php'; 
 ?>
 
@@ -174,11 +153,10 @@ require_once '../includes/header.php';
     <?= ($lang == 'pt') ? 'Produtos: Airbags' : 'Products: Airbags' ?>
 </h1>
 
-<div class="products-container">
-    <?php if ($products_result->num_rows > 0): ?>
+<div class="products-container" style="padding-bottom: 100px;"> <?php if ($products_result->num_rows > 0): ?>
         <?php while($product = $products_result->fetch_assoc()): ?>
             <div class="product-card">
-                <img src="../assets/img/produtos/<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>">
+                <img src="../assets/img/produtos/<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Foto'">
                 
                 <h3><?= htmlspecialchars($product['name']) ?></h3>
                 
@@ -190,13 +168,11 @@ require_once '../includes/header.php';
                 
                 <div class="card-buttons">
                     <a href="../produto.php?id=<?= $product['id'] ?>" class="btn btn-details">
-                        <i class="fa fa-info-circle"></i> 
-                        <?= ($lang == 'pt') ? 'Detalhes' : 'Details' ?>
+                        <i class="fa fa-info-circle"></i> <?= ($lang == 'pt') ? 'Detalhes' : 'Details' ?>
                     </a>
                     
                     <a href="../add_to_cart.php?id=<?= $product['id'] ?>" class="btn btn-cart">
-                        <i class="fa fa-cart-plus"></i> 
-                        <?= ($lang == 'pt') ? 'Adicionar' : 'Add' ?>
+                        <i class="fa fa-cart-plus"></i> <?= ($lang == 'pt') ? 'Adicionar' : 'Add' ?>
                     </a>
                 </div>
             </div>
@@ -208,6 +184,5 @@ require_once '../includes/header.php';
     <?php endif; ?>
 </div>
 
-<?php require_once '../includes/footer.php'; ?>
 </body>
 </html>

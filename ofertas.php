@@ -30,12 +30,16 @@ $result_ofertas = $conn->query($sql_ofertas);
             font-family: 'Plus Jakarta Sans', sans-serif;
             margin: 0;
             color: var(--p-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .main-wrapper { 
             padding: 160px 5% 80px; 
             max-width: 1300px; 
             margin: 0 auto;
+            flex: 1; /* Empurra o que houver abaixo para o fundo */
         }
 
         .page-header {
@@ -214,6 +218,5 @@ $result_ofertas = $conn->query($sql_ofertas);
     </div>
 </div>
 
-<?php require_once 'includes/footer.php'; ?>
 </body>
 </html>
