@@ -62,15 +62,14 @@ if (!empty($query_term)) {
         .btn-details { background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); }
         .btn-cart { background: linear-gradient(135deg, #66d78b 0%, #43a047 100%); }
 
-        /* DESIGN LIMPO: SEM BOX, SEM FUNDO, SEM BORDAS */
         .no-results-area {
             width: 100%; text-align: center; padding: 60px 20px;
-            color: inherit; /* Segue a cor do texto do body */
+            color: inherit; 
         }
 
         .floating-sad {
             font-size: 100px; margin-bottom: 25px; display: inline-block;
-            opacity: 0.5; /* Deixa o ícone suave sobre o fundo */
+            opacity: 0.5; 
             animation: float 3s ease-in-out infinite;
         }
 
@@ -88,7 +87,7 @@ if (!empty($query_term)) {
         .back-link-modern:hover { transform: translateY(-3px); opacity: 0.9; }
     </style>
 </head>
-<body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>" style="margin:0; padding:0;">
+<body class="<?= (isset($_COOKIE['theme']) && $_COOKIE['theme'] == 'dark') ? 'dark' : '' ?>" style="margin:0; padding:0;">
 
 <?php require_once 'includes/header.php'; ?>
 
@@ -100,17 +99,17 @@ if (!empty($query_term)) {
         <?php if (isset($results) && $results->num_rows > 0): ?>
             <?php while($product = $results->fetch_assoc()): ?>
                 <div class="product-card">
-                    <img src="<?= $base ?>/images/<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>">
+                    <img src="uploads/produtos/<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" onerror="this.src='https://via.placeholder.com/200'">
                     <h3><?= htmlspecialchars($product['name']) ?></h3>
                     <div class="price">€<?= number_format($product['price'], 2, ',', '.') ?></div>
                     <p style="font-size: 0.9rem; opacity: 0.8;">
-                        <strong>Estado:</strong> <?= htmlspecialchars($product['condition_state']) ?>
+                        <strong>Estado:</strong> <?= htmlspecialchars($product['condition_state'] ?? 'Usado') ?>
                     </p>
                     <div class="card-buttons">
-                        <a href="<?= $base ?>/produto.php?id=<?= $product['id'] ?>" class="btn btn-details">
+                        <a href="produto.php?id=<?= $product['id'] ?>" class="btn btn-details">
                             <i class="fa fa-info-circle"></i> Detalhes
                         </a>
-                        <a href="<?= $base ?>/add_to_cart.php?id=<?= $product['id'] ?>" class="btn btn-cart">
+                        <a href="add_to_cart.php?id=<?= $product['id'] ?>" class="btn btn-cart">
                             <i class="fa fa-cart-plus"></i> Adicionar
                         </a>
                     </div>
@@ -127,13 +126,12 @@ if (!empty($query_term)) {
                         ? 'Neste momento o produto não se encontra disponível, mas quem sabe brevemente!' 
                         : 'At the moment this product is not available, but who knows, maybe soon!' ?>
                 </p>
-                <a href="<?= $base ?>/index.php" class="back-link-modern">
+                <a href="index.php" class="back-link-modern">
                     <i class="fa fa-arrow-left"></i> <?= ($lang == 'pt') ? 'Voltar à Loja' : 'Back to Shop' ?>
                 </a>
             </div>
         <?php endif; ?>
     </div>
 
-<?php require_once 'includes/footer.php'; ?>
 </body>
 </html>

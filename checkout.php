@@ -54,13 +54,13 @@ if (!$mostrar_sucesso) {
     <meta charset="UTF-8">
     <title>Finalizar Compra | Ecopeças</title>
     <link rel="icon" type="image/png" href="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         body { background: #f9fafb; font-family: 'Inter', -apple-system, sans-serif; margin: 0; }
         
-        /* 🛠️ AJUSTE DE POSICIONAMENTO PARA O HEADER NÃO TAPAR */
         .checkout-wrapper { 
-            padding: 120px 20px 80px; /* Espaço suficiente para o header fixo */
+            padding: 120px 20px 80px; 
             max-width: 1100px; 
             margin: auto; 
             min-height: 80vh;
@@ -84,10 +84,9 @@ if (!$mostrar_sucesso) {
         .pagamento-opt:hover { border-color: #ccc; }
         .pagamento-opt.active { border-color: #2e7d32; background: #f0f9f1; color: #2e7d32; font-weight: bold; }
 
-        .btn-pagar { width: 100%; background: #2e7d32; color: white; border: none; padding: 18px; border-radius: 15px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-pagar { width: 100%; background: #2e7d32; color: white; border: none; padding: 18px; border-radius: 15px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none;}
         .btn-pagar:hover { background: #246328; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
 
-        /* SUCESSO */
         .success-box { text-align: center; padding: 50px; }
         .success-icon { font-size: 60px; color: #2e7d32; margin-bottom: 20px; }
 
@@ -109,7 +108,7 @@ if (!$mostrar_sucesso) {
                 O pagamento via <b><?= strtoupper($metodo_usado) ?></b> foi processado com sucesso.
             </p>
             <p style="color: #888;">As peças serão enviadas para: <?= htmlspecialchars($morada_final) ?></p>
-            <a href="index.php" class="btn-pagar" style="width: auto; display: inline-flex; padding: 15px 40px; text-decoration: none; margin-top: 30px;">Voltar à Loja</a>
+            <a href="index.php" class="btn-pagar" style="width: auto; display: inline-flex; padding: 15px 40px; margin-top: 30px;">Voltar à Loja</a>
         </div>
         
         <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
@@ -168,7 +167,7 @@ if (!$mostrar_sucesso) {
                     <?php foreach($items as $item): ?>
                         <div class="resumo-item">
                             <span><?= $item['quantity'] ?>x <?= htmlspecialchars($item['name']) ?></span>
-                            <span><?= number_format(($item['price'] * $item['quantity']), 2, ',', '.') ?> €</span>
+                            <span><?= number_format(($preco * $item['quantity']), 2, ',', '.') ?> €</span>
                         </div>
                     <?php endforeach; ?>
 
@@ -192,6 +191,5 @@ if (!$mostrar_sucesso) {
     }
 </script>
 
-<?php require_once 'includes/footer.php'; ?>
 </body>
 </html>
