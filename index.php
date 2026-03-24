@@ -174,7 +174,7 @@ $txt = $t[$lang];
                 <tr id="prod-<?= $id ?>" class="<?= ($st == 'removido') ? 'item-removido' : '' ?>">
                     <form method="POST" action="index.php?view=admin#prod-<?= $id ?>">
                         <td><strong><?= $pos++ ?></strong><input type="hidden" name="prod_id" value="<?= $id ?>"></td>
-                        <td><img src="uploads/produtos/<?= $row['image_url'] ?>" width="45" height="45" style="object-fit:cover; border-radius:5px;" onerror="this.src='https://via.placeholder.com/50'"></td>
+                        <td><img src="uploads/perfil/produtos/<?= htmlspecialchars($row['image_url']) ?>" width="45" height="45" style="object-fit:cover; border-radius:5px;" onerror="this.src='https://via.placeholder.com/50'"></td>
                         <td><?php if($is_editing): ?><input type="text" name="novo_nome" value="<?= htmlspecialchars($row['name']) ?>" style="width:90%; padding:5px;"><?php else: ?><?= htmlspecialchars($row['name']) ?><?php endif; ?></td>
                         <td><?php if($is_editing): ?><input type="number" step="0.01" name="novo_preco" value="<?= $row['price'] ?>" style="width:70px;"><?php else: ?><?= number_format($row['price'],2,',','.') ?>€<?php endif; ?></td>
                         <td>

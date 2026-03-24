@@ -11,7 +11,8 @@ $lang = $_SESSION['lang'] ?? 'pt';
 
 if (!empty($query_term)) {
     $search_param = "%$query_term%";
-    $stmt = $conn->prepare("SELECT * FROM products WHERE name LIKE ? OR description LIKE ?");
+    // Melhorada a query para garantir que só mostra produtos ativos
+    $stmt = $conn->prepare("SELECT * FROM products WHERE (name LIKE ? OR description LIKE ?) AND status = 'ativo'");
     $stmt->bind_param("ss", $search_param, $search_param);
     $stmt->execute();
     $results = $stmt->get_result();
@@ -48,7 +49,13 @@ if (!empty($query_term)) {
         }
         body.dark .product-card { background: #1e1e1e; color: #fff; border: 1px solid #333; }
         .product-card:hover { transform: translateY(-8px); }
-        .product-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 15px; margin-bottom: 15px; }
+        
+        /* Ajuste na imagem para garantir que caiba sempre bem */
+        .product-card img { 
+            width: 100%; height: 200px; object-fit: cover; 
+            border-radius: 15px; margin-bottom: 15px; 
+            background: #f9f9f9;
+        }
         
         .product-card .price { font-size: 1.6rem; color: #2e7d32; font-weight: 800; margin: 10px 0; }
         body.dark .product-card .price { color: #66d78b; }
@@ -62,21 +69,10 @@ if (!empty($query_term)) {
         .btn-details { background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); }
         .btn-cart { background: linear-gradient(135deg, #66d78b 0%, #43a047 100%); }
 
-        .no-results-area {
-            width: 100%; text-align: center; padding: 60px 20px;
-            color: inherit; 
-        }
+        .no-results-area { width: 100%; text-align: center; padding: 60px 20px; color: inherit; }
+        .floating-sad { font-size: 100px; margin-bottom: 25px; display: inline-block; opacity: 0.5; animation: float 3s ease-in-out infinite; }
 
-        .floating-sad {
-            font-size: 100px; margin-bottom: 25px; display: inline-block;
-            opacity: 0.5; 
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-        }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
 
         .back-link-modern {
             display: inline-block; margin-top: 25px; padding: 14px 35px;
@@ -84,7 +80,6 @@ if (!empty($query_term)) {
             border-radius: 50px; font-weight: 700; transition: 0.3s;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        .back-link-modern:hover { transform: translateY(-3px); opacity: 0.9; }
     </style>
 </head>
 <body class="<?= (isset($_COOKIE['theme']) && $_COOKIE['theme'] == 'dark') ? 'dark' : '' ?>" style="margin:0; padding:0;">
@@ -99,12 +94,18 @@ if (!empty($query_term)) {
         <?php if (isset($results) && $results->num_rows > 0): ?>
             <?php while($product = $results->fetch_assoc()): ?>
                 <div class="product-card">
-                    <img src="uploads/produtos/<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" onerror="this.src='https://via.placeholder.com/200'">
-                    <h3><?= htmlspecialchars($product['name']) ?></h3>
+                    <img src="uploads/perfil/produtos/<?= htmlspecialchars($product['image_url']) ?>" 
+                         alt="<?= htmlspecialchars($product['name']) ?>" 
+                         onerror="this.src='https://via.placeholder.com/320x200?text=Produto+Sem+Foto'">
+                    
+                    <h3>#<?= $product['id'] ?> - <?= htmlspecialchars($product['name']) ?></h3>
+                    
                     <div class="price">€<?= number_format($product['price'], 2, ',', '.') ?></div>
+                    
                     <p style="font-size: 0.9rem; opacity: 0.8;">
                         <strong>Estado:</strong> <?= htmlspecialchars($product['condition_state'] ?? 'Usado') ?>
                     </p>
+                    
                     <div class="card-buttons">
                         <a href="produto.php?id=<?= $product['id'] ?>" class="btn btn-details">
                             <i class="fa fa-info-circle"></i> Detalhes

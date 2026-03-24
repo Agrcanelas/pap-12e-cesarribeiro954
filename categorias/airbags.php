@@ -144,21 +144,19 @@ $products_result = $stmt_prod->get_result();
 </head>
 <body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>" style="margin:0; padding:0;">
 
-<?php 
-// O HEADER É O ÚNICO COMPONENTE EXTERNO NECESSÁRIO
-require_once '../includes/header.php'; 
-?>
+<?php require_once '../includes/header.php'; ?>
 
 <h1 class="category-title">
     <?= ($lang == 'pt') ? 'Produtos: Airbags' : 'Products: Airbags' ?>
 </h1>
 
-<div class="products-container" style="padding-bottom: 100px;"> <?php if ($products_result->num_rows > 0): ?>
+<div class="products-container" style="padding-bottom: 100px;"> 
+    <?php if ($products_result->num_rows > 0): ?>
         <?php while($product = $products_result->fetch_assoc()): ?>
             <div class="product-card">
-                <img src="../assets/img/produtos/<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Foto'">
+                <img src="../uploads/perfil/produtos/<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Foto'">
                 
-                <h3><?= htmlspecialchars($product['name']) ?></h3>
+                <h3>#<?= $product['id'] ?> - <?= htmlspecialchars($product['name']) ?></h3>
                 
                 <div class="price">€<?= number_format($product['price'], 2, ',', '.') ?></div>
                 

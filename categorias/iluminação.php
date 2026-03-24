@@ -27,8 +27,8 @@ if (!$cat_data) {
 $category_id = $cat_data['id'];
 $titulo_exibicao = ($lang == 'pt') ? $cat_data['nome_pt'] : $cat_data['nome_en'];
 
-// 3. Procurar os produtos
-$stmt_prod = $conn->prepare("SELECT * FROM products WHERE category_id = ?");
+// 3. Procurar os produtos (Apenas os ativos)
+$stmt_prod = $conn->prepare("SELECT * FROM products WHERE category_id = ? AND status = 'ativo'");
 $stmt_prod->bind_param("i", $category_id);
 $stmt_prod->execute();
 $products_result = $stmt_prod->get_result();
@@ -47,7 +47,7 @@ $products_result = $stmt_prod->get_result();
             margin-top: 30px; 
             margin-bottom: 10px;
             font-weight: 800; 
-            color: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#fff' : '#2e7d32' ?>;
+            color: <?= (isset($_COOKIE['theme']) && $_COOKIE['theme'] == 'dark') ? '#fff' : '#2e7d32' ?>;
         }
 
         .products-container {
@@ -55,7 +55,7 @@ $products_result = $stmt_prod->get_result();
             flex-wrap: wrap;
             justify-content: center;
             gap: 30px;
-            padding: 20px 40px 100px 40px; /* Mantive o padding para o fim da página */
+            padding: 20px 40px 100px 40px;
         }
 
         .product-card {
@@ -93,9 +93,9 @@ $products_result = $stmt_prod->get_result();
         }
 
         .product-card h3 {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             margin-bottom: 8px;
-            height: 45px;
+            height: 50px;
             overflow: hidden;
             font-weight: 700;
         }
@@ -125,7 +125,7 @@ $products_result = $stmt_prod->get_result();
             padding: 12px 5px;
             text-decoration: none;
             border-radius: 50px; 
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s ease;
             font-weight: bold;
             font-size: 0.8rem;
             text-transform: uppercase;
@@ -141,11 +141,9 @@ $products_result = $stmt_prod->get_result();
         }
     </style>
 </head>
-<body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>" style="margin:0; padding:0;">
+<body class="<?= (isset($_COOKIE['theme']) && $_COOKIE['theme'] == 'dark') ? 'dark' : '' ?>" style="margin:0; padding:0;">
 
-<?php 
-require_once '../includes/header.php'; 
-?>
+<?php require_once '../includes/header.php'; ?>
 
 <h1 class="category-title">
     <?= ($lang == 'pt') ? 'Produtos: ' . $cat_data['nome_pt'] : 'Products: ' . $cat_data['nome_en'] ?>
@@ -155,9 +153,11 @@ require_once '../includes/header.php';
     <?php if ($products_result->num_rows > 0): ?>
         <?php while($product = $products_result->fetch_assoc()): ?>
             <div class="product-card">
-                <img src="../assets/img/produtos/<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Foto'">
+                <img src="../uploads/perfil/produtos/<?= htmlspecialchars($product['image_url']) ?>" 
+                     alt="<?= htmlspecialchars($product['name']) ?>" 
+                     onerror="this.src='https://via.placeholder.com/320x200?text=Sem+Foto'">
                 
-                <h3><?= htmlspecialchars($product['name']) ?></h3>
+                <h3>#<?= $product['id'] ?> - <?= htmlspecialchars($product['name']) ?></h3>
                 
                 <div class="price">€<?= number_format($product['price'], 2, ',', '.') ?></div>
                 

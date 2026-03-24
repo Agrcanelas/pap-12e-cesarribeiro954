@@ -54,7 +54,7 @@ $products_result = $stmt_prod->get_result();
             flex-wrap: wrap;
             justify-content: center;
             gap: 30px;
-            padding: 20px 40px 100px 40px; /* Padding inferior aumentado para compensar a falta de footer */
+            padding: 20px 40px 100px 40px;
         }
 
         .product-card {
@@ -138,8 +138,6 @@ $products_result = $stmt_prod->get_result();
             box-shadow: 0 6px 15px rgba(0,0,0,0.2);
             color: #fff;
         }
-
-        .btn i { font-size: 0.9rem; }
     </style>
 </head>
 <body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>" style="margin:0; padding:0;">
@@ -154,7 +152,9 @@ $products_result = $stmt_prod->get_result();
     <?php if ($products_result->num_rows > 0): ?>
         <?php while($product = $products_result->fetch_assoc()): ?>
             <div class="product-card">
-                <img src="../assets/img/produtos/<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Foto'">
+                <img src="../uploads/perfil/produtos/<?= htmlspecialchars($product['image_url']) ?>" 
+                     alt="<?= htmlspecialchars($product['name']) ?>" 
+                     onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Foto'">
                 
                 <h3><?= htmlspecialchars($product['name']) ?></h3>
                 
