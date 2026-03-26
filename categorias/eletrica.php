@@ -14,6 +14,16 @@ require_once '../auth/config.php';
 // Garante que a variável $lang existe
 $lang = $_SESSION['lang'] ?? 'pt';
 
+// --- LÓGICA DE ORDENAÇÃO ---
+$sort = $_GET['sort'] ?? '';
+$order_query = "p.id DESC"; // Padrão
+
+if ($sort == 'price_asc') {
+    $order_query = "p.price ASC";
+} elseif ($sort == 'price_desc') {
+    $order_query = "p.price DESC";
+}
+
 // 2. Procurar o ID da categoria "eletrica"
 $cat_slug = 'eletrica'; 
 $stmt_cat = $conn->prepare("SELECT id FROM categories WHERE slug = ?");
@@ -28,8 +38,14 @@ if (!$cat_data) {
 
 $category_id = $cat_data['id'];
 
-// 3. Procurar os produtos
-$stmt_prod = $conn->prepare("SELECT * FROM products WHERE category_id = ?");
+// 3. Procurar os produtos + Primeira Imagem + ORDENAÇÃO
+$stmt_prod = $conn->prepare("
+    SELECT p.*, 
+    (SELECT pi.image_url FROM product_images pi WHERE pi.product_id = p.id LIMIT 1) AS main_image 
+    FROM products p 
+    WHERE p.category_id = ? AND p.status = 'ativo'
+    ORDER BY $order_query
+");
 $stmt_prod->bind_param("i", $category_id);
 $stmt_prod->execute();
 $products_result = $stmt_prod->get_result();
@@ -51,12 +67,38 @@ $products_result = $stmt_prod->get_result();
             color: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#fff' : '#2e7d32' ?>;
         }
 
+        /* ESTILO DO FILTRO */
+        .filter-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            max-width: 1200px;
+            margin: 0 auto 20px auto;
+            padding: 0 40px;
+        }
+
+        .sort-select {
+            padding: 10px 15px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            background: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#2a2a2a' : '#fff' ?>;
+            color: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#fff' : '#333' ?>;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+
+        .sort-select:hover { border-color: #2e7d32; }
+
         .products-container {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 30px;
-            padding: 20px 40px 100px 40px; /* Padding inferior aumentado para compensar a falta de footer */
+            padding: 20px 40px 100px 40px;
         }
 
         .product-card {
@@ -144,27 +186,42 @@ $products_result = $stmt_prod->get_result();
 </head>
 <body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>" style="margin:0; padding:0;">
 
-<?php 
-// Header incluído normalmente
-require_once '../includes/header.php'; 
-?>
+<?php require_once '../includes/header.php'; ?>
 
 <h1 class="category-title">
     <?= ($lang == 'pt') ? 'Produtos: Elétrica' : 'Products: Electrical' ?>
 </h1>
 
+<div class="filter-wrapper">
+    <form method="GET" id="sortForm">
+        <select name="sort" class="sort-select" onchange="this.form.submit()">
+            <option value="" <?= $sort == '' ? 'selected' : '' ?>>
+                <?= ($lang == 'pt') ? 'Ordenar por: Recentes' : 'Sort by: Recent' ?>
+            </option>
+            <option value="price_asc" <?= $sort == 'price_asc' ? 'selected' : '' ?>>
+                <?= ($lang == 'pt') ? 'Preço: Mais Baixo' : 'Price: Lowest' ?>
+            </option>
+            <option value="price_desc" <?= $sort == 'price_desc' ? 'selected' : '' ?>>
+                <?= ($lang == 'pt') ? 'Preço: Mais Alto' : 'Price: Highest' ?>
+            </option>
+        </select>
+    </form>
+</div>
+
 <div class="products-container">
     <?php if ($products_result->num_rows > 0): ?>
         <?php while($product = $products_result->fetch_assoc()): ?>
             <div class="product-card">
-                <img src="../assets/img/produtos/<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Imagem'">
+                <img src="../uploads/perfil/produtos/<?= htmlspecialchars($product['main_image']) ?>" 
+                     alt="<?= htmlspecialchars($product['name']) ?>" 
+                     onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Imagem'">
                 
-                <h3><?= htmlspecialchars($product['name']) ?></h3>
+                <h3>#<?= $product['id'] ?> - <?= htmlspecialchars($product['name']) ?></h3>
                 
                 <div class="price">€<?= number_format($product['price'], 2, ',', '.') ?></div>
                 
                 <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 5px;">
-                    <strong>Estado:</strong> <?= htmlspecialchars($product['condition_state']) ?>
+                    <strong>Estado:</strong> <?= htmlspecialchars($product['condition_state'] ?? 'Excelente') ?>
                 </p>
                 
                 <div class="card-buttons">
@@ -182,7 +239,7 @@ require_once '../includes/header.php';
         <?php endwhile; ?>
     <?php else: ?>
         <p style="text-align:center; width:100%; font-size: 1.2rem; margin-top: 50px;">
-            <?= ($lang == 'pt') ? 'Nenhum produto encontrado nesta categoria.' : 'No products found in this category.' ?>
+            <?= ($lang == 'pt') ? 'Nenhum produto encontrado nesta categoria.' : 'No products found.' ?>
         </p>
     <?php endif; ?>
 </div>

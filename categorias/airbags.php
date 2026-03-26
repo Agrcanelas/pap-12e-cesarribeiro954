@@ -11,8 +11,18 @@ if (session_status() === PHP_SESSION_NONE) {
 // 1. Ligar à Base de Dados
 require_once '../auth/config.php'; 
 
-// Garante que a variável $lang existe para não dar erro no HTML
+// Garante que a variável $lang existe
 $lang = $_SESSION['lang'] ?? 'pt';
+
+// --- LÓGICA DE ORDENAÇÃO ---
+$sort = $_GET['sort'] ?? '';
+$order_query = "id DESC"; // Ordem padrão
+
+if ($sort == 'price_asc') {
+    $order_query = "price ASC";
+} elseif ($sort == 'price_desc') {
+    $order_query = "price DESC";
+}
 
 // 2. Procurar o ID da categoria "airbags"
 $cat_slug = 'airbags';
@@ -28,8 +38,8 @@ if (!$cat_data) {
 
 $category_id = $cat_data['id'];
 
-// 3. Procurar os produtos
-$stmt_prod = $conn->prepare("SELECT * FROM products WHERE category_id = ?");
+// 3. Procurar os produtos COM ORDENAÇÃO
+$stmt_prod = $conn->prepare("SELECT * FROM products WHERE category_id = ? ORDER BY $order_query");
 $stmt_prod->bind_param("i", $category_id);
 $stmt_prod->execute();
 $products_result = $stmt_prod->get_result();
@@ -51,12 +61,38 @@ $products_result = $stmt_prod->get_result();
             color: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#fff' : '#2e7d32' ?>;
         }
 
+        /* FILTRO IGUAL AO DA ELÉTRICA */
+        .filter-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            max-width: 1200px;
+            margin: 0 auto 20px auto;
+            padding: 0 40px;
+        }
+
+        .sort-select {
+            padding: 10px 15px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            background: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#2a2a2a' : '#fff' ?>;
+            color: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#fff' : '#333' ?>;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+
+        .sort-select:hover { border-color: #2e7d32; }
+
         .products-container {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 30px;
-            padding: 20px 40px 40px 40px;
+            padding: 20px 40px 100px 40px;
         }
 
         .product-card {
@@ -79,10 +115,7 @@ $products_result = $stmt_prod->get_result();
             box-shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
 
-        .product-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-        }
+        .product-card:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(0,0,0,0.15); }
 
         .product-card img {
             width: 100%;
@@ -93,29 +126,11 @@ $products_result = $stmt_prod->get_result();
             background-color: #f9f9f9;
         }
 
-        .product-card h3 {
-            font-size: 1.2rem;
-            margin-bottom: 8px;
-            height: 45px;
-            overflow: hidden;
-            font-weight: 700;
-        }
-
-        .product-card .price {
-            font-size: 1.6rem;
-            color: #2e7d32;
-            font-weight: 800;
-            margin: 10px 0;
-        }
-
+        .product-card h3 { font-size: 1.2rem; margin-bottom: 8px; height: 45px; overflow: hidden; font-weight: 700; }
+        .product-card .price { font-size: 1.6rem; color: #2e7d32; font-weight: 800; margin: 10px 0; }
         body.dark .product-card .price { color: #66d78b; }
 
-        .card-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
+        .card-buttons { display: flex; gap: 10px; margin-top: 20px; }
         .btn {
             flex: 1;
             display: flex;
@@ -134,12 +149,7 @@ $products_result = $stmt_prod->get_result();
 
         .btn-details { background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); }
         .btn-cart { background: linear-gradient(135deg, #66d78b 0%, #43a047 100%); }
-
-        .btn:hover {
-            transform: scale(1.04);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-            color: #fff;
-        }
+        .btn:hover { transform: scale(1.04); box-shadow: 0 6px 15px rgba(0,0,0,0.2); color: #fff; }
     </style>
 </head>
 <body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>" style="margin:0; padding:0;">
@@ -149,6 +159,22 @@ $products_result = $stmt_prod->get_result();
 <h1 class="category-title">
     <?= ($lang == 'pt') ? 'Produtos: Airbags' : 'Products: Airbags' ?>
 </h1>
+
+<div class="filter-wrapper">
+    <form method="GET" id="sortForm">
+        <select name="sort" class="sort-select" onchange="this.form.submit()">
+            <option value="" <?= $sort == '' ? 'selected' : '' ?>>
+                <?= ($lang == 'pt') ? 'Ordenar por: Recentes' : 'Sort by: Recent' ?>
+            </option>
+            <option value="price_asc" <?= $sort == 'price_asc' ? 'selected' : '' ?>>
+                <?= ($lang == 'pt') ? 'Preço: Mais Baixo' : 'Price: Lowest' ?>
+            </option>
+            <option value="price_desc" <?= $sort == 'price_desc' ? 'selected' : '' ?>>
+                <?= ($lang == 'pt') ? 'Preço: Mais Alto' : 'Price: Highest' ?>
+            </option>
+        </select>
+    </form>
+</div>
 
 <div class="products-container" style="padding-bottom: 100px;"> 
     <?php if ($products_result->num_rows > 0): ?>
@@ -170,7 +196,7 @@ $products_result = $stmt_prod->get_result();
                     </a>
                     
                     <a href="../add_to_cart.php?id=<?= $product['id'] ?>" class="btn btn-cart">
-                        <i class="fa fa-cart-plus"></i> <?= ($lang == 'pt') ? 'Adicionar' : 'Add' ?>
+                        <i class="fa fa-cart-plus"></i>
                     </a>
                 </div>
             </div>

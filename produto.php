@@ -20,7 +20,7 @@ if (!$product) {
     exit;
 }
 
-// 2. BUSCA AS IMAGENS EXTRAS NA GALERIA
+// 2. BUSCA AS IMAGENS NA GALERIA (Lógica de Gênio: Anti-Duplicação)
 $sql_fotos = "SELECT image_url FROM product_images WHERE product_id = ?";
 $stmt_fotos = $conn->prepare($sql_fotos);
 $stmt_fotos->bind_param("i", $id);
@@ -28,13 +28,20 @@ $stmt_fotos->execute();
 $res_fotos = $stmt_fotos->get_result();
 
 $todas_as_fotos = [];
-// Adiciona a foto principal da tabela products primeiro
-if(!empty($product['image_url'])) {
-    $todas_as_fotos[] = $product['image_url'];
-}
-// Adiciona as fotos extras vindas da tabela product_images
+
+// Adiciona primeiro as fotos da tabela de galeria (product_images)
 while($f = $res_fotos->fetch_assoc()) {
     $todas_as_fotos[] = $f['image_url'];
+}
+
+// Se a galeria estiver VAZIA, usamos a foto da tabela products (produtos antigos #1 a #18)
+if (empty($todas_as_fotos) && !empty($product['image_url'])) {
+    $todas_as_fotos[] = $product['image_url'];
+}
+
+// Se a imagem principal da tabela products NÃO estiver na galeria, adicionamos (evita falhas no Admin)
+if (!empty($product['image_url']) && !in_array($product['image_url'], $todas_as_fotos)) {
+    array_unshift($todas_as_fotos, $product['image_url']);
 }
 
 // Lógica de Oferta
@@ -98,7 +105,6 @@ if (strpos($estado, 'excelente') !== false) {
         .slide { width: 100%; height: 100%; object-fit: cover; display: none; }
         .slide.active { display: block; }
 
-        /* Setas de navegação */
         .nav-btn {
             position: absolute; top: 50%; transform: translateY(-50%);
             background: rgba(255,255,255,0.8); color: #333;
@@ -111,7 +117,6 @@ if (strpos($estado, 'excelente') !== false) {
         .prev-btn { left: 15px; }
         .next-btn { right: 15px; }
 
-        /* Bolinhas (Dots) */
         .slider-dots {
             position: absolute; bottom: 20px; width: 100%;
             display: flex; justify-content: center; gap: 8px; z-index: 10;
@@ -124,7 +129,6 @@ if (strpos($estado, 'excelente') !== false) {
         body.dark .dot { background: rgba(255,255,255,0.2); }
         body.dark .dot.active { background: var(--primary-light); }
 
-        /* Restante do CSS preservado */
         .badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 50px; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px; margin-right: 10px; }
         .excelent { background: rgba(27, 94, 32, 0.1); color: #1b5e20; border: 1px solid rgba(27, 94, 32, 0.2); }
         .good { background: rgba(251, 192, 45, 0.1); color: #f57f17; border: 1px solid rgba(251, 192, 45, 0.2); }
@@ -245,16 +249,13 @@ const dots = document.querySelectorAll('.dot');
 function showSlide(index) {
     if (slides.length === 0) return;
     
-    // Resetar slides e bolinhas
     slides.forEach(s => s.classList.remove('active'));
     dots.forEach(d => d.classList.remove('active'));
     
-    // Validar limites
     if (index >= slides.length) currentIdx = 0;
     else if (index < 0) currentIdx = slides.length - 1;
     else currentIdx = index;
     
-    // Ativar slide atual
     slides[currentIdx].classList.add('active');
     if (dots[currentIdx]) dots[currentIdx].classList.add('active');
 }
