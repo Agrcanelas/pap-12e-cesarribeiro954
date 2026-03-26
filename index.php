@@ -170,13 +170,37 @@ $txt = $t[$lang];
                     $id = $row['id'];
                     $st = $row['status'] ?? 'ativo';
                     $is_editing = (isset($_GET['edit_id']) && $_GET['edit_id'] == $id);
+                    // Detetar se está em oferta
+                    $is_promo = (isset($row['em_oferta']) && $row['em_oferta'] == 1);
                 ?>
                 <tr id="prod-<?= $id ?>" class="<?= ($st == 'removido') ? 'item-removido' : '' ?>">
                     <form method="POST" action="index.php?view=admin#prod-<?= $id ?>">
                         <td><strong><?= $pos++ ?></strong><input type="hidden" name="prod_id" value="<?= $id ?>"></td>
                         <td><img src="uploads/perfil/produtos/<?= htmlspecialchars($row['image_url']) ?>" width="45" height="45" style="object-fit:cover; border-radius:5px;" onerror="this.src='https://via.placeholder.com/50'"></td>
-                        <td><?php if($is_editing): ?><input type="text" name="novo_nome" value="<?= htmlspecialchars($row['name']) ?>" style="width:90%; padding:5px;"><?php else: ?><?= htmlspecialchars($row['name']) ?><?php endif; ?></td>
-                        <td><?php if($is_editing): ?><input type="number" step="0.01" name="novo_preco" value="<?= $row['price'] ?>" style="width:70px;"><?php else: ?><?= number_format($row['price'],2,',','.') ?>€<?php endif; ?></td>
+                        <td>
+                            <?php if($is_editing): ?>
+                                <input type="text" name="novo_nome" value="<?= htmlspecialchars($row['name']) ?>" style="width:90%; padding:5px;">
+                            <?php else: ?>
+                                <?= htmlspecialchars($row['name']) ?>
+                                <?php if($is_promo): ?>
+                                    <span style="background: #e53935; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 900; margin-left: 8px; vertical-align: middle; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">OFERTA</span>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <?php if($is_editing): ?>
+                                <input type="number" step="0.01" name="novo_preco" value="<?= $row['price'] ?>" style="width:70px;">
+                            <?php else: ?>
+                                <?php if($is_promo && isset($row['preco_antigo']) && $row['preco_antigo'] > 0): ?>
+                                    <span style="text-decoration: line-through; color: #999; font-size: 11px; display: block; margin-bottom: -2px;">
+                                        <?= number_format($row['preco_antigo'],2,',','.') ?>€
+                                    </span>
+                                <?php endif; ?>
+                                <span style="font-weight: bold; color: <?= $is_promo ? '#d32f2f' : 'inherit' ?>;">
+                                    <?= number_format($row['price'],2,',','.') ?>€
+                                </span>
+                            <?php endif; ?>
+                        </td>
                         <td>
                             <?php if($is_editing): ?>
                                 <button type="submit" name="save_edit" style="color:green; border:none; background:none; cursor:pointer;"><i class="fa fa-check-circle fa-lg"></i></button>

@@ -38,6 +38,8 @@ if ($user_logged_in) {
 }
 ?>
 
+<link rel="icon" type="image/png" href="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg">
+
 <script type="text/javascript">
 function googleTranslateElementInit() {
   new google.translate.TranslateElement({
@@ -50,7 +52,6 @@ function googleTranslateElementInit() {
 </script>
 <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-<link rel="icon" type="image/png" href="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg">
 <link rel="stylesheet" href="<?= $base ?>/style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
@@ -127,19 +128,14 @@ function googleTranslateElementInit() {
         cursor:pointer; font-weight:bold; color:#2e7d32; display:flex; align-items:center; gap:5px; height: 35px;
     }
 
-    /* =====================================================================
-       4. REGRAS DO MODO DARK (CORES SITE TODO - ADMIN + SOBRE)
-       ===================================================================== */
-    
+    /* MODO DARK */
     body.dark { background-color: #121212 !important; color: #ffffff !important; }
     body.dark #mainHeader { background-color: #1a1a1a !important; }
-    
     body.dark #searchBox, body.dark .goog-te-gadget-simple, body.dark .theme-btn {
         background-color: #252525 !important; color: #ffffff !important; border: 1px solid #444 !important;
     }
     body.dark .goog-te-gadget-simple span { color: #66d78b !important; }
 
-    /* CAIXAS GLOBAIS: Categorias, Sobre Nós, Admin Cards, Tabelas e Formulários */
     body.dark .box, body.dark .card, body.dark .categoria, body.dark .produto-box,
     body.dark section, body.dark table, body.dark .admin-container,
     body.dark div[id*="sobre"], body.dark section[class*="sobre"],
@@ -152,7 +148,6 @@ function googleTranslateElementInit() {
         border-color: #333333 !important;
     }
 
-    /* Campos de Edição de Admin e inputs */
     body.dark input[type="text"], body.dark input[type="number"], 
     body.dark input[type="file"], body.dark textarea, body.dark select {
         background-color: #2a2a2a !important;
@@ -160,7 +155,6 @@ function googleTranslateElementInit() {
         border: 1px solid #444 !important;
     }
 
-    /* Links e botões dentro das áreas dark */
     body.dark a:not(.nav-link):not(.search-btn) { color: #66d78b; }
     body.dark td, body.dark th { border-bottom: 1px solid #333 !important; color: #fff !important; }
 </style>
@@ -218,6 +212,15 @@ function googleTranslateElementInit() {
 </header>
 
 <script>
+// Forçar o Favicon no Head (Mesmo em subpastas ou categorias)
+(function() {
+    var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+    link.type = 'image/png';
+    link.rel = 'shortcut icon';
+    link.href = 'https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg';
+    document.getElementsByTagName('head')[0].appendChild(link);
+})();
+
 if ('<?= $theme ?>' === 'dark') { document.body.classList.add('dark'); }
 
 document.getElementById('theme-toggle').addEventListener('click', function() {

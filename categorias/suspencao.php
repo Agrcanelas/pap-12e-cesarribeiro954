@@ -38,7 +38,7 @@ $category_id = $cat_data['id'];
 $titulo_exibicao = ($lang == 'pt') ? $cat_data['nome_pt'] : $cat_data['nome_en'];
 
 // 3. Procurar os produtos com Ordenação
-$stmt_prod = $conn->prepare("SELECT * FROM products WHERE category_id = ? ORDER BY $order_query");
+$stmt_prod = $conn->prepare("SELECT * FROM products WHERE category_id = ? AND status = 'ativo' ORDER BY $order_query");
 $stmt_prod->bind_param("i", $category_id);
 $stmt_prod->execute();
 $products_result = $stmt_prod->get_result();
@@ -175,7 +175,7 @@ $products_result = $stmt_prod->get_result();
     </form>
 </div>
 
-<div class="products-container">
+<div class="products-container" style="padding-bottom: 100px;">
     <?php if ($products_result->num_rows > 0): ?>
         <?php while($product = $products_result->fetch_assoc()): ?>
             <div class="product-card">
@@ -183,7 +183,7 @@ $products_result = $stmt_prod->get_result();
                      alt="<?= htmlspecialchars($product['name']) ?>" 
                      onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Foto'">
                 
-                <h3>#<?= $product['id'] ?> - <?= htmlspecialchars($product['name']) ?></h3>
+                <h3><?= htmlspecialchars($product['name']) ?></h3>
                 
                 <div class="price">€<?= number_format($product['price'], 2, ',', '.') ?></div>
                 

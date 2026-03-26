@@ -16,7 +16,7 @@ $lang = $_SESSION['lang'] ?? 'pt';
 
 // --- LÓGICA DE ORDENAÇÃO ---
 $sort = $_GET['sort'] ?? '';
-$order_query = "id DESC"; // Ordem padrão
+$order_query = "id DESC"; 
 
 if ($sort == 'price_asc') {
     $order_query = "price ASC";
@@ -61,7 +61,6 @@ $products_result = $stmt_prod->get_result();
             color: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#fff' : '#2e7d32' ?>;
         }
 
-        /* FILTRO IGUAL AO DA ELÉTRICA */
         .filter-wrapper {
             display: flex;
             justify-content: flex-end;
@@ -182,7 +181,7 @@ $products_result = $stmt_prod->get_result();
             <div class="product-card">
                 <img src="../uploads/perfil/produtos/<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Foto'">
                 
-                <h3>#<?= $product['id'] ?> - <?= htmlspecialchars($product['name']) ?></h3>
+                <h3><?= htmlspecialchars($product['name']) ?></h3>
                 
                 <div class="price">€<?= number_format($product['price'], 2, ',', '.') ?></div>
                 
@@ -192,11 +191,13 @@ $products_result = $stmt_prod->get_result();
                 
                 <div class="card-buttons">
                     <a href="../produto.php?id=<?= $product['id'] ?>" class="btn btn-details">
-                        <i class="fa fa-info-circle"></i> <?= ($lang == 'pt') ? 'Detalhes' : 'Details' ?>
+                        <i class="fa fa-info-circle"></i> 
+                        <?= ($lang == 'pt') ? 'Detalhes' : 'Details' ?>
                     </a>
                     
                     <a href="../add_to_cart.php?id=<?= $product['id'] ?>" class="btn btn-cart">
                         <i class="fa fa-cart-plus"></i>
+                        <?= ($lang == 'pt') ? 'Adicionar' : 'Add' ?>
                     </a>
                 </div>
             </div>

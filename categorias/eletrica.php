@@ -67,7 +67,6 @@ $products_result = $stmt_prod->get_result();
             color: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#fff' : '#2e7d32' ?>;
         }
 
-        /* ESTILO DO FILTRO */
         .filter-wrapper {
             display: flex;
             justify-content: flex-end;
@@ -121,10 +120,7 @@ $products_result = $stmt_prod->get_result();
             box-shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
 
-        .product-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-        }
+        .product-card:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(0,0,0,0.15); }
 
         .product-card img {
             width: 100%;
@@ -135,29 +131,11 @@ $products_result = $stmt_prod->get_result();
             background-color: #f9f9f9;
         }
 
-        .product-card h3 {
-            font-size: 1.2rem;
-            margin-bottom: 8px;
-            height: 45px;
-            overflow: hidden;
-            font-weight: 700;
-        }
-
-        .product-card .price {
-            font-size: 1.6rem;
-            color: #2e7d32;
-            font-weight: 800;
-            margin: 10px 0;
-        }
-
+        .product-card h3 { font-size: 1.2rem; margin-bottom: 8px; height: 45px; overflow: hidden; font-weight: 700; }
+        .product-card .price { font-size: 1.6rem; color: #2e7d32; font-weight: 800; margin: 10px 0; }
         body.dark .product-card .price { color: #66d78b; }
 
-        .card-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
+        .card-buttons { display: flex; gap: 10px; margin-top: 20px; }
         .btn {
             flex: 1;
             display: flex;
@@ -176,12 +154,7 @@ $products_result = $stmt_prod->get_result();
 
         .btn-details { background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); }
         .btn-cart { background: linear-gradient(135deg, #66d78b 0%, #43a047 100%); }
-
-        .btn:hover {
-            transform: scale(1.04);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-            color: #fff;
-        }
+        .btn:hover { transform: scale(1.04); box-shadow: 0 6px 15px rgba(0,0,0,0.2); color: #fff; }
     </style>
 </head>
 <body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>" style="margin:0; padding:0;">
@@ -208,7 +181,7 @@ $products_result = $stmt_prod->get_result();
     </form>
 </div>
 
-<div class="products-container">
+<div class="products-container" style="padding-bottom: 100px;"> 
     <?php if ($products_result->num_rows > 0): ?>
         <?php while($product = $products_result->fetch_assoc()): ?>
             <div class="product-card">
@@ -216,7 +189,7 @@ $products_result = $stmt_prod->get_result();
                      alt="<?= htmlspecialchars($product['name']) ?>" 
                      onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Imagem'">
                 
-                <h3>#<?= $product['id'] ?> - <?= htmlspecialchars($product['name']) ?></h3>
+                <h3><?= htmlspecialchars($product['name']) ?></h3>
                 
                 <div class="price">€<?= number_format($product['price'], 2, ',', '.') ?></div>
                 

@@ -14,7 +14,7 @@ $lang = $_SESSION['lang'] ?? 'pt';
 
 // --- LÓGICA DE ORDENAÇÃO ---
 $sort = $_GET['sort'] ?? '';
-$order_query = "id DESC"; // Padrão: mais recentes
+$order_query = "id DESC"; 
 
 if ($sort == 'price_asc') {
     $order_query = "price ASC";
@@ -59,7 +59,6 @@ $products_result = $stmt_prod->get_result();
             color: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#fff' : '#2e7d32' ?>;
         }
 
-        /* FILTRO PADRONIZADO */
         .filter-wrapper {
             display: flex;
             justify-content: flex-end;
@@ -174,7 +173,7 @@ $products_result = $stmt_prod->get_result();
     </form>
 </div>
 
-<div class="products-container">
+<div class="products-container" style="padding-bottom: 100px;">
     <?php if ($products_result->num_rows > 0): ?>
         <?php while($product = $products_result->fetch_assoc()): ?>
             <div class="product-card">
@@ -182,7 +181,7 @@ $products_result = $stmt_prod->get_result();
                      alt="<?= htmlspecialchars($product['name']) ?>" 
                      onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Foto'">
                 
-                <h3>#<?= $product['id'] ?> - <?= htmlspecialchars($product['name']) ?></h3>
+                <h3><?= htmlspecialchars($product['name']) ?></h3>
                 
                 <div class="price">€<?= number_format($product['price'], 2, ',', '.') ?></div>
                 

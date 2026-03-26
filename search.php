@@ -11,7 +11,7 @@ $lang = $_SESSION['lang'] ?? 'pt';
 
 if (!empty($query_term)) {
     $search_param = "%$query_term%";
-    // Melhorada a query para garantir que só mostra produtos ativos
+    // Seleciona todos os campos para garantir que temos 'em_oferta' e 'preco_antigo'
     $stmt = $conn->prepare("SELECT * FROM products WHERE (name LIKE ? OR description LIKE ?) AND status = 'ativo'");
     $stmt->bind_param("ss", $search_param, $search_param);
     $stmt->execute();
@@ -46,18 +46,31 @@ if (!empty($query_term)) {
             background: #fff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             width: 320px; text-align: center; padding: 25px; transition: all 0.3s ease;
             display: flex; flex-direction: column; border: 1px solid #f0f0f0;
+            position: relative; /* Para a etiqueta de desconto */
         }
         body.dark .product-card { background: #1e1e1e; color: #fff; border: 1px solid #333; }
         .product-card:hover { transform: translateY(-8px); }
         
-        /* Ajuste na imagem para garantir que caiba sempre bem */
         .product-card img { 
             width: 100%; height: 200px; object-fit: cover; 
             border-radius: 15px; margin-bottom: 15px; 
             background: #f9f9f9;
         }
+
+        /* ETIQUETA DE DESCONTO */
+        .search-offer-badge {
+            position: absolute; top: 15px; right: 15px;
+            background: #d32f2f; color: white; padding: 5px 12px;
+            border-radius: 50px; font-weight: 800; font-size: 0.75rem;
+            box-shadow: 0 4px 10px rgba(211, 47, 47, 0.3); z-index: 5;
+        }
         
-        .product-card .price { font-size: 1.6rem; color: #2e7d32; font-weight: 800; margin: 10px 0; }
+        .price-wrapper { margin: 10px 0; }
+        .old-price-search { 
+            text-decoration: line-through; color: #aaa; 
+            font-size: 0.9rem; display: block; margin-bottom: -5px;
+        }
+        .product-card .price { font-size: 1.6rem; color: #2e7d32; font-weight: 800; }
         body.dark .product-card .price { color: #66d78b; }
 
         .card-buttons { display: flex; gap: 10px; margin-top: 20px; }
@@ -82,7 +95,7 @@ if (!empty($query_term)) {
         }
     </style>
 </head>
-<body class="<?= (isset($_COOKIE['theme']) && $_COOKIE['theme'] == 'dark') ? 'dark' : '' ?>" style="margin:0; padding:0;">
+<body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>" style="margin:0; padding:0;">
 
 <?php require_once 'includes/header.php'; ?>
 
@@ -92,15 +105,29 @@ if (!empty($query_term)) {
 
     <div class="products-container">
         <?php if (isset($results) && $results->num_rows > 0): ?>
-            <?php while($product = $results->fetch_assoc()): ?>
+            <?php while($product = $results->fetch_assoc()): 
+                $preco_atual = $product['price'];
+                $preco_antigo = $product['preco_antigo'] ?? 0;
+                $is_promo = ($product['em_oferta'] == 1 && $preco_antigo > $preco_atual);
+                $percentagem = ($is_promo) ? round((($preco_antigo - $preco_atual) / $preco_antigo) * 100) : 0;
+            ?>
                 <div class="product-card">
+                    <?php if($is_promo): ?>
+                        <div class="search-offer-badge">-<?= $percentagem ?>%</div>
+                    <?php endif; ?>
+
                     <img src="uploads/perfil/produtos/<?= htmlspecialchars($product['image_url']) ?>" 
                          alt="<?= htmlspecialchars($product['name']) ?>" 
                          onerror="this.src='https://via.placeholder.com/320x200?text=Produto+Sem+Foto'">
                     
                     <h3>#<?= $product['id'] ?> - <?= htmlspecialchars($product['name']) ?></h3>
                     
-                    <div class="price">€<?= number_format($product['price'], 2, ',', '.') ?></div>
+                    <div class="price-wrapper">
+                        <?php if($is_promo): ?>
+                            <span class="old-price-search"><?= number_format($preco_antigo, 2, ',', '.') ?>€</span>
+                        <?php endif; ?>
+                        <div class="price">€<?= number_format($preco_atual, 2, ',', '.') ?></div>
+                    </div>
                     
                     <p style="font-size: 0.9rem; opacity: 0.8;">
                         <strong>Estado:</strong> <?= htmlspecialchars($product['condition_state'] ?? 'Usado') ?>
