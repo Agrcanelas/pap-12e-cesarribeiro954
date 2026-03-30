@@ -20,7 +20,11 @@ if (!$product) {
     exit;
 }
 
-// 2. BUSCA AS IMAGENS NA GALERIA (Lógica de Gênio: Anti-Duplicação)
+// --- ADICIONADO: Lógica do Logo da Base de Dados ---
+$nome_logo = !empty($product['brand_logo']) ? $product['brand_logo'] : 'default.jpg';
+$caminho_logo = "logotipos/" . $nome_logo;
+
+// 2. BUSCA AS IMAGENS NA GALERIA (Tua Lógica de Gênio)
 $sql_fotos = "SELECT image_url FROM product_images WHERE product_id = ?";
 $stmt_fotos = $conn->prepare($sql_fotos);
 $stmt_fotos->bind_param("i", $id);
@@ -28,18 +32,14 @@ $stmt_fotos->execute();
 $res_fotos = $stmt_fotos->get_result();
 
 $todas_as_fotos = [];
-
-// Adiciona primeiro as fotos da tabela de galeria (product_images)
 while($f = $res_fotos->fetch_assoc()) {
     $todas_as_fotos[] = $f['image_url'];
 }
 
-// Se a galeria estiver VAZIA, usamos a foto da tabela products (produtos antigos #1 a #18)
 if (empty($todas_as_fotos) && !empty($product['image_url'])) {
     $todas_as_fotos[] = $product['image_url'];
 }
 
-// Se a imagem principal da tabela products NÃO estiver na galeria, adicionamos (evita falhas no Admin)
 if (!empty($product['image_url']) && !in_array($product['image_url'], $todas_as_fotos)) {
     array_unshift($todas_as_fotos, $product['image_url']);
 }
@@ -49,7 +49,7 @@ $em_oferta = (isset($product['em_oferta']) && $product['em_oferta'] == 1);
 $preco_antigo = $product['preco_antigo'] ?? 0;
 $preco_atual = $product['price'] ?? 0;
 
-// Lógica de Distintivos (Badges) por Estado
+// Lógica de Distintivos (Badges)
 $estado = mb_strtolower($product['condition_state'] ?? '');
 $badge_html = '';
 
@@ -129,6 +129,11 @@ if (strpos($estado, 'excelente') !== false) {
         body.dark .dot { background: rgba(255,255,255,0.2); }
         body.dark .dot.active { background: var(--primary-light); }
 
+        /* ADICIONADO: Estilo do Logo ao lado do Título */
+        .header-flex-container { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; margin-bottom: 15px; }
+        .brand-logo-detail { width: 75px; height: 75px; background: #fff; padding: 10px; border-radius: 15px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.06); border: 1px solid #eee; flex-shrink: 0; }
+        .brand-logo-detail img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
         .badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 50px; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px; margin-right: 10px; }
         .excelent { background: rgba(27, 94, 32, 0.1); color: #1b5e20; border: 1px solid rgba(27, 94, 32, 0.2); }
         .good { background: rgba(251, 192, 45, 0.1); color: #f57f17; border: 1px solid rgba(251, 192, 45, 0.2); }
@@ -136,7 +141,7 @@ if (strpos($estado, 'excelente') !== false) {
         .neutral { background: rgba(0, 0, 0, 0.05); color: #555; border: 1px solid rgba(0, 0, 0, 0.1); }
         .badge-promo { background: var(--offer-red); color: #fff; animation: pulseRed 2s infinite; }
         @keyframes pulseRed { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.4); } 70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); } }
-        .product-title { font-size: 42px; font-weight: 800; line-height: 1.1; margin: 0 0 15px; color: #111; }
+        .product-title { font-size: 42px; font-weight: 800; line-height: 1.1; margin: 0; color: #111; }
         body.dark .product-title { color: #fff; }
         .price-container { margin-bottom: 35px; }
         .old-price { font-size: 20px; text-decoration: line-through; color: #999; margin-bottom: 5px; display: block; }
@@ -201,7 +206,15 @@ if (strpos($estado, 'excelente') !== false) {
                 <?php endif; ?>
             </div>
             
-            <h1 class="product-title">#<?= $id ?> - <?= htmlspecialchars($product['name']) ?></h1>
+            <div class="header-flex-container">
+                <h1 class="product-title">#<?= $id ?> - <?= htmlspecialchars($product['name']) ?></h1>
+                
+                <div class="brand-logo-detail">
+                    <img src="<?= $caminho_logo ?>" 
+                         alt="Logo Marca" 
+                         onerror="this.src='https://via.placeholder.com/100?text=Eco';">
+                </div>
+            </div>
             
             <div class="price-container">
                 <?php if($em_oferta && $preco_antigo > 0): ?>
@@ -237,7 +250,6 @@ if (strpos($estado, 'excelente') !== false) {
                 </a>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -248,25 +260,16 @@ const dots = document.querySelectorAll('.dot');
 
 function showSlide(index) {
     if (slides.length === 0) return;
-    
     slides.forEach(s => s.classList.remove('active'));
     dots.forEach(d => d.classList.remove('active'));
-    
     if (index >= slides.length) currentIdx = 0;
     else if (index < 0) currentIdx = slides.length - 1;
     else currentIdx = index;
-    
     slides[currentIdx].classList.add('active');
     if (dots[currentIdx]) dots[currentIdx].classList.add('active');
 }
-
-function moveSlide(step) {
-    showSlide(currentIdx + step);
-}
-
-function goToSlide(index) {
-    showSlide(index);
-}
+function moveSlide(step) { showSlide(currentIdx + step); }
+function goToSlide(index) { showSlide(index); }
 </script>
 
 </body>

@@ -14,12 +14,12 @@ $lang = $_SESSION['lang'] ?? 'pt';
 
 // --- LÓGICA DE ORDENAÇÃO ---
 $sort = $_GET['sort'] ?? '';
-$order_query = "id DESC"; // Padrão: mais recentes
+$order_query = "p.id DESC"; // Padrão: mais recentes
 
 if ($sort == 'price_asc') {
-    $order_query = "price ASC";
+    $order_query = "p.price ASC";
 } elseif ($sort == 'price_desc') {
-    $order_query = "price DESC";
+    $order_query = "p.price DESC";
 }
 
 // 2. Procurar o ID da categoria "interior"
@@ -37,8 +37,14 @@ if (!$cat_data) {
 $category_id = $cat_data['id'];
 $titulo_exibicao = ($lang == 'pt') ? $cat_data['nome_pt'] : $cat_data['nome_en'];
 
-// 3. Procurar os produtos com Ordenação
-$stmt_prod = $conn->prepare("SELECT * FROM products WHERE category_id = ? AND status = 'ativo' ORDER BY $order_query");
+// 3. Procurar os produtos com Ordenação e Logo da Marca
+$stmt_prod = $conn->prepare("
+    SELECT p.*, 
+    (SELECT pi.image_url FROM product_images pi WHERE pi.product_id = p.id LIMIT 1) AS main_image 
+    FROM products p 
+    WHERE p.category_id = ? AND p.status = 'ativo' 
+    ORDER BY $order_query
+");
 $stmt_prod->bind_param("i", $category_id);
 $stmt_prod->execute();
 $products_result = $stmt_prod->get_result();
@@ -104,6 +110,7 @@ $products_result = $stmt_prod->get_result();
             display: flex;
             flex-direction: column;
             border: 1px solid #f0f0f0;
+            position: relative;
         }
 
         body.dark .product-card {
@@ -115,17 +122,45 @@ $products_result = $stmt_prod->get_result();
 
         .product-card:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(0,0,0,0.15); }
 
-        .product-card img {
+        .product-card img.main-prod-img {
             width: 100%;
             height: 200px;
             object-fit: cover;
             border-radius: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             background-color: #f9f9f9;
         }
 
+        /* --- PADRONIZAÇÃO DO LOGO (75px) --- */
+        .card-brand-area {
+            display: flex;
+            justify-content: flex-end;
+            padding: 0 5px;
+            margin-bottom: 10px;
+        }
+
+        .brand-badge-large {
+            width: 75px;
+            height: 55px;
+            background: #fff;
+            border-radius: 10px;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #eee;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .brand-badge-large img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain !important;
+            transform: scale(1.1);
+        }
+
         .product-card h3 { font-size: 1.2rem; margin-bottom: 8px; height: 45px; overflow: hidden; font-weight: 700; }
-        .product-card .price { font-size: 1.6rem; color: #2e7d32; font-weight: 800; margin: 10px 0; }
+        .product-card .price { font-size: 1.6rem; color: #2e7d32; font-weight: 800; margin: 5px 0 10px 0; }
         body.dark .product-card .price { color: #66d78b; }
 
         .card-buttons { display: flex; gap: 10px; margin-top: 20px; }
@@ -176,18 +211,27 @@ $products_result = $stmt_prod->get_result();
 
 <div class="products-container" style="padding-bottom: 100px;">
     <?php if ($products_result->num_rows > 0): ?>
-        <?php while($product = $products_result->fetch_assoc()): ?>
+        <?php while($product = $products_result->fetch_assoc()): 
+            $logo_path = !empty($product['brand_logo']) ? "../logotipos/" . $product['brand_logo'] : "../logotipos/default.jpg";
+        ?>
             <div class="product-card">
-                <img src="../uploads/perfil/produtos/<?= htmlspecialchars($product['image_url']) ?>" 
+                <img src="../uploads/perfil/produtos/<?= htmlspecialchars($product['main_image'] ?? '') ?>" 
                      alt="<?= htmlspecialchars($product['name']) ?>" 
+                     class="main-prod-img"
                      onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Foto'">
                 
+                <div class="card-brand-area">
+                    <div class="brand-badge-large">
+                        <img src="<?= $logo_path ?>" alt="Marca" onerror="this.src='../logotipos/default.jpg'">
+                    </div>
+                </div>
+
                 <h3><?= htmlspecialchars($product['name']) ?></h3>
                 
                 <div class="price">€<?= number_format($product['price'], 2, ',', '.') ?></div>
                 
                 <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 5px;">
-                    <strong>Estado:</strong> <?= htmlspecialchars($product['condition_state']) ?>
+                    <strong>Estado:</strong> <?= htmlspecialchars($product['condition_state'] ?? 'Excelente') ?>
                 </p>
                 
                 <div class="card-buttons">

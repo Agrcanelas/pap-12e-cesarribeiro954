@@ -11,7 +11,7 @@ $lang = $_SESSION['lang'] ?? 'pt';
 
 if (!empty($query_term)) {
     $search_param = "%$query_term%";
-    // Seleciona todos os campos para garantir que temos 'em_oferta' e 'preco_antigo'
+    // Seleciona todos os campos
     $stmt = $conn->prepare("SELECT * FROM products WHERE (name LIKE ? OR description LIKE ?) AND status = 'ativo'");
     $stmt->bind_param("ss", $search_param, $search_param);
     $stmt->execute();
@@ -46,20 +46,51 @@ if (!empty($query_term)) {
             background: #fff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             width: 320px; text-align: center; padding: 25px; transition: all 0.3s ease;
             display: flex; flex-direction: column; border: 1px solid #f0f0f0;
-            position: relative; /* Para a etiqueta de desconto */
+            position: relative;
         }
         body.dark .product-card { background: #1e1e1e; color: #fff; border: 1px solid #333; }
         .product-card:hover { transform: translateY(-8px); }
         
-        .product-card img { 
+        /* CONTENTOR DA IMAGEM E LOGO */
+        .card-image-wrapper {
+            position: relative;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .product-card img.main-img { 
             width: 100%; height: 200px; object-fit: cover; 
-            border-radius: 15px; margin-bottom: 15px; 
-            background: #f9f9f9;
+            border-radius: 15px; background: #f9f9f9;
+        }
+
+        /* BADGE DO LOGOTIPO (75px) */
+        .brand-badge-search {
+            position: absolute;
+            bottom: -10px;
+            right: 10px;
+            width: 75px;
+            height: 55px;
+            background: #fff;
+            border-radius: 10px;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #eee;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            z-index: 2;
+        }
+
+        .brand-badge-search img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain !important;
+            transform: scale(1.1);
         }
 
         /* ETIQUETA DE DESCONTO */
         .search-offer-badge {
-            position: absolute; top: 15px; right: 15px;
+            position: absolute; top: 15px; left: 15px; /* Mudei para a esquerda para não chocar com o logo se estiverem no topo */
             background: #d32f2f; color: white; padding: 5px 12px;
             border-radius: 50px; font-weight: 800; font-size: 0.75rem;
             box-shadow: 0 4px 10px rgba(211, 47, 47, 0.3); z-index: 5;
@@ -110,15 +141,25 @@ if (!empty($query_term)) {
                 $preco_antigo = $product['preco_antigo'] ?? 0;
                 $is_promo = ($product['em_oferta'] == 1 && $preco_antigo > $preco_atual);
                 $percentagem = ($is_promo) ? round((($preco_antigo - $preco_atual) / $preco_antigo) * 100) : 0;
+                
+                // Lógica do Logotipo
+                $logo_path = !empty($product['brand_logo']) ? "logotipos/" . $product['brand_logo'] : "logotipos/default.jpg";
             ?>
                 <div class="product-card">
-                    <?php if($is_promo): ?>
-                        <div class="search-offer-badge">-<?= $percentagem ?>%</div>
-                    <?php endif; ?>
+                    <div class="card-image-wrapper">
+                        <?php if($is_promo): ?>
+                            <div class="search-offer-badge">-<?= $percentagem ?>%</div>
+                        <?php endif; ?>
 
-                    <img src="uploads/perfil/produtos/<?= htmlspecialchars($product['image_url']) ?>" 
-                         alt="<?= htmlspecialchars($product['name']) ?>" 
-                         onerror="this.src='https://via.placeholder.com/320x200?text=Produto+Sem+Foto'">
+                        <img src="uploads/perfil/produtos/<?= htmlspecialchars($product['image_url']) ?>" 
+                             alt="<?= htmlspecialchars($product['name']) ?>" 
+                             class="main-img"
+                             onerror="this.src='https://via.placeholder.com/320x200?text=Produto+Sem+Foto'">
+                        
+                        <div class="brand-badge-search">
+                            <img src="<?= $logo_path ?>" alt="Marca" onerror="this.src='logotipos/default.jpg'">
+                        </div>
+                    </div>
                     
                     <h3>#<?= $product['id'] ?> - <?= htmlspecialchars($product['name']) ?></h3>
                     

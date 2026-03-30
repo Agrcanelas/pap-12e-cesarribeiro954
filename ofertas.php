@@ -5,7 +5,7 @@ require_once 'includes/header.php';
 
 $lang = $_SESSION['lang'] ?? 'pt';
 
-// 1. Buscar apenas os produtos marcados como 'em_oferta' na DB
+// 1. Buscar os produtos em oferta incluindo o campo brand_logo
 $sql_ofertas = "SELECT * FROM products WHERE em_oferta = 1 AND status = 'ativo' LIMIT 6";
 $result_ofertas = $conn->query($sql_ofertas);
 ?>
@@ -66,10 +66,50 @@ $result_ofertas = $conn->query($sql_ofertas);
 
         .offer-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
 
+        /* CONTENTOR DA IMAGEM PARA POSICIONAR LOGO E BADGE */
+        .img-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .prod-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 20px;
+        }
+
+        /* BADGE DO LOGOTIPO (75px) */
+        .brand-badge-flash {
+            position: absolute;
+            bottom: -10px;
+            right: 10px;
+            width: 75px;
+            height: 55px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #eee;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            z-index: 5;
+        }
+
+        .brand-badge-flash img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transform: scale(1.1);
+        }
+
+        /* AJUSTE DO DESCONTO PARA A ESQUERDA */
         .badge-discount {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 15px;
+            left: 15px;
             background: var(--p-red);
             color: #fff;
             padding: 6px 15px;
@@ -83,14 +123,6 @@ $result_ofertas = $conn->query($sql_ofertas);
             0% { transform: scale(1); }
             50% { transform: scale(1.1); }
             100% { transform: scale(1); }
-        }
-
-        .prod-img {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-            border-radius: 20px;
-            margin-bottom: 20px;
         }
 
         .prod-info h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; height: 50px; overflow: hidden; }
@@ -124,15 +156,22 @@ $result_ofertas = $conn->query($sql_ofertas);
                 $preco_atual = $item['price'];
                 $preco_antigo = $item['preco_antigo'];
                 $percentagem = ($preco_antigo > 0) ? round((($preco_antigo - $preco_atual) / $preco_antigo) * 100) : 0;
+                $logo_path = !empty($item['brand_logo']) ? "logotipos/" . $item['brand_logo'] : "logotipos/default.jpg";
             ?>
                 <a href="produto.php?id=<?= $item['id'] ?>" class="offer-card">
-                    <?php if($percentagem > 0): ?>
-                        <div class="badge-discount">-<?= $percentagem ?>%</div>
-                    <?php endif; ?>
+                    <div class="img-container">
+                        <?php if($percentagem > 0): ?>
+                            <div class="badge-discount">-<?= $percentagem ?>%</div>
+                        <?php endif; ?>
 
-                    <img src="uploads/perfil/produtos/<?= htmlspecialchars($item['image_url']) ?>" 
-                         class="prod-img" 
-                         onerror="this.src='https://via.placeholder.com/400x300?text=Sem+Foto'">
+                        <img src="uploads/perfil/produtos/<?= htmlspecialchars($item['image_url']) ?>" 
+                             class="prod-img" 
+                             onerror="this.src='https://via.placeholder.com/400x300?text=Sem+Foto'">
+
+                        <div class="brand-badge-flash">
+                            <img src="<?= $logo_path ?>" alt="Marca" onerror="this.src='logotipos/default.jpg'">
+                        </div>
+                    </div>
 
                     <div class="prod-info">
                         <h3>#<?= $item['id'] ?> - <?= htmlspecialchars($item['name']) ?></h3>

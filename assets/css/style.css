@@ -1,66 +1,40 @@
-/* --- 4. AJUSTE DE PREÇOS E TÍTULOS --- */
-.price, .card .price {
-    color: var(--preco) !important;
+/* --- 4.1 LOGO DA MARCA NO CARD (NOVO) --- */
+.card {
+    position: relative; /* Essencial para o logo não fugir do card */
+    overflow: hidden;   /* Garante que nada sai das bordas arredondadas */
 }
 
-/* Títulos das categorias - AGORA SEMPRE VERDES */
-.card h3 {
-    color: #2e7d32 !important; /* Verde forte Ecopeças */
-    font-weight: bold !important;
-}
-
-/* Mantém o texto do logo branco no header */
-.logo-text {
-    color: #fff !important;
-}
-
-/* MODO ESCURO: Títulos ficam com o verde neon */
-body.dark .card h3 {
-    color: var(--preco) !important;
-}
-
-/* --- 5. EFEITO BORDA SUSTENTÁVEL (SOBRE ECOPEÇAS) --- */
-.about-box { 
-    max-width: 1200px; 
-    margin: 70px auto 40px; 
-    padding: 30px 45px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: space-between; 
-    background: var(--bg-card) !important; /* Respeita o modo escuro/claro */
-    color: var(--texto) !important;
-    border-radius: 18px; 
-    position: relative;
-    z-index: 1;
-}
-
-/* A borda animada com cores de natureza */
-.about-box::after {
-    content: "";
+.brand-badge {
     position: absolute;
-    top: -4px; left: -4px; right: -4px; bottom: -4px;
-    background: linear-gradient(45deg, #2e7d32, #81c784, #4caf50, #1b5e20);
-    background-size: 300% 300%;
-    z-index: -1;
-    border-radius: 22px;
-    animation: ecoBorder 6s ease infinite;
+    top: 15px;         /* Distância do topo */
+    right: 15px;       /* Distância da direita */
+    width: 35px;       /* Tamanho ideal para não tapar a peça */
+    height: 35px;
+    background: rgba(255, 255, 255, 0.9); /* Fundo branco suave para destacar o logo */
+    padding: 5px;
+    border-radius: 8px; /* Cantos curvos como os teus cards */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 10;       /* Fica sempre por cima da imagem da peça */
+    transition: transform 0.3s ease;
 }
 
-@keyframes ecoBorder {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+.brand-badge img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
 
-/* Brilho extra ao passar o rato */
-.about-box:hover {
-    box-shadow: 0 0 25px rgba(46, 125, 50, 0.5);
-    transform: scale(1.01);
+/* Efeito ao passar o rato no card, o logo ganha destaque */
+.card:hover .brand-badge {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
 }
 
-footer {
-    background-color: var(--header-bg);
-    color: #fff;
-    padding: 20px;
-    text-align: center;
+/* MODO ESCURO: Ajuste do fundo do logo para não brilhar demais */
+body.dark .brand-badge {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(5px); /* Efeito de vidro fosco no modo escuro */
 }
