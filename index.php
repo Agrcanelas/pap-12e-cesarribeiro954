@@ -17,7 +17,7 @@ $tabela = "products";
 $is_admin = (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin');
 $view_admin = ($is_admin && isset($_GET['view']) && $_GET['view'] === 'admin');
 
-/* ========= AÇÕES DE ADMIN (Recuperado) ========= */
+/* ========= AÇÕES DE ADMIN ========= */
 if ($is_admin) {
     if (isset($_POST['save_edit'])) {
         $id = intval($_POST['prod_id']);
@@ -38,7 +38,7 @@ if ($is_admin) {
     }
 }
 
-/* ========= DICIONÁRIO (CORRIGIDO) ========= */
+/* ========= DICIONÁRIO ========= */
 $t = [
     'pt' => [
         'slider1'=>'Peças ecológicas de qualidade','slider2'=>'Promoções especiais','slider3'=>'Sustentabilidade','slider4'=>'Melhor seleção!','slider5'=>'Confiança Total',
@@ -107,11 +107,44 @@ $txt = $t[$lang];
         .item-removido { background-color: #ffebee !important; opacity: 0.7; }
 
         /* SLIDER */
-        .slider-container { max-width:1150px; height:280px; margin:20px auto; overflow:hidden; border-radius:15px; box-shadow:0 8px 20px rgba(0,0,0,0.4); }
+        .slider-container { max-width:1150px; height:280px; margin:20px auto; overflow:hidden; border-radius:15px; box-shadow:0 8px 20px rgba(0,0,0,0.4); position: relative; }
         .slides-wrapper { display:flex; width:500%; transition:1s ease; }
         .slider-slide { width:20%; position:relative; }
         .slider-slide img { width:100%; height:280px; object-fit:cover; }
         .slide-text { position:absolute; bottom:20px; left:20px; background:rgba(0,0,0,0.7); color:white; padding:10px 20px; border-radius:8px; }
+
+        /* SETAS PROFISSIONAIS NAS PONTAS */
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            color: white;
+            border: none;
+            width: 45px;
+            height: 70px; /* Mais altas que largas */
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        .slider-nav:hover {
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--primary-green);
+            width: 55px; /* Alarga ligeiramente a dar feedback visual */
+        }
+        .nav-prev { 
+            left: 0; 
+            border-radius: 0 10px 10px 0; /* Arredonda só o lado direito */
+        }
+        .nav-next { 
+            right: 0; 
+            border-radius: 10px 0 0 10px; /* Arredonda só o lado esquerdo */
+        }
 
         /* CATEGORIAS */
         .cards-container { display:flex; flex-wrap:wrap; justify-content:center; padding:20px; }
@@ -170,12 +203,11 @@ $txt = $t[$lang];
                     $id = $row['id'];
                     $st = $row['status'] ?? 'ativo';
                     $is_editing = (isset($_GET['edit_id']) && $_GET['edit_id'] == $id);
-                    // Detetar se está em oferta
                     $is_promo = (isset($row['em_oferta']) && $row['em_oferta'] == 1);
                 ?>
                 <tr id="prod-<?= $id ?>" class="<?= ($st == 'removido') ? 'item-removido' : '' ?>">
                     <form method="POST" action="index.php?view=admin#prod-<?= $id ?>">
-                        <td><strong><?= $pos++ ?></strong><input type="hidden" name="prod_id" value="<?= $id ?>"></td>
+                        <td><strong>#<?= $pos++ ?></strong><input type="hidden" name="prod_id" value="<?= $id ?>"></td>
                         <td><img src="uploads/perfil/produtos/<?= htmlspecialchars($row['image_url']) ?>" width="45" height="45" style="object-fit:cover; border-radius:5px;" onerror="this.src='https://via.placeholder.com/50'"></td>
                         <td>
                             <?php if($is_editing): ?>
@@ -223,13 +255,18 @@ $txt = $t[$lang];
     </div>
 
 <?php else: ?>
-    <div class="slider-container"><div class="slides-wrapper" id="sw">
-        <?php for($i=1;$i<=5;$i++): 
-            $img = ["","https://blog.kroftools.com/wp-content/uploads/2023/11/pecas-de-automoveis.png","https://amr-auto.pt/wp-content/uploads/2024/01/reparacao_motor.jpg","https://inovegas.com.br/wp-content/uploads/2018/08/carro-miniatura-papel-na-grama.jpg","https://clickpetroleoegas.com.br/wp-content/uploads/2025/07/raw-8.jpg","https://img.freepik.com/fotos-gratis/acordo-de-negocios-aperto-de-mao-gesto-de-mao_53876-130006.jpg"];
-        ?>
-        <div class="slider-slide"><img src="<?= $img[$i] ?>"><div class="slide-text"><?= $txt['slider'.$i] ?></div></div>
-        <?php endfor; ?>
-    </div></div>
+    <div class="slider-container">
+        <button class="slider-nav nav-prev" onclick="moveSlide(-1)"><i class="fa fa-chevron-left"></i></button>
+        <button class="slider-nav nav-next" onclick="moveSlide(1)"><i class="fa fa-chevron-right"></i></button>
+
+        <div class="slides-wrapper" id="sw">
+            <?php for($i=1;$i<=5;$i++): 
+                $img = ["","https://blog.kroftools.com/wp-content/uploads/2023/11/pecas-de-automoveis.png","https://amr-auto.pt/wp-content/uploads/2024/01/reparacao_motor.jpg","https://inovegas.com.br/wp-content/uploads/2018/08/carro-miniatura-papel-na-grama.jpg","https://clickpetroleoegas.com.br/wp-content/uploads/2025/07/raw-8.jpg","https://img.freepik.com/fotos-gratis/acordo-de-negocios-aperto-de-mao-gesto-de-mao_53876-130006.jpg"];
+            ?>
+            <div class="slider-slide"><img src="<?= $img[$i] ?>"><div class="slide-text"><?= $txt['slider'.$i] ?></div></div>
+            <?php endfor; ?>
+        </div>
+    </div>
 
     <div class="cards-container">
         <?php
@@ -269,9 +306,9 @@ $txt = $t[$lang];
             <h4 class="footer-head">Ecopeças</h4>
             <p style="color:#bbb; line-height:1.6;">Especialistas na venda de peças usadas com foco no ambiente. Garantimos qualidade e sustentabilidade.</p>
             <div class="social-box">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://www.facebook.com/?locale=pt_PT"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.whatsapp.com/?lang=pt-pt"><i class="fab fa-whatsapp"></i></a>
             </div>
         </div>
         <div>
@@ -300,8 +337,27 @@ $txt = $t[$lang];
 </footer>
 
 <script>
-    let idx = 0; const wrp = document.getElementById('sw');
-    if(wrp){ setInterval(()=>{ idx = (idx+1)%5; wrp.style.transform = `translateX(-${idx*20}%)`; }, 5000); }
+    let idx = 0; 
+    const wrp = document.getElementById('sw');
+    const totalSlides = 5;
+
+    function updateSlider() {
+        if(wrp) { wrp.style.transform = `translateX(-${idx * 20}%)`; }
+    }
+
+    function moveSlide(direction) {
+        idx = (idx + direction + totalSlides) % totalSlides;
+        updateSlider();
+        clearInterval(autoSlide);
+        autoSlide = setInterval(nextSlide, 5000);
+    }
+
+    function nextSlide() {
+        idx = (idx + 1) % totalSlides;
+        updateSlider();
+    }
+
+    let autoSlide = setInterval(nextSlide, 5000);
 </script>
 </body>
 </html>
