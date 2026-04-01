@@ -185,7 +185,7 @@ $result_ofertas = $conn->query($sql_ofertas);
                     </div>
 
                     <div class="btn-buy">
-                        <?= ($lang == 'pt') ? 'Aproveitar Agora' : 'Get it Now' ?>
+                        <?= ($lang == 'pt') ? 'Aproveitar Agora!' : 'Get it Now' ?>
                     </div>
                 </a>
             <?php endwhile; ?>
