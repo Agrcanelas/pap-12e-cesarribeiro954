@@ -8,6 +8,9 @@ $lang = $_SESSION['lang'] ?? 'pt';
 // 1. Buscar os produtos em oferta incluindo o campo brand_logo
 $sql_ofertas = "SELECT * FROM products WHERE em_oferta = 1 AND status = 'ativo' LIMIT 6";
 $result_ofertas = $conn->query($sql_ofertas);
+
+// IMAGEM CONDIZENTE COM O TEMA
+$banner_ofertas = "https://www.choosethemoon.com/images/sliders/ferrari%20458%20italia.jpg";
 ?>
 
 <!DOCTYPE html>
@@ -36,14 +39,25 @@ $result_ofertas = $conn->query($sql_ofertas);
             color: var(--text-color);
         }
 
+        /* HEADER IGUAL ÀS CATEGORIAS (SEM BORDAS ARREDONDADAS) */
+        .page-header { 
+            text-align: center; 
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('<?= $banner_ofertas ?>');
+            background-size: cover;
+            background-position: center;
+            padding: 100px 20px;
+            color: white;
+            width: 100%;
+            margin-bottom: 50px;
+        }
+        .page-header h1 { font-size: 48px; font-weight: 800; color: #fff; margin: 0; text-transform: uppercase; }
+        .page-header p { font-size: 1.2rem; opacity: 0.9; margin-top: 10px; }
+
         .main-wrapper { 
-            padding: 50px 5% 80px; 
+            padding: 0 5% 80px; 
             max-width: 1300px; 
             margin: 0 auto;
         }
-
-        .page-header { text-align: center; margin-bottom: 50px; }
-        .page-header h1 { font-size: 42px; font-weight: 800; color: var(--p-green); margin-bottom: 10px; }
 
         .offers-grid {
             display: grid;
@@ -66,7 +80,6 @@ $result_ofertas = $conn->query($sql_ofertas);
 
         .offer-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
 
-        /* CONTENTOR DA IMAGEM PARA POSICIONAR LOGO E BADGE */
         .img-container {
             position: relative;
             width: 100%;
@@ -80,7 +93,6 @@ $result_ofertas = $conn->query($sql_ofertas);
             border-radius: 20px;
         }
 
-        /* BADGE DO LOGOTIPO (75px) */
         .brand-badge-flash {
             position: absolute;
             bottom: -10px;
@@ -105,7 +117,6 @@ $result_ofertas = $conn->query($sql_ofertas);
             transform: scale(1.1);
         }
 
-        /* AJUSTE DO DESCONTO PARA A ESQUERDA */
         .badge-discount {
             position: absolute;
             top: 15px;
@@ -144,12 +155,12 @@ $result_ofertas = $conn->query($sql_ofertas);
 </head>
 <body>
 
-<div class="main-wrapper">
-    <div class="page-header">
-        <h1>Ofertas Relâmpago ⚡</h1>
-        <p><?= ($lang == 'pt') ? 'Peças premium com descontos imbatíveis.' : 'Premium parts with unbeatable discounts.' ?></p>
-    </div>
+<div class="page-header">
+    <h1>Ofertas Relâmpago ⚡</h1>
+    <p><?= ($lang == 'pt') ? 'Peças premium com descontos imbatíveis.' : 'Premium parts with unbeatable discounts.' ?></p>
+</div>
 
+<div class="main-wrapper">
     <div class="offers-grid">
         <?php if ($result_ofertas && $result_ofertas->num_rows > 0): ?>
             <?php while($item = $result_ofertas->fetch_assoc()): 

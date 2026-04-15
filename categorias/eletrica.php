@@ -13,8 +13,6 @@ require_once '../auth/config.php';
 
 // Garante que a variável $lang existe
 $lang = $_SESSION['lang'] ?? 'pt';
-
-// --- LÓGICA DE ORDENAÇÃO ---
 $sort = $_GET['sort'] ?? '';
 $order_query = "p.id DESC"; // Padrão
 
@@ -59,12 +57,35 @@ $products_result = $stmt_prod->get_result();
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .category-title {
-            text-align:center; 
-            margin-top: 30px; 
-            margin-bottom: 10px;
-            font-weight: 800; 
-            color: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#fff' : '#2e7d32' ?>;
+        /* ESTILO DO BANNER HERO (IGUAL AOS AIRBAGS) */
+        .category-hero {
+            width: 100%;
+            height: 300px;
+            /* IMAGEM REFERENTE A ELÉTRICA ABAIXO */
+            background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1555664424-778a1e5e1b48?q=80&w=2000&auto=format&fit=crop'); 
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .category-hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .category-hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-top: 10px;
         }
 
         .filter-wrapper {
@@ -132,7 +153,6 @@ $products_result = $stmt_prod->get_result();
             background-color: #f9f9f9;
         }
 
-        /* --- PADRONIZAÇÃO DO LOGO (75px) --- */
         .card-brand-area {
             display: flex;
             justify-content: flex-end;
@@ -160,7 +180,6 @@ $products_result = $stmt_prod->get_result();
             object-fit: contain !important;
             transform: scale(1.1);
         }
-        /* ---------------------------------- */
 
         .product-card h3 { font-size: 1.2rem; margin-bottom: 8px; height: 45px; overflow: hidden; font-weight: 700; }
         .product-card .price { font-size: 1.6rem; color: #2e7d32; font-weight: 800; margin: 5px 0 10px 0; }
@@ -192,9 +211,12 @@ $products_result = $stmt_prod->get_result();
 
 <?php require_once '../includes/header.php'; ?>
 
-<h1 class="category-title">
-    <?= ($lang == 'pt') ? 'Produtos: Elétrica' : 'Products: Electrical' ?>
-</h1>
+<div class="category-hero">
+    <h1>
+        <?= ($lang == 'pt') ? 'Elétrica' : 'Electrical' ?>
+    </h1>
+    <p><?= ($lang == 'pt') ? 'Componentes de alta precisão e performance garantida.' : 'High-precision components and guaranteed performance.' ?></p>
+</div>
 
 <div class="filter-wrapper">
     <form method="GET" id="sortForm">

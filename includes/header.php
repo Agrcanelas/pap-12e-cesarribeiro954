@@ -33,7 +33,7 @@ if ($user_logged_in) {
         if ($res_h && $row_h = $res_h->fetch_assoc()) { $foto_header = $row_h['foto_perfil']; }
         $res_c = $conn_h->query("SELECT COUNT(*) as total FROM cart WHERE user_id = '".$_SESSION['user_id']."'");
         if ($res_c) { $contagem_header = $res_c->fetch_assoc()['total']; }
-        $conn_h->close();
+        $conn_h->close(); 
     }
 }
 ?>
@@ -142,21 +142,68 @@ function googleTranslateElementInit() {
     body.dark div[class*="admin"], body.dark form,
     body.dark div[style*="background-color: white"],
     body.dark div[style*="background: #fff"],
-    body.dark div[style*="background-color: #ffffff"] {
+    body.dark div[style*="background-color: #ffffff"],
+    body.dark #cookie-banner {
         background-color: #1e1e1e !important;
         color: #ffffff !important;
         border-color: #333333 !important;
     }
 
-    body.dark input[type="text"], body.dark input[type="number"], 
-    body.dark input[type="file"], body.dark textarea, body.dark select {
-        background-color: #2a2a2a !important;
-        color: #fff !important;
-        border: 1px solid #444 !important;
+    /* ESTILO DO FUNDO BORRADO (OVERLAY) */
+    #cookie-overlay {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        z-index: 9998;
+        display: none;
     }
 
-    body.dark a:not(.nav-link):not(.search-btn) { color: #66d78b; }
-    body.dark td, body.dark th { border-bottom: 1px solid #333 !important; color: #fff !important; }
+    /* ESTILO DO BANNER DE COOKIES (CENTRADO) */
+    #cookie-banner {
+        position: fixed;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%; max-width: 420px;
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+        z-index: 9999;
+        display: none;
+        border: 1px solid #eee;
+        font-family: sans-serif;
+    }
+    #cookie-banner h4 { margin-top: 0; color: #2e7d32; display: flex; align-items: center; gap: 10px; font-size: 18px; }
+    body.dark #cookie-banner h4 { color: #66d78b; }
+    #cookie-banner p { font-size: 14px; line-height: 1.6; color: #555; margin-bottom: 25px; }
+    body.dark #cookie-banner p { color: #ccc; }
+
+    .cookie-btns { display: flex; flex-direction: column; gap: 12px; }
+    .btn-c { padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
+    .btn-c-accept { background: #2e7d32; color: white; }
+    .btn-c-accept:hover { background: #1b5e20; transform: scale(1.02); }
+    .btn-c-reject { background: #f44336; color: white; }
+    .btn-c-reject:hover { background: #d32f2f; transform: scale(1.02); }
+    .btn-c-details { background: #e0e0e0; color: #333; }
+    .btn-c-details:hover { background: #d0d0d0; }
+    body.dark .btn-c-details { background: #333; color: #eee; }
+    body.dark .btn-c-details:hover { background: #444; }
+
+    #cookie-privacy-text { 
+        display: none; 
+        margin-top: 20px; 
+        font-size: 12px; 
+        color: #777; 
+        padding-top: 15px; 
+        border-top: 1px solid #eee; 
+        max-height: 180px; 
+        overflow-y: auto; 
+        text-align: left;
+    }
+    body.dark #cookie-privacy-text { border-top-color: #444; color: #aaa; }
 </style>
 
 <header id="mainHeader">
@@ -211,16 +258,33 @@ function googleTranslateElementInit() {
     </div>
 </header>
 
+<?php if (!$user_logged_in): ?>
+<div id="cookie-overlay"></div>
+<div id="cookie-banner">
+    <h4><i class="fa fa-cookie-bite"></i> Cookies & Privacidade</h4>
+    <p>Utilizamos cookies para melhorar a sua experiência e garantir o funcionamento seguro do site. Aceita a nossa política de privacidade?</p>
+    <div class="cookie-btns">
+        <button onclick="handleCookie('accept')" class="btn-c btn-c-accept">Sim, eu aceito</button>
+        <button onclick="handleCookie('reject')" class="btn-c btn-c-reject">Não aceito</button>
+        <button onclick="toggleCookieDetails()" class="btn-c btn-c-details">Ver mais detalhes</button>
+    </div>
+    <div id="cookie-privacy-text">
+        <strong>Termos e Condições:</strong><br>
+        A Ecopeças respeita a sua privacidade. Utilizamos cookies técnicos para manter a sua sessão iniciada e cookies de preferência para o modo dark e idioma. Não vendemos os seus dados a terceiros.
+    </div>
+</div>
+<?php endif; ?>
+
 <script>
-// Forçar o Favicon no Head (Mesmo em subpastas ou categorias)
+// Favicon dinâmico
 (function() {
     var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-    link.type = 'image/png';
-    link.rel = 'shortcut icon';
+    link.type = 'image/png'; link.rel = 'shortcut icon';
     link.href = 'https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg';
     document.getElementsByTagName('head')[0].appendChild(link);
 })();
 
+// Aplicação do Tema
 if ('<?= $theme ?>' === 'dark') { document.body.classList.add('dark'); }
 
 document.getElementById('theme-toggle').addEventListener('click', function() {
@@ -228,4 +292,31 @@ document.getElementById('theme-toggle').addEventListener('click', function() {
     document.getElementById('theme-icon').innerHTML = isDark ? '🌜' : '🌞';
     fetch('<?= $base ?>/auth/toggle_theme.php?theme=' + (isDark ? 'dark' : 'light'));
 });
+
+/* LÓGICA DE COOKIES INTELIGENTE */
+window.onload = function() {
+    // Só processa cookies se o utilizador NÃO estiver logado
+    <?php if (!$user_logged_in): ?>
+        localStorage.removeItem('ecopecas_cookies');
+        if (!sessionStorage.getItem('ecopecas_cookies')) {
+            setTimeout(() => {
+                document.getElementById('cookie-overlay').style.display = 'block';
+                document.getElementById('cookie-banner').style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }, 1000);
+        }
+    <?php endif; ?>
+}
+
+function handleCookie(action) {
+    sessionStorage.setItem('ecopecas_cookies', action);
+    document.getElementById('cookie-overlay').style.display = 'none';
+    document.getElementById('cookie-banner').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function toggleCookieDetails() {
+    const text = document.getElementById('cookie-privacy-text');
+    text.style.display = (text.style.display === 'block') ? 'none' : 'block';
+}
 </script>

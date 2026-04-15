@@ -5,7 +5,6 @@ require_once __DIR__ . '/includes/header.php';
 // 1. Capturar o ID do produto vindo da URL
 $produto_id = $_GET['id'] ?? null;
 
-// 2. Simulação de dados (Se não tiveres base de dados ainda)
 // Aqui podes fazer uma query: SELECT * FROM produtos WHERE id = $produto_id
 $produto = [
     'nome' => 'Peça Exemplo #' . $produto_id,

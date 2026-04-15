@@ -61,7 +61,7 @@ $txt = $t[$lang];
 <html lang="<?= $lang ?>">
 <head>
     <meta charset="UTF-8">
-    <title>Ecopeças - Oficial</title>
+    <title>Ecopeças</title>
     
     <link rel="icon" type="image/png" href="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg"> 
     
@@ -83,7 +83,6 @@ $txt = $t[$lang];
 
         body { background: var(--bg-body) fixed center/cover; margin: 0; font-family: sans-serif; transition: 0.3s; color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
 
-        /* BADGE ADMIN PROFISSIONAL */
         .badge-admin {
             background: linear-gradient(135deg, #1b5e20, #4caf50);
             color: white;
@@ -99,21 +98,18 @@ $txt = $t[$lang];
             border: 1px solid rgba(255,255,255,0.2);
         }
 
-        /* ADMIN TABLE STYLES */
         .admin-box { max-width:1100px; margin:40px auto; padding:35px; background:var(--bg-card); border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.3); }
         .admin-table { width:100%; border-collapse:collapse; background:white; color: #333; border-radius:10px; overflow:hidden; }
         .admin-table th { background:#2e7d32; color:white; padding:15px; text-align:left; }
         .admin-table td { padding:12px; border-bottom:1px solid #ddd; }
         .item-removido { background-color: #ffebee !important; opacity: 0.7; }
 
-        /* SLIDER */
         .slider-container { max-width:1150px; height:280px; margin:20px auto; overflow:hidden; border-radius:15px; box-shadow:0 8px 20px rgba(0,0,0,0.4); position: relative; }
         .slides-wrapper { display:flex; width:500%; transition:1s ease; }
         .slider-slide { width:20%; position:relative; }
         .slider-slide img { width:100%; height:280px; object-fit:cover; }
         .slide-text { position:absolute; bottom:20px; left:20px; background:rgba(0,0,0,0.7); color:white; padding:10px 20px; border-radius:8px; }
 
-        /* SETAS PROFISSIONAIS NAS PONTAS */
         .slider-nav {
             position: absolute;
             top: 50%;
@@ -123,7 +119,7 @@ $txt = $t[$lang];
             color: white;
             border: none;
             width: 45px;
-            height: 70px; /* Mais altas que largas */
+            height: 70px;
             cursor: pointer;
             font-size: 24px;
             display: flex;
@@ -132,36 +128,52 @@ $txt = $t[$lang];
             z-index: 10;
             transition: all 0.3s ease;
         }
-        .slider-nav:hover {
-            background: rgba(255, 255, 255, 0.95);
-            color: var(--primary-green);
-            width: 55px; /* Alarga ligeiramente a dar feedback visual */
-        }
-        .nav-prev { 
-            left: 0; 
-            border-radius: 0 10px 10px 0; /* Arredonda só o lado direito */
-        }
-        .nav-next { 
-            right: 0; 
-            border-radius: 10px 0 0 10px; /* Arredonda só o lado esquerdo */
-        }
+        .slider-nav:hover { background: rgba(255, 255, 255, 0.95); color: var(--primary-green); width: 55px; }
+        .nav-prev { left: 0; border-radius: 0 10px 10px 0; }
+        .nav-next { right: 0; border-radius: 10px 0 0 10px; }
 
-        /* CATEGORIAS */
         .cards-container { display:flex; flex-wrap:wrap; justify-content:center; padding:20px; }
         .card { width:240px; margin:15px; padding:15px; background:var(--bg-card); border-radius:15px; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.2); transition: 0.3s; }
         .card:hover { transform: translateY(-5px); }
         .card img { width:100%; height:140px; object-fit:cover; border-radius:10px; }
         .card h3 { color: var(--primary-green); margin:15px 0; font-size: 20px; font-weight: bold; }
+        
+        /* ESTES SÃO OS BOTÕES QUE FALTAVAM NAS CATEGORIAS */
+        .prod-btn-container { display: flex; gap: 8px; margin-top: 15px; justify-content: center; }
+        .btn-detalhes { background: #e0e0e0; color: #333; padding: 8px 12px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; flex: 1; transition: 0.3s; }
+        .btn-adicionar { background: var(--primary-green); color: white; padding: 8px 12px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; flex: 1; transition: 0.3s; }
+        .btn-adicionar:hover { background: #1b5e20; }
+        .btn-detalhes:hover { background: #d0d0d0; }
+
         .btn-cat { display:inline-block; padding:10px 25px; background:var(--accent-green); color:white; border-radius:25px; text-decoration:none; font-weight:bold; }
 
-        /* SOBRE NÓS */
+        .news-section { max-width: 1100px; margin: 50px auto; padding: 0 20px; text-align: center; }
+        .news-title-main { 
+            color: var(--primary-green); 
+            font-size: 38px; 
+            font-weight: 900; 
+            margin-bottom: 35px; 
+            text-transform: uppercase; 
+            display: inline-block;
+            letter-spacing: 2px;
+            text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff, 0px 4px 10px rgba(0,0,0,0.3);
+        }
+        .news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .news-card { background: var(--bg-card); border-radius: 12px; overflow: hidden; box-shadow: 0 6px 15px rgba(0,0,0,0.15); text-align: left; display: flex; flex-direction: column; }
+        .news-card img { width: 100%; height: 160px; object-fit: cover; }
+        .news-content { padding: 15px; flex-grow: 1; }
+        .news-id { font-size: 11px; font-weight: bold; color: white; background: var(--primary-green); padding: 3px 8px; border-radius: 4px; display: inline-block; margin-bottom: 8px; }
+        .news-content h4 { margin: 0 0 10px 0; font-size: 18px; color: var(--primary-green); }
+        .news-content p { font-size: 13px; color: var(--text-main); line-height: 1.5; margin: 0; opacity: 0.8; }
+        @media (max-width: 900px) { .news-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) { .news-grid { grid-template-columns: 1fr; } }
+
         .about-box { max-width:1000px; margin:80px auto; padding:60px; background:var(--bg-card); border-radius:40px; display:flex; align-items:center; position:relative; box-shadow:0 15px 40px rgba(0,0,0,0.2); }
         .folha { position:absolute; font-size:140px; color:var(--primary-green); opacity:1.0; pointer-events: none; z-index: 1; }
         .f-top { top: -60px; left: -60px; transform: rotate(-15deg); }
         .f-bottom { bottom: -60px; right: -60px; transform: rotate(165deg); }
         .about-content { position: relative; z-index: 2; flex: 1; }
 
-        /* FOOTER */
         .ultimate-footer { background: linear-gradient(135deg, #0a1f0c 0%, #050d06 100%); color: #ffffff; padding: 60px 20px 30px; margin-top: 80px; box-shadow: 0 -10px 40px rgba(0,0,0,0.5); }
         .footer-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 40px; }
         .footer-head { font-size: 18px; font-weight: bold; margin-bottom: 20px; color: var(--accent-green); text-transform: uppercase; letter-spacing: 1px; }
@@ -203,7 +215,6 @@ $txt = $t[$lang];
                     $id = $row['id'];
                     $st = $row['status'] ?? 'ativo';
                     $is_editing = (isset($_GET['edit_id']) && $_GET['edit_id'] == $id);
-                    $is_promo = (isset($row['em_oferta']) && $row['em_oferta'] == 1);
                 ?>
                 <tr id="prod-<?= $id ?>" class="<?= ($st == 'removido') ? 'item-removido' : '' ?>">
                     <form method="POST" action="index.php?view=admin#prod-<?= $id ?>">
@@ -211,26 +222,16 @@ $txt = $t[$lang];
                         <td><img src="uploads/perfil/produtos/<?= htmlspecialchars($row['image_url']) ?>" width="45" height="45" style="object-fit:cover; border-radius:5px;" onerror="this.src='https://via.placeholder.com/50'"></td>
                         <td>
                             <?php if($is_editing): ?>
-                                <input type="text" name="novo_nome" value="<?= htmlspecialchars($row['name']) ?>" style="width:90%; padding:5px;">
+                                <input type="text" name="novo_nome" value="<?= htmlspecialchars($row['name']) ?>" style="width:90%;">
                             <?php else: ?>
                                 <?= htmlspecialchars($row['name']) ?>
-                                <?php if($is_promo): ?>
-                                    <span style="background: #e53935; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 900; margin-left: 8px; vertical-align: middle; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">OFERTA</span>
-                                <?php endif; ?>
                             <?php endif; ?>
                         </td>
                         <td>
                             <?php if($is_editing): ?>
                                 <input type="number" step="0.01" name="novo_preco" value="<?= $row['price'] ?>" style="width:70px;">
                             <?php else: ?>
-                                <?php if($is_promo && isset($row['preco_antigo']) && $row['preco_antigo'] > 0): ?>
-                                    <span style="text-decoration: line-through; color: #999; font-size: 11px; display: block; margin-bottom: -2px;">
-                                        <?= number_format($row['preco_antigo'],2,',','.') ?>€
-                                    </span>
-                                <?php endif; ?>
-                                <span style="font-weight: bold; color: <?= $is_promo ? '#d32f2f' : 'inherit' ?>;">
-                                    <?= number_format($row['price'],2,',','.') ?>€
-                                </span>
+                                <?= number_format($row['price'],2,',','.') ?>€
                             <?php endif; ?>
                         </td>
                         <td>
@@ -239,11 +240,7 @@ $txt = $t[$lang];
                                 <a href="index.php?view=admin#prod-<?= $id ?>" style="color:red; margin-left:10px;"><i class="fa fa-times-circle fa-lg"></i></a>
                             <?php else: ?>
                                 <a href="index.php?view=admin&edit_id=<?= $id ?>#prod-<?= $id ?>" style="color:blue; margin-right:15px;"><i class="fa fa-edit"></i></a>
-                                <?php if($st == 'removido'): ?>
-                                    <a href="index.php?view=admin&restore_id=<?= $id ?>#prod-<?= $id ?>" style="color:green; font-weight:bold; font-size:11px;">RESTAURAR</a>
-                                <?php else: ?>
-                                    <a href="index.php?view=admin&delete_id=<?= $id ?>#prod-<?= $id ?>" style="color:red;"><i class="fa fa-trash"></i></a>
-                                <?php endif; ?>
+                                <a href="index.php?view=admin&delete_id=<?= $id ?>#prod-<?= $id ?>" style="color:red;"><i class="fa fa-trash"></i></a>
                             <?php endif; ?>
                         </td>
                     </form>
@@ -258,7 +255,6 @@ $txt = $t[$lang];
     <div class="slider-container">
         <button class="slider-nav nav-prev" onclick="moveSlide(-1)"><i class="fa fa-chevron-left"></i></button>
         <button class="slider-nav nav-next" onclick="moveSlide(1)"><i class="fa fa-chevron-right"></i></button>
-
         <div class="slides-wrapper" id="sw">
             <?php for($i=1;$i<=5;$i++): 
                 $img = ["","https://blog.kroftools.com/wp-content/uploads/2023/11/pecas-de-automoveis.png","https://amr-auto.pt/wp-content/uploads/2024/01/reparacao_motor.jpg","https://inovegas.com.br/wp-content/uploads/2018/08/carro-miniatura-papel-na-grama.jpg","https://clickpetroleoegas.com.br/wp-content/uploads/2025/07/raw-8.jpg","https://img.freepik.com/fotos-gratis/acordo-de-negocios-aperto-de-mao-gesto-de-mao_53876-130006.jpg"];
@@ -284,18 +280,77 @@ $txt = $t[$lang];
         ?>
     </div>
 
+    <div class="news-section">
+        <h2 class="news-title-main">Eco Dicas</h2>
+        <div class="news-grid">
+            
+            <div class="news-card">
+                <img src="https://www.shutterstock.com/image-photo/happy-latin-family-mother-father-600nw-2696391355.jpg" alt="Dica 1">
+                <div class="news-content">
+                    <span class="news-id"> Dica #1</span>
+                    <h4>Como prolongar a vida do seu motor?</h4>
+                    <p>Pequenos hábitos diários e revisões preventivas podem evitar gastos desnecessários e reduzir a emissão de gases poluentes.</p>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <img src="https://www.carglass.pt/cms/assets/cukesk346/files/2025-08/202308_reciclagem_vidro.webp" alt="Notícia 2">
+                <div class="news-content">
+                    <span class="news-id"> Dica #2</span>
+                    <h4>O impacto da reciclagem automóvel</h4>
+                    <p>Sabia que reutilizar uma peça usada poupa até 70% de energia em comparação com a fabricação de uma peça nova? Ajude o planeta.</p>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <img src="https://img.freepik.com/fotos-premium/sucesso-comercial-alegre-jovem-comerciante-em-trajes-formais-segurando-um-tablet-digital-e-olhando-para_386167-10535.jpg?semt=ais_hybrid&w=740&q=80" alt="Notícia 3">
+                <div class="news-content">
+                    <span class="news-id"> Dica #3</span>
+                    <h4>Peças Usadas: O que verificar antes de comprar?</h4>
+                    <p>Na Ecopeças, todas as unidades são testadas. Saiba quais os pontos chave a analisar para garantir a máxima segurança no seu veículo.</p>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <img src="https://pplware.sapo.pt/wp-content/uploads/2022/04/combustivel_00.jpeg" alt="Notícia 4">
+                <div class="news-content">
+                    <span class="news-id"> Dica #4</span>
+                    <h4>Poupe no Depósito! ⛽</h4>
+                    <p>Mantenha a pressão dos pneus correta. É a forma mais simples de reduzir o consumo de combustível e salvar a sua carteira.</p>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <img src="https://www.shutterstock.com/image-illustration/detailed-3d-rendering-car-accident-600nw-2543268255.jpg" alt="Notícia 5">
+                <div class="news-content">
+                    <span class="news-id"> Dica #5</span>
+                    <h4>A importância de Airbags certificados</h4>
+                    <p>Não facilite na segurança. Saiba por que razão deve escolher componentes de sistemas de retenção com garantia de origem e funcionamento.</p>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <img src="https://img.freepik.com/fotos-premium/close-up-de-uma-mulher-segurando-um-globo-nas-maos-em-um-fundo-de-grama-verde_993599-18675.jpg?semt=ais_hybrid&w=740&q=80" alt="Notícia 6">
+                <div class="news-content">
+                    <span class="news-id"> Dica #6</span>
+                    <h4>O Planeta Agradece! ♻️</h4>
+                    <p>Dar uma segunda vida a uma peça é evitar toneladas de lixo e poupar recursos minerais. Recupere o seu carro com consciência ecológica e inteligência financeira.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <div class="about-box">
         <i class="fa fa-leaf folha f-top"></i>
         <i class="fa fa-leaf folha f-bottom"></i>
         <div class="about-content">
             <h2 style="color:#1b5e20; font-size:35px; margin-top:0; font-weight:bold;"><?= $txt['about_title'] ?></h2>
-            <p style="font-size:20px; line-height:1.7; color: #333; margin: 20px 0;">
-                <?= $txt['about_text'] ?>
-            </p>
+            <p style="font-size:20px; line-height:1.7; color: #333; margin: 20px 0;"><?= $txt['about_text'] ?></p>
             <h3 style="color:#2e7d32; font-size:24px; font-weight: bold;"><?= $txt['about_slogan'] ?></h3>
         </div>
         <div style="margin-left:40px; z-index: 2;">
-            <img src="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg" width="180" style="border-radius:30px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+            <img src="https://img.freepik.com/vetores-premium/carro-ecologico-e-vetor-de-logotipo-de-icone-de-tecnologia-de-carro-verde-eletrico_661040-245.jpg" width="180" style="border-radius:30px;">
         </div>
     </div>
 <?php endif; ?>
@@ -306,9 +361,9 @@ $txt = $t[$lang];
             <h4 class="footer-head">Ecopeças</h4>
             <p style="color:#bbb; line-height:1.6;">Especialistas na venda de peças usadas com foco no ambiente. Garantimos qualidade e sustentabilidade.</p>
             <div class="social-box">
-                <a href="https://www.facebook.com/?locale=pt_PT"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.facebook.com/"><i class="fab fa-facebook-f"></i></a>
                 <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
-                <a href="https://www.whatsapp.com/?lang=pt-pt"><i class="fab fa-whatsapp"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
             </div>
         </div>
         <div>
@@ -341,22 +396,14 @@ $txt = $t[$lang];
     const wrp = document.getElementById('sw');
     const totalSlides = 5;
 
-    function updateSlider() {
-        if(wrp) { wrp.style.transform = `translateX(-${idx * 20}%)`; }
-    }
-
+    function updateSlider() { if(wrp) { wrp.style.transform = `translateX(-${idx * 20}%)`; } }
     function moveSlide(direction) {
         idx = (idx + direction + totalSlides) % totalSlides;
         updateSlider();
         clearInterval(autoSlide);
         autoSlide = setInterval(nextSlide, 5000);
     }
-
-    function nextSlide() {
-        idx = (idx + 1) % totalSlides;
-        updateSlider();
-    }
-
+    function nextSlide() { idx = (idx + 1) % totalSlides; updateSlider(); }
     let autoSlide = setInterval(nextSlide, 5000);
 </script>
 </body>

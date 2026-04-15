@@ -14,7 +14,7 @@ $lang = $_SESSION['lang'] ?? 'pt';
 
 // --- LÓGICA DE ORDENAÇÃO ---
 $sort = $_GET['sort'] ?? '';
-$order_query = "p.id DESC"; // Padrão: mais recentes
+$order_query = "p.id DESC"; 
 
 if ($sort == 'price_asc') {
     $order_query = "p.price ASC";
@@ -37,7 +37,7 @@ if (!$cat_data) {
 $category_id = $cat_data['id'];
 $titulo_exibicao = ($lang == 'pt') ? $cat_data['nome_pt'] : $cat_data['nome_en'];
 
-// 3. Procurar os produtos com Ordenação e Logo da Marca
+// 3. Procurar os produtos
 $stmt_prod = $conn->prepare("
     SELECT p.*, 
     (SELECT pi.image_url FROM product_images pi WHERE pi.product_id = p.id LIMIT 1) AS main_image 
@@ -58,12 +58,38 @@ $products_result = $stmt_prod->get_result();
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .category-title {
-            text-align:center; 
-            margin-top: 30px; 
-            margin-bottom: 10px;
-            font-weight: 800; 
-            color: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#fff' : '#2e7d32' ?>;
+        /* BANNER HERO - IMAGEM DE INTERIOR AUTO */
+        .category-hero {
+            width: 100%;
+            height: 350px;
+            background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), 
+                              url('https://www.disalconsorcio.com.br/blog/wp-content/uploads/2018/06/shutterstock_783478792.png'); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: #ffffff !important;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 15px rgba(0,0,0,0.8);
+        }
+
+        .category-hero h1 {
+            font-size: 3.8rem;
+            font-weight: 900;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #ffffff !important;
+        }
+
+        .category-hero p {
+            font-size: 1.3rem;
+            margin-top: 10px;
+            color: #ffffff !important;
+            opacity: 0.9;
         }
 
         .filter-wrapper {
@@ -81,15 +107,10 @@ $products_result = $stmt_prod->get_result();
             background: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#2a2a2a' : '#fff' ?>;
             color: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#fff' : '#333' ?>;
             font-family: inherit;
-            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
-            outline: none;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            transition: all 0.3s;
         }
-
-        .sort-select:hover { border-color: #2e7d32; }
 
         .products-container {
             display: flex;
@@ -120,7 +141,7 @@ $products_result = $stmt_prod->get_result();
             box-shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
 
-        .product-card:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(0,0,0,0.15); }
+        .product-card:hover { transform: translateY(-8px); }
 
         .product-card img.main-prod-img {
             width: 100%;
@@ -131,11 +152,9 @@ $products_result = $stmt_prod->get_result();
             background-color: #f9f9f9;
         }
 
-        /* --- PADRONIZAÇÃO DO LOGO (75px) --- */
         .card-brand-area {
             display: flex;
             justify-content: flex-end;
-            padding: 0 5px;
             margin-bottom: 10px;
         }
 
@@ -149,13 +168,12 @@ $products_result = $stmt_prod->get_result();
             align-items: center;
             justify-content: center;
             border: 1px solid #eee;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
 
         .brand-badge-large img {
-            width: 100% !important;
-            height: 100% !important;
-            object-fit: contain !important;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
             transform: scale(1.1);
         }
 
@@ -170,11 +188,10 @@ $products_result = $stmt_prod->get_result();
             align-items: center;
             justify-content: center;
             gap: 6px;
-            color: white;
+            color: white !important;
             padding: 12px 5px;
             text-decoration: none;
             border-radius: 50px; 
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             font-weight: bold;
             font-size: 0.8rem;
             text-transform: uppercase;
@@ -182,16 +199,16 @@ $products_result = $stmt_prod->get_result();
 
         .btn-details { background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); }
         .btn-cart { background: linear-gradient(135deg, #66d78b 0%, #43a047 100%); }
-        .btn:hover { transform: scale(1.04); box-shadow: 0 6px 15px rgba(0,0,0,0.2); color: #fff; }
     </style>
 </head>
 <body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>" style="margin:0; padding:0;">
 
 <?php require_once '../includes/header.php'; ?>
 
-<h1 class="category-title">
-    <?= ($lang == 'pt') ? 'Produtos: ' . $cat_data['nome_pt'] : 'Products: ' . $cat_data['nome_en'] ?>
-</h1>
+<div class="category-hero">
+    <h1><?= $titulo_exibicao ?></h1>
+    <p><?= ($lang == 'pt') ? 'Conforto e elegância dentro do seu automóvel.' : 'Comfort and elegance inside your car.' ?></p>
+</div>
 
 <div class="filter-wrapper">
     <form method="GET" id="sortForm">
@@ -209,7 +226,7 @@ $products_result = $stmt_prod->get_result();
     </form>
 </div>
 
-<div class="products-container" style="padding-bottom: 100px;">
+<div class="products-container"> 
     <?php if ($products_result->num_rows > 0): ?>
         <?php while($product = $products_result->fetch_assoc()): 
             $logo_path = !empty($product['brand_logo']) ? "../logotipos/" . $product['brand_logo'] : "../logotipos/default.jpg";
@@ -218,7 +235,7 @@ $products_result = $stmt_prod->get_result();
                 <img src="../uploads/perfil/produtos/<?= htmlspecialchars($product['main_image'] ?? '') ?>" 
                      alt="<?= htmlspecialchars($product['name']) ?>" 
                      class="main-prod-img"
-                     onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Foto'">
+                     onerror="this.src='https://via.placeholder.com/320x200?text=Sem+Foto'">
                 
                 <div class="card-brand-area">
                     <div class="brand-badge-large">
@@ -236,13 +253,11 @@ $products_result = $stmt_prod->get_result();
                 
                 <div class="card-buttons">
                     <a href="../produto.php?id=<?= $product['id'] ?>" class="btn btn-details">
-                        <i class="fa fa-info-circle"></i> 
-                        <?= ($lang == 'pt') ? 'Detalhes' : 'Details' ?>
+                        <i class="fa fa-info-circle"></i> DETALHES
                     </a>
                     
                     <a href="../add_to_cart.php?id=<?= $product['id'] ?>" class="btn btn-cart">
-                        <i class="fa fa-cart-plus"></i>
-                        <?= ($lang == 'pt') ? 'Adicionar' : 'Add' ?>
+                        <i class="fa fa-cart-plus"></i> ADICIONAR
                     </a>
                 </div>
             </div>

@@ -24,7 +24,7 @@ if (!$product) {
 $nome_logo = !empty($product['brand_logo']) ? $product['brand_logo'] : 'default.jpg';
 $caminho_logo = "logotipos/" . $nome_logo;
 
-// 2. BUSCA AS IMAGENS NA GALERIA (Tua Lógica de Gênio)
+// 2. BUSCA AS IMAGENS NA GALERIA 
 $sql_fotos = "SELECT image_url FROM product_images WHERE product_id = ?";
 $stmt_fotos = $conn->prepare($sql_fotos);
 $stmt_fotos->bind_param("i", $id);

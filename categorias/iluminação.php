@@ -52,12 +52,41 @@ $products_result = $stmt_prod->get_result();
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .category-title {
-            text-align:center; 
-            margin-top: 30px; 
-            margin-bottom: 10px;
-            font-weight: 800; 
-            color: <?= ($_SESSION['theme'] ?? 'light') === 'dark' ? '#fff' : '#2e7d32' ?>;
+        
+        .category-hero {
+            width: 100%;
+            height: 350px;
+            
+            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), 
+                              url('https://d26lpennugtm8s.cloudfront.net/stores/923/514/rte/Banner%204.jpg'); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: #ffffff !important;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 15px rgba(0,0,0,0.9);
+        }
+
+        .category-hero h1 {
+            font-size: 3.8rem;
+            font-weight: 900;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #ffffff !important;
+        }
+
+        .category-hero p {
+            font-size: 1.3rem;
+            font-weight: 400;
+            margin-top: 10px;
+            color: #ffffff !important;
+            max-width: 600px;
+            text-align: center;
         }
 
         .filter-wrapper {
@@ -125,7 +154,6 @@ $products_result = $stmt_prod->get_result();
             background-color: #f9f9f9;
         }
 
-        /* --- CONFIGURAÇÃO DO LOGO PADRONIZADA --- */
         .card-brand-area {
             display: flex;
             justify-content: flex-end;
@@ -153,7 +181,6 @@ $products_result = $stmt_prod->get_result();
             object-fit: contain !important;
             transform: scale(1.1);
         }
-        /* -------------------------------------- */
 
         .product-card h3 { font-size: 1.2rem; margin-bottom: 8px; height: 45px; overflow: hidden; font-weight: 700; }
         .product-card .price { font-size: 1.6rem; color: #2e7d32; font-weight: 800; margin: 5px 0 10px 0; }
@@ -166,7 +193,7 @@ $products_result = $stmt_prod->get_result();
             align-items: center;
             justify-content: center;
             gap: 6px;
-            color: white;
+            color: white !important;
             padding: 12px 5px;
             text-decoration: none;
             border-radius: 50px; 
@@ -178,16 +205,17 @@ $products_result = $stmt_prod->get_result();
 
         .btn-details { background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); }
         .btn-cart { background: linear-gradient(135deg, #66d78b 0%, #43a047 100%); }
-        .btn:hover { transform: scale(1.04); box-shadow: 0 6px 15px rgba(0,0,0,0.2); color: #fff; }
+        .btn:hover { transform: scale(1.04); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body class="<?= ($_SESSION['theme'] ?? 'light') === 'dark' ? 'dark' : '' ?>" style="margin:0; padding:0;">
 
 <?php require_once '../includes/header.php'; ?>
 
-<h1 class="category-title">
-    <?= ($lang == 'pt') ? 'Produtos: ' . $cat_data['nome_pt'] : 'Products: ' . $cat_data['nome_en'] ?>
-</h1>
+<div class="category-hero">
+    <h1><?= $titulo_exibicao ?></h1>
+    <p><?= ($lang == 'pt') ? 'Óticas, Faróis e Iluminação de alta performance.' : 'High-performance headlights and automotive lighting.' ?></p>
+</div>
 
 <div class="filter-wrapper">
     <form method="GET" id="sortForm">
@@ -205,7 +233,7 @@ $products_result = $stmt_prod->get_result();
     </form>
 </div>
 
-<div class="products-container" style="padding-bottom: 100px;"> 
+<div class="products-container"> 
     <?php if ($products_result->num_rows > 0): ?>
         <?php while($product = $products_result->fetch_assoc()): 
             $logo_path = !empty($product['brand_logo']) ? "../logotipos/" . $product['brand_logo'] : "../logotipos/default.jpg";
@@ -226,7 +254,7 @@ $products_result = $stmt_prod->get_result();
                 <div class="price">€<?= number_format($product['price'], 2, ',', '.') ?></div>
                 
                 <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 5px;">
-                    <strong>Estado:</strong> <?= htmlspecialchars($product['condition_state']) ?>
+                    <strong>Estado:</strong> <?= htmlspecialchars($product['condition_state'] ?? 'Usado') ?>
                 </p>
                 
                 <div class="card-buttons">
