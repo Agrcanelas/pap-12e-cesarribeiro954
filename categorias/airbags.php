@@ -57,7 +57,7 @@ $products_result = $stmt_prod->get_result();
         .category-hero {
             width: 100%;
             height: 300px;
-            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://cdn-s-www.leprogres.fr/images/14E98D71-DC3D-41BC-9F5D-9499A549A506/NW_raw/photo-adobe-stock-1705419200.jpg'); 
+            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://cloudfront-us-east-1.images.arcpublishing.com/estadao/YFOHXD754NIO7HZUKHVK574LYU.jpg'); 
             background-size: cover;
             background-position: center;
             display: flex;

@@ -39,7 +39,6 @@ $banner_ofertas = "https://www.choosethemoon.com/images/sliders/ferrari%20458%20
             color: var(--text-color);
         }
 
-        /* HEADER IGUAL ÀS CATEGORIAS (SEM BORDAS ARREDONDADAS) */
         .page-header { 
             text-align: center; 
             background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('<?= $banner_ofertas ?>');

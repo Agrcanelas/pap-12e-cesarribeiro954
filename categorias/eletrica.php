@@ -62,7 +62,7 @@ $products_result = $stmt_prod->get_result();
             width: 100%;
             height: 300px;
             /* IMAGEM REFERENTE A ELÉTRICA ABAIXO */
-            background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1555664424-778a1e5e1b48?q=80&w=2000&auto=format&fit=crop'); 
+            background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://mobilidade.estadao.com.br/wp-content/uploads/2024/12/Manutencao-carro-eletrico.jpeg.webp'); 
             background-size: cover;
             background-position: center;
             display: flex;
